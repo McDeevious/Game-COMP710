@@ -269,5 +269,11 @@
     <ClInclude Include="SceneGuide.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="SceneMushroomForest.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="archer.h">
+      <Filter>Header Files\Knight</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

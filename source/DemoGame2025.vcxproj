@@ -184,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animatedsprite.h" />
+    <ClInclude Include="archer.h" />
     <ClInclude Include="armoredOrc.h" />
     <ClInclude Include="BackgroundManager.h" />
     <ClInclude Include="collision.h" />
@@ -211,6 +212,7 @@
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="SceneGuide.h" />
     <ClInclude Include="SceneMenu.h" />
+    <ClInclude Include="SceneMushroomForest.h" />
     <ClInclude Include="SceneSplash.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="sprite.h" />
