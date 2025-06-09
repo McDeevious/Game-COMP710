@@ -1,0 +1,53 @@
+# === SOURCE CODE ===
+# (Keep all .cpp and .h files in /source — no ignore needed here)
+
+# === VISUAL STUDIO FILES ===
+.vs/
+*.suo
+*.user
+*.VC.db
+*.VC.opendb
+*.cache
+
+# === BUILD ARTIFACTS ===
+*.obj
+*.ilk
+*.ipch
+*.pch
+*.tlog
+*.log
+*.tmp
+*.lastbuildstate
+
+# === BUILD FOLDERS (if present) ===
+[Bb]uild*/
+Debug/
+Release/
+x64/
+x86/
+
+# === BACKUP / TEMP FILES ===
+*.bak
+*~
+*.old
+
+# === GAME FOLDER EXCLUSIONS ===
+# Ignore .pdbs (optional), but keep .dlls and .exe files
+game/*.pdb
+
+# === SHADER OUTPUT (if generated) ===
+*.cso
+*.fxc
+*.shadercache
+
+# === CMAKE FILES (if used) ===
+CMakeFiles/
+CMakeCache.txt
+
+# === DON'T IGNORE THESE: ===
+# Ensure these stay tracked by overriding any accidental rules
+!lib/**/*
+!game/*.dll
+!game/*.exe
+!assets/**
+!shaders/**
