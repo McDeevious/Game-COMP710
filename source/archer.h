@@ -18,10 +18,10 @@ enum AttackType {
 	BLOCK
 };
 
-class KnightClass {
+class Archer {
 public:
-	KnightClass();
-	~KnightClass();
+	Archer();
+	~Archer();
 
 	bool Initialise(Renderer& renderer);
 	void Process(float deltaTime);
