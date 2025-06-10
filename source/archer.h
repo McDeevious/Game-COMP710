@@ -13,7 +13,6 @@ class InputSystem;
 enum AttackType {
 	ATTACK_NONE,
 	ATTACK_1,
-	ATTACK_2,
 	SP_ATTACK,
 	BLOCK
 };
@@ -79,7 +78,6 @@ private:
 	//Player attacks
 	AttackType m_attackState;
 	bool m_isAttacking;
-	bool m_alternateAttacks;
 	AnimatedSprite* m_archerAttack1;
 	AnimatedSprite* m_archerAttack2;
 	AnimatedSprite* m_archerSpecial;

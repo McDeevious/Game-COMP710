@@ -159,6 +159,9 @@
     <ClCompile Include="SceneGuide.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="archer.cpp">
+      <Filter>Source Files\Knight</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">

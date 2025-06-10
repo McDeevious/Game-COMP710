@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="animatedsprite.cpp" />
+    <ClCompile Include="archer.cpp" />
     <ClCompile Include="armoredOrcs.cpp" />
     <ClCompile Include="BackgroundManager.cpp" />
     <ClCompile Include="collision.cpp" />

@@ -37,7 +37,6 @@ Archer::Archer()
     , m_archerAttack2(0)
     , m_archerSpecial(0)
     , m_isAttacking(false)
-    , m_alternateAttacks(false)
     , m_attackState(ATTACK_NONE)
     , m_attackDuration(0.0f)
     , m_attackSound(nullptr)
@@ -109,7 +108,7 @@ bool Archer::Initialise(Renderer& renderer)
     fmod->createSound("../game/assets/Audio/Knight-Audio/knight_jump.wav", FMOD_DEFAULT, 0, &m_jumpSound);
 
     //Load knight's idle sprite
-    m_archerIdle = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Idle.png");
+    m_archerIdle = renderer.CreateAnimatedSprite("../game/assets/Sprites/Character/Archer/Archer with shadows/Archer-Idle.png");
     if (m_archerIdle)
     {
         m_archerIdle->SetupFrames(100, 100);
@@ -122,7 +121,7 @@ bool Archer::Initialise(Renderer& renderer)
     }
 
     //Load knight's walking sprite
-    m_archerWalk = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Walk.png");
+    m_archerWalk = renderer.CreateAnimatedSprite("../game/assets/Sprites/Character/Archer/Archer with shadows/Archer-Walk.png");
     if (m_archerWalk)
     {
         m_archerWalk->SetupFrames(100, 100);
@@ -136,7 +135,7 @@ bool Archer::Initialise(Renderer& renderer)
     }
 
     //Load knight's hurt sprite
-    m_archerHurt = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Hurt.png");
+    m_archerHurt = renderer.CreateAnimatedSprite("../game/assets/Sprites/Character/Archer/Archer with shadows/Archer-Hurt.png");
     if (m_archerHurt)
     {
         m_archerHurt->SetupFrames(100, 100);
@@ -148,7 +147,7 @@ bool Archer::Initialise(Renderer& renderer)
     }
 
     //Load knight's death sprite
-    m_archerDeath = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Death.png");
+    m_archerDeath = renderer.CreateAnimatedSprite("../game/assets/Sprites/Character/Archer/Archer with shadows/Archer-Death.png");
     if (m_archerDeath)
     {
         m_archerDeath->SetupFrames(100, 100);
@@ -160,7 +159,7 @@ bool Archer::Initialise(Renderer& renderer)
     }
 
     //Load Attack 1
-    m_archerAttack1 = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Attack01.png");
+    m_archerAttack1 = renderer.CreateAnimatedSprite("../game/assets/Sprites/Character/Archer/Archer with shadows/Archer-Attack01.png");
     if (m_archerAttack1)
     {
         m_archerAttack1->SetupFrames(100, 100);
@@ -171,20 +170,8 @@ bool Archer::Initialise(Renderer& renderer)
         m_archerAttack1->SetScale(7.5f, -7.5f);
     }
 
-    //Load Attack 2
-    m_archerAttack2 = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Attack02.png");
-    if (m_archerAttack2)
-    {
-        m_archerAttack2->SetupFrames(100, 100);
-        m_archerAttack2->SetFrameDuration(0.1f);
-        m_archerAttack2->SetLooping(false);
-        m_archerAttack2->SetX(m_archerPosition.x);
-        m_archerAttack2->SetY(m_archerPosition.y);
-        m_archerAttack2->SetScale(7.5f, -7.5f);
-    }
-
     //Load Special Attack
-    m_archerSpecial = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Attack03.png");
+    m_archerSpecial = renderer.CreateAnimatedSprite("../game/assets/Sprites/Character/Archer/Archer with shadows/Archer-Attack02.png");
     if (m_archerSpecial)
     {
         m_archerSpecial->SetupFrames(100, 100);
@@ -255,10 +242,6 @@ void Archer::Process(float deltaTime) {
         case ATTACK_1:
             activeAttack = m_archerAttack1;
             timeoutDuration = 0.8f;
-            break;
-        case ATTACK_2:
-            activeAttack = m_archerAttack2;
-            timeoutDuration = 0.9f;
             break;
         case SP_ATTACK:
             activeAttack = m_archerSpecial;
@@ -416,11 +399,6 @@ void Archer::Draw(Renderer& renderer) {
                 m_archerAttack1->Draw(renderer);
             }
             break;
-        case ATTACK_2:
-            if (m_archerAttack2) {
-                m_archerAttack2->Draw(renderer);
-            }
-            break;
         case SP_ATTACK:
             if (m_archerSpecial) {
                 m_archerSpecial->Draw(renderer);
@@ -486,18 +464,11 @@ void Archer::ProcessInput(InputSystem& inputSystem) {
     if (!m_isAttacking && !m_isHurt && !m_isDead) {
         // LCTRL for basic attack
         if (inputSystem.GetKeyState(SDL_SCANCODE_LCTRL) == BS_PRESSED || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_X) == BS_PRESSED)) {
-            StartAttack(m_alternateAttacks ? ATTACK_2 : ATTACK_1);
-            m_alternateAttacks = !m_alternateAttacks;
+            StartAttack(ATTACK_1);
         }
         // V for special attack
         else if (inputSystem.GetKeyState(SDL_SCANCODE_Q) == BS_PRESSED || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_Y) == BS_PRESSED)) {
             StartAttack(SP_ATTACK);
-        }
-        // W for block 
-        else if (inputSystem.GetKeyState(SDL_SCANCODE_W) == BS_HELD || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_B) == BS_PRESSED)) {
-            if (!m_isAttacking || m_attackState != BLOCK) {
-                StartAttack(BLOCK);
-            }
         }
     }
 
@@ -533,9 +504,6 @@ void Archer::StartAttack(AttackType attackType) {
     switch (attackType) {
     case ATTACK_1:
         attackSprite = m_archerAttack1;
-        break;
-    case ATTACK_2:
-        attackSprite = m_archerAttack2;
         break;
     case SP_ATTACK:
         attackSprite = m_archerSpecial;
@@ -573,9 +541,6 @@ void Archer::StartAttack(AttackType attackType) {
 int Archer::AttackDamage() const {
     switch (m_attackState) {
     case ATTACK_1:
-        return 10;
-        break;
-    case ATTACK_2:
         return 10;
         break;
     case SP_ATTACK:
