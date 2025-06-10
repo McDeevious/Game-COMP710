@@ -35,9 +35,12 @@ private:
 	float m_fHitBoxWidth;
 	float m_fHitBoxHeight;
 	float m_fSpeed;
+	float m_fLifeSpan;
+	float m_fTimeElapsed;
 
 public:
 	bool m_bActive;
+	bool m_bJustDied;
 };
 
 #endif // PROJECTILE_H

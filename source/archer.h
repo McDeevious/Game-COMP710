@@ -5,6 +5,9 @@
 #include "collision.h"
 #include <fmod.hpp>
 #include "sharedenums.h"
+#include "projectile.h"
+#include <vector>
+#include "renderer.h"
 
 using namespace std;
 
@@ -78,7 +81,9 @@ private:
 	AnimatedSprite* m_archerAttack1;
 	AnimatedSprite* m_archerSpecial;
 	float m_attackDuration;
+
 	vector<Projectile*> m_pArrows;
+	int m_iActiveArrows;
 
 	// Movement tracking for background scrolling
 	Vector2 m_lastMovementDirection;

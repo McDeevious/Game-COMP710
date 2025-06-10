@@ -7,11 +7,14 @@
 #include "sprite.h"
 
 Projectile::Projectile()
-	: m_fSpeed(2.0f)
+	: m_fSpeed(500.0f)
 	, m_pProjectile(0)
 	, m_fHitBoxHeight(32.0f)
 	, m_fHitBoxWidth(32.0f)
 	, m_bActive(false)
+	, m_bJustDied(false)
+	, m_fLifeSpan(2.0f)
+	, m_fTimeElapsed(0.0f)
 {
 
 }
@@ -31,6 +34,7 @@ bool Projectile::Initialise(Renderer& renderer)
 	{
 		m_pProjectile->SetX(m_position.x);
 		m_pProjectile->SetY(m_position.y);
+		m_pProjectile->SetScale(3.0f, 3.0f);
 ;	}
 	
 	if (!m_pProjectile)
@@ -46,11 +50,19 @@ bool Projectile::Initialise(Renderer& renderer)
 
 void Projectile::Process(float deltaTime)
 {
+	m_fTimeElapsed += deltaTime;
+	
 	m_position.x += m_fSpeed * deltaTime;
 	if (m_pProjectile)
 	{
 		m_pProjectile->SetX(m_position.x);
 		m_pProjectile->SetY(m_position.y);
+		if (m_bActive && m_fTimeElapsed > m_fLifeSpan)
+		{
+			m_bActive = false;
+			m_bJustDied = true;
+			m_fTimeElapsed = 0.0f;
+		}
 	}
 }
 

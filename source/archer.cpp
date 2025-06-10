@@ -46,6 +46,7 @@ Archer::Archer()
     , m_deathSound(nullptr)
     , m_jumpSound(nullptr)
     , m_sfxVolume(0.4f)
+    , m_iActiveArrows(0)
 {
     m_archerPosition.Set(100, 618);
     m_lastMovementDirection.Set(0.0f, 0.0f);
@@ -72,10 +73,10 @@ Archer::~Archer() {
     delete m_archerSpecial;
     m_archerSpecial = nullptr;
     
-    for (Projectile* arrow : m_pArrows)
-    {
-        delete arrow;
-    }
+    //for (Projectile* arrow : m_pArrows)
+    //{
+    //    delete arrow;
+    //}
 
     //Clean upi the audio
     if (m_attackSound) {
@@ -186,6 +187,14 @@ bool Archer::Initialise(Renderer& renderer)
         m_archerSpecial->SetScale(7.5f, -7.5f);
     }
 
+    for (int i = 0; i < 5; i++)
+    {
+        Projectile* thisProjectile = new Projectile();
+        thisProjectile->Initialise(renderer);
+        thisProjectile->SetPosition(m_archerPosition + Vector2(60.0f, 0.0f));
+        m_pArrows.push_back(thisProjectile);
+    }
+
     if (!m_archerIdle || !m_archerWalk || !m_archerHurt || !m_archerDeath || !m_archerAttack1 || !m_archerSpecial)
     {
         LogManager::GetInstance().Log("Failed to load Knight sprites!");
@@ -196,7 +205,7 @@ bool Archer::Initialise(Renderer& renderer)
 }
 
 void Archer::Process(float deltaTime) {
-
+    
     //Process hurt animation
     if (m_isHurt)
     {
@@ -271,6 +280,19 @@ void Archer::Process(float deltaTime) {
 
             if ((!activeAttack->IsAnimating() && m_attackState != BLOCK) || m_attackDuration > timeoutDuration)
             {
+                if (m_iActiveArrows < 5)
+                {
+                    for (Projectile* arrow : m_pArrows)
+                    {
+                        if (!arrow->m_bActive)
+                        {
+                            arrow->m_bActive = true;
+                            arrow->SetPosition(m_archerPosition + Vector2(60.0f, 0.0f));
+                            m_iActiveArrows++;
+                            break;
+                        }
+                    }
+                }
                 m_isAttacking = false;
                 m_attackState = ATTACK_NONE;
                 m_attackDuration = 0.0f;
@@ -307,7 +329,17 @@ void Archer::Process(float deltaTime) {
     }
 
     // Process Arrows
-    
+    for (int i = 0; i < m_pArrows.size(); i++)
+    {
+        if (m_pArrows[i]->m_bActive)
+        {
+            m_pArrows[i]->Process(deltaTime);
+            if (m_pArrows[i]->m_bJustDied)
+            {
+                m_iActiveArrows--;
+            }
+        }
+    }
 
     // Process knight sprite animations
     if (!m_isAttacking) {
@@ -375,6 +407,15 @@ void Archer::Draw(Renderer& renderer) {
     if (m_isDead && m_archerDeath) {
         m_archerDeath->Draw(renderer);
         return;
+    }
+
+    // Draw Arrows
+    for (int i = 0; i < m_pArrows.size(); i++)
+    {
+        if (m_pArrows[i]->m_bActive)
+        {
+            m_pArrows[i]->Draw(renderer);
+        }
     }
 
     // Draw either the knight animation or the attack animation
@@ -507,12 +548,6 @@ void Archer::StartAttack(AttackType attackType) {
 
     AnimatedSprite* attackSprite = nullptr;
     float frameDuration = 0.1f; // Default frame duration
-
-    // push back new projectile
-    Projectile* newArrow = new Projectile();
-    newArrow->SetPosition(m_archerPosition);
-    newArrow->m_bActive = true;
-    m_pArrows.push_back(newArrow);
 
     switch (attackType) {
     case ATTACK_1:
@@ -650,6 +685,7 @@ Hitbox Archer::GetHitbox() const {
 
 }
 
+// Need to change it so that it will only calculate it for the closest arrow projectile
 Hitbox Archer::GetAttackHitbox() const {
     float attackWidth = 80.0f;  // Width of the attack zone
     float attackHeight = 100.0f * 7.5f;
