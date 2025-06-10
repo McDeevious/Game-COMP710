@@ -255,7 +255,7 @@ void Wizard::Process(float deltaTime) {
         {
         case ATTACK_1:
             activeAttack = m_wizardAttack1;
-            timeoutDuration = 0.8f;
+            timeoutDuration = 1.2f;
             break;
         case SP_ATTACK:
             activeAttack = m_wizardSpecial;
@@ -548,14 +548,14 @@ void Wizard::StartAttack(AttackType attackType) {
     m_attackDuration = 0.0f;
 
     AnimatedSprite* attackSprite = nullptr;
-    float frameDuration = 0.1f; // Default frame duration
+    float frameDuration = 0.2f; // Default frame duration
 
     switch (attackType) {
     case ATTACK_1:
         attackSprite = m_wizardAttack1;
         break;
     case SP_ATTACK:
-        attackSprite = m_wizardAttack1;
+        attackSprite = m_wizardSpecial;
         break;
     default:
         m_isAttacking = false;

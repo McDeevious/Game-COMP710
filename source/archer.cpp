@@ -255,7 +255,7 @@ void Archer::Process(float deltaTime) {
         {
         case ATTACK_1:
             activeAttack = m_archerAttack1;
-            timeoutDuration = 0.8f;
+            timeoutDuration = 0.9f;
             break;
         case SP_ATTACK:
             activeAttack = m_archerSpecial;
