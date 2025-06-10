@@ -6,8 +6,10 @@
 #include "collision.h"
 #include <fmod.hpp>
 #include "sharedenums.h"
+#include "animatedsprite.h"
 
 class Sprite;
+class AnimateSprite;
 class Hitbox;
 class Renderer;
 class InputSystem;
@@ -33,6 +35,7 @@ public:
 
 private:
 	Sprite* m_pProjectile;
+	AnimatedSprite* m_pAnimatedProjectile;
 	ProjectileType m_projectileType;
 
 	Vector2 m_position;
