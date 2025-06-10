@@ -165,6 +165,9 @@
     <ClCompile Include="projectile.cpp">
       <Filter>Source Files\Knight</Filter>
     </ClCompile>
+    <ClCompile Include="wizard.cpp">
+      <Filter>Source Files\Knight</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -285,6 +288,9 @@
       <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="projectile.h">
+      <Filter>Header Files\Knight</Filter>
+    </ClInclude>
+    <ClInclude Include="wizard.h">
       <Filter>Header Files\Knight</Filter>
     </ClInclude>
   </ItemGroup>

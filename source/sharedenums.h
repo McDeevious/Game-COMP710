@@ -6,3 +6,14 @@ enum AttackType {
 	SP_ATTACK,
 	BLOCK
 };
+
+enum ProjectileType {
+	ARROW,
+	FIRE
+};
+
+enum CharacterType {
+	SWORDSMAN,
+	ARCHER,
+	WIZARD
+};

@@ -182,6 +182,7 @@
     <ClCompile Include="texturemanager.cpp" />
     <ClCompile Include="vector2.cpp" />
     <ClCompile Include="vertexarray.cpp" />
+    <ClCompile Include="wizard.cpp" />
     <ClCompile Include="xboxcontroller.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -224,6 +225,7 @@
     <ClInclude Include="texture.h" />
     <ClInclude Include="vector2.h" />
     <ClInclude Include="vertexarray.h" />
+    <ClInclude Include="wizard.h" />
     <ClInclude Include="xboxcontroller.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

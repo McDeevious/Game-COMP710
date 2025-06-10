@@ -15,6 +15,9 @@ Projectile::Projectile()
 	, m_bJustDied(false)
 	, m_fLifeSpan(2.0f)
 	, m_fTimeElapsed(0.0f)
+	, m_fBaseY(0.0f)
+	, m_fAmplitude(2.5f)
+	, m_fFrequency(6.0f)
 {
 
 }
@@ -27,7 +30,15 @@ Projectile::~Projectile()
 
 bool Projectile::Initialise(Renderer& renderer)
 {
-	m_pProjectile = renderer.CreateSprite("../game/assets/Sprites/Characters/Archer/Arrow(projectile)/Arrow02(32x32).png");
+	if (m_projectileType == ProjectileType::ARROW)
+	{
+		m_pProjectile = renderer.CreateSprite("../game/assets/Sprites/Characters/Archer/Arrow(projectile)/Arrow02(32x32).png");
+	}
+	else if (m_projectileType == ProjectileType::FIRE)
+	{
+		m_pProjectile = renderer.CreateSprite("../game/assets/Sprites/Characters/Archer/Arrow(projectile)/Arrow02(32x32).png");
+	}
+
 	m_position.x = 0.0f;
 	m_position.y = 0.0f;
 	if (m_pProjectile)
@@ -48,6 +59,16 @@ bool Projectile::Initialise(Renderer& renderer)
 	}
 }
 
+void Projectile::SetProjectileType(ProjectileType projectile)
+{
+	m_projectileType = projectile;
+}
+
+ProjectileType Projectile::GetProjectileType()
+{
+	return m_projectileType;
+}
+
 void Projectile::Process(float deltaTime)
 {
 	m_fTimeElapsed += deltaTime;
@@ -55,8 +76,12 @@ void Projectile::Process(float deltaTime)
 	m_position.x += m_fSpeed * deltaTime;
 	if (m_pProjectile)
 	{
+		//sin wave
+		m_position.y = m_fBaseY + sinf(m_position.x * m_fFrequency * 0.01f) * m_fAmplitude;
+		
 		m_pProjectile->SetX(m_position.x);
 		m_pProjectile->SetY(m_position.y);
+
 		if (m_bActive && m_fTimeElapsed > m_fLifeSpan)
 		{
 			m_bActive = false;
@@ -93,4 +118,5 @@ void Projectile::SetPosition(Vector2 newPos)
 {
 	m_position.x = newPos.x;
 	m_position.y = newPos.y;
+	m_fBaseY = newPos.y;
 }

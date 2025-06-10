@@ -28,10 +28,19 @@ public:
 	//Collisions 
 	Hitbox GetHitbox() const;
 
+	void SetProjectileType(ProjectileType projectile);
+	ProjectileType GetProjectileType();
+
 private:
 	Sprite* m_pProjectile;
+	ProjectileType m_projectileType;
 
 	Vector2 m_position;
+	float m_fBaseY;
+
+	float m_fAmplitude;
+	float m_fFrequency;
+
 	float m_fHitBoxWidth;
 	float m_fHitBoxHeight;
 	float m_fSpeed;
