@@ -33,28 +33,40 @@ bool area::Initialise(Renderer& renderer)
 	
 	//std::string text;
 	//std::string check = "level" + std::to_string(selectlevel);
-	sizey = (float)renderer.GetHeight() / (float)height;
-	scale = (sizey / 20);//17 old maybe switch back
-	sizex = ((float)renderer.GetWidth() - (float)renderer.GetHeight()) / 2;
+	//sizey = (float)renderer.GetHeight() / (float)height;
+	size = (float)renderer.GetHeight() / (float)height;
+	scale = (size / 20);//17 old maybe switch back
+	//sizex = sizey;// ((float)renderer.GetWidth() - (float)renderer.GetHeight()) / 2;
 
 	//std::ifstream fileread("assets\\levelselect.txt");
 	for (int s = 0; s < 3; s++)
 	{
-		for (int offset = 0; offset < 40; offset++)
+		for (int y = 0; y < height; y++)
 		{
-			for (int i = 0; i < 120; i++)
+			for (int x = 0; x < wide; x++)
 			{
-				tilemap[s][i+offset*wide] = -1;
-				tile[s][i + offset * wide] = new AnimatedSprite();
-				tile[s][i + offset * wide] = renderer.CreateAnimatedSprite("../game/assets/Sprites/tiles.png");
-				tile[s][i + offset * wide]->SetupFrames(20, 20);
+				tilemap[s][x+y*wide] = -1;
+				tile[s][x + y * wide] = new AnimatedSprite();
+				tile[s][x + y * wide] = renderer.CreateAnimatedSprite("../game/assets/Sprites/tiles.png");
+				tile[s][x + y * wide]->setType();
+				tile[s][x + y * wide]->SetupFrames(20, 20);
 			}
 		}
 	}
 	
 	return 1;
 }
-
+void area::changePos(float x, float y)
+{
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < wide; x++)
+		{
+			tile[stage][x + y * wide]->SetX(/*tile[stage][x + y * wide]->GetX() */ +x);
+			tile[stage][x + y * wide]->SetY(tile[stage][x + y * wide]->GetY() + y);
+		}
+	}
+}
 void area::setScene(int scene)
 {
 	int array[4];
@@ -84,12 +96,12 @@ void area::setScene(int scene)
 		//	array[4] = 7;
 	}
 
-	for (int y = 0; y < 40; y++)
+	for (int y = 0; y < height; y++)
 	{
-		for (int x = 0; x < 120; x++)
+		for (int x = 0; x < wide; x++)
 		{
 
-			switch (tilemap[stage][x + y*wide])
+			switch (tilemap[stage][x + y * wide])
 			{
 			case -1://void
 				if (x % 2 == 1 && scene == 1) {
@@ -144,10 +156,17 @@ void area::setScene(int scene)
 			tile[stage][x + y * wide]->SetFrameDuration(0);
 			tile[stage][x + y * wide]->SetLooping(1);
 			tile[stage][x + y * wide]->Animate();
-			tile[stage][x + y * wide]->SetScale(1,1);
+			tile[stage][x + y * wide]->SetScale(1, 1);
 			tile[stage][x + y * wide]->SetAngle(1);
-			tile[stage][x + y * wide]->SetX(((((x + 1) * sizey) - (x * sizey)) / 2) + sizex + (x * sizey));
-			tile[stage][x + y * wide]->SetY(y * sizey + ((((y + 1) * sizey) - (y * sizey)) / 2));
+			tile[stage][x + y * wide]->SetY(y * size + ((((y + 1) * size) - (y * size)) / 2));
+			if (x > 0)
+			{
+				tile[stage][x + y * wide]->SetX(tile[stage][x-1+y*wide]->GetX() + size);
+			}
+			else
+			{
+				tile[stage][x + y * wide]->SetX(0+size/2);
+			}
 			tile[stage][x + y * wide]->SetScale(scale,scale);
 		}
 	}
@@ -156,24 +175,27 @@ void area::setScene(int scene)
 void area::setLevel(Renderer& renderer, int level)
 {
 	std::string text;
-	//selectlevel = level;
+	//selectlevel = level; // corrrecttttttttttt
 	selectlevel = 1;
 	std::string check = "level" + std::to_string(selectlevel);
-	sizey = (float)renderer.GetHeight() / (float)height;
-	scale = (sizey / 20);//17 old maybe switch back
-	sizex = ((float)renderer.GetWidth() - (float)renderer.GetHeight()) / 2;
+	size = (float)renderer.GetHeight() / (float)height;
+	scale = (size / 20);//17 old maybe switch back
+	//sizex = ((float)renderer.GetWidth() - (float)renderer.GetHeight()) / 2;
 	int tempStage = 1;
 	int tempPart = 1;
 	int count = 0;
 	int offset = 0;
 	bool cstage = 0;
 	bool cpart = 0;
+	std::cout << "test" << std::endl;
 	std::ifstream fileread("../game/assets/Sprites/Level-selection.txt");
+	std::cout << "passed" << std::endl;
+
 	for (int s = 0; s  < 3; s++)
 	{
-		for (int y = 0; y < 40; y++)
+		for (int y = 0; y < height; y++)
 		{
-			for (int x = 0; x < 120; x++)
+			for (int x = 0; x < wide; x++)
 			{
 				tilemap[s][x + y * wide] = -1;
 			}
@@ -186,7 +208,7 @@ void area::setLevel(Renderer& renderer, int level)
 		if (text.compare(check) == 0)
 		{
 			count ^= 1;
-			tempStage = 0;
+			tempStage = 1;
 		}
 		else if (text.compare(checkPart) == 0)
 		{
@@ -207,7 +229,7 @@ void area::setLevel(Renderer& renderer, int level)
 			{
 				tempStage++;
 				cstage = 0;
-				tempPart = 0;
+				tempPart = 1;
 			}
 			else
 			{
@@ -218,24 +240,24 @@ void area::setLevel(Renderer& renderer, int level)
 		{
 			char array[100];
 		std:strcpy(array, text.c_str());
-			for (int i = (40*tempPart-1); i < 40*tempPart; i++)
+			for (int i = 0; i < (wide/3); i++)
 			{
-				tilemap[tempStage][i + offset*40] = -1;
+				tilemap[tempStage-1][i+(tempPart-1)*(wide/3) + offset * wide] = -1;
 				switch (array[i])
 				{
 				case '0':
-					tilemap[tempStage][i + offset * 40] = 4;
+					tilemap[tempStage-1][i + (tempPart-1) * (wide/3) + offset * wide] = 4;
 					break;
 				case '1':
-					tilemap[tempStage][i + offset * 40] = 1;
+					tilemap[tempStage-1][i + (tempPart-1) * (wide/3) + offset * wide] = 1;
 					break;
 				case '2':
-					spawnlevel = (offset - 1) * sizey + -20;
-					tilemap[tempStage][i + offset * 40] = 2;
+					spawnlevel = (offset - 1) * size + -20;
+					tilemap[tempStage-1][i + (tempPart-1) * (wide/3) + offset * wide] = 2;
 					break;
 				case '3':
 
-					tilemap[tempStage][i + offset * 40] = 3;
+					tilemap[tempStage - 1][i + (tempPart - 1) * (wide/3) + offset * wide] = 3;
 					break;
 
 				}
@@ -266,8 +288,8 @@ float area::getSizeY()
 }
 int* area::tilearray(int row)
 {
-	int* array = new int[120];
-	for (int i = 0; i < 120; i++)
+	int* array = new int[wide];
+	for (int i = 0; i < wide; i++)
 	{
 		if (tilemap[stage][i+row*wide] != NULL)
 		{
@@ -289,11 +311,11 @@ float area::getScale()
 void area::Process(float deltaTime)
 {
 
-	for (int y = 0; y < 40; y++)
+	for (int y = 0; y < height; y++)
 	{
-		for (int x = 0; x < 120; x++)
+		for (int x = 0; x < wide; x++)
 		{
-			tile[stage][y * 120 + x]->Process(deltaTime);
+			tile[stage][y * wide + x]->Process(deltaTime);
 		}
 	}
 }
@@ -303,13 +325,13 @@ void area::Draw(Renderer& renderer)
 	//renderer.SetClearColor(0, 0, 0);
 
 	
-	for (int y = 0; y < 40; y++)
+	for (int y = 0; y < height; y++)
 	{
 
-		for (int x = 0; x < 120; x++)
+		for (int x = 0; x < wide; x++)
 		{
 
-			tile[stage][y * 120 + x]->Draw(renderer);
+			tile[stage][y * wide + x]->Draw(renderer);
 
 		}
 	}

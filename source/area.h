@@ -24,6 +24,7 @@ public:
 	void Draw(Renderer& renderer);
 	void setScene(int scene);
 	void setLevel(Renderer& renderer, int level);
+	void changePos(float x, float y);
 	//	int tilearray(int row);
 	int getSpawnlevel();
 	float getSizeX();
@@ -42,6 +43,7 @@ public:
 	AnimatedSprite* Materials[4];
 	int spawnlevel;
 	int selectlevel;
+	float size;
 	float sizex;
 	float sizey;
 

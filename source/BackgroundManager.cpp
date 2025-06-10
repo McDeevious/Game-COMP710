@@ -1,7 +1,9 @@
 ﻿#include "BackgroundManager.h"
 #include "renderer.h"
 #include "sprite.h"
+#include "animatedsprite.h"
 #include "logmanager.h"
+#include "area.h"
 
 #include <cmath>
 
@@ -16,6 +18,7 @@ BackgroundManager::BackgroundManager()
     , m_backScrollSpeed(60.0f)    // Slowest (furthest background)
     , m_middleScrollSpeed(90.0f)  // Medium speed (middle layer)
     , m_tilesScrollSpeed(120.0f)   // Fastest (foreground tiles)
+    , gameLevel(0)
 {
 }
 
@@ -40,6 +43,15 @@ bool BackgroundManager::Initialise(Renderer& renderer)
     int screenW = renderer.GetWidth();
     int screenH = renderer.GetHeight();
 
+  //  int screenH = renderer.GetHeight();
+    //  gameLevel = 0;
+    gameLevel = new area();
+    gameLevel->Initialise(renderer);
+
+    //just for now
+    gameLevel->setLevel(renderer, 1);
+    gameLevel->setScene(0);
+    //getAreaArray();
     m_pBackgroundBack = renderer.CreateSprite("../game/assets/Sprites/Forest/Layers/back.png");
     // Position and scale background layers to ensure full coverage
     if (m_pBackgroundBack)
@@ -47,26 +59,26 @@ bool BackgroundManager::Initialise(Renderer& renderer)
         float backW = static_cast<float>(m_pBackgroundBack->GetWidth());
 
         // Calculate scale needed to fully cover screen height with a bit extra
-        float scaleY = (screenH / backW) * 1.1f; 
-        float scaleX = scaleY * 1.5f; 
+        float scaleY = (screenH / backW) * 1.1f;
+        float scaleX = scaleY * 1.5f;
 
-        m_pBackgroundBack->SetX(0);  
-        m_pBackgroundBack->SetY(screenH / 2); 
+        m_pBackgroundBack->SetX(0);
+        m_pBackgroundBack->SetY(screenH / 2);
         m_pBackgroundBack->SetScale(scaleX, scaleY);
     }
 
-    m_pBackgroundMiddle = renderer.CreateSprite("../game/assets/Sprites/Forest/Layers/middle.png"); 
+    m_pBackgroundMiddle = renderer.CreateSprite("../game/assets/Sprites/Forest/Layers/middle.png");
     if (m_pBackgroundMiddle)
     {
         float midH = static_cast<float>(m_pBackgroundMiddle->GetHeight());
 
         // Calculate scale needed to cover most of screen height
-        float scaleY = (screenH / midH) * 1.0f; 
-        float scaleX = scaleY * 1.2f; 
+        float scaleY = (screenH / midH) * 1.0f;
+        float scaleX = scaleY * 1.2f;
 
-        m_pBackgroundMiddle->SetX(0); 
+        m_pBackgroundMiddle->SetX(0);
         m_pBackgroundMiddle->SetY(screenH / 2);
-        m_pBackgroundMiddle->SetScale(scaleX, -scaleY); 
+        m_pBackgroundMiddle->SetScale(scaleX, -scaleY);
     }
 
     m_pBackgroundTileRock = renderer.CreateAnimatedSprite("../game/assets/Sprites/Forest/Layers/tile_rock.png");
@@ -79,8 +91,8 @@ bool BackgroundManager::Initialise(Renderer& renderer)
         float scale = desiredHeight / tilesH;
 
         m_pBackgroundTileRock->SetScale(scale, -scale);
-        m_pBackgroundTileRock->SetX(0);  
-        m_pBackgroundTileRock->SetY(screenH - (tilesH * scale) / 2 + 50.0f);  
+        m_pBackgroundTileRock->SetX(0);
+        m_pBackgroundTileRock->SetY(screenH - (tilesH * scale) / 2 + 50.0f);
     }
 
     m_pBackgroundTileMoss = renderer.CreateAnimatedSprite("../game/assets/Sprites/Forest/Layers/tile_moss.png");
@@ -93,15 +105,31 @@ bool BackgroundManager::Initialise(Renderer& renderer)
         float scale = desiredHeight / tilesH;
 
         m_pBackgroundTileMoss->SetScale(scale, -scale);
-        m_pBackgroundTileMoss->SetX(0); 
-        m_pBackgroundTileMoss->SetY(screenH - (tilesH * scale) / 2 + 50.0f);  
+        m_pBackgroundTileMoss->SetX(0);
+        m_pBackgroundTileMoss->SetY(screenH - (tilesH * scale) / 2 + 50.0f);
     }
 
     return true;
 }
 
+
+void BackgroundManager::getAreaArray()
+{
+    for (int y = 0; y < 40; y++)
+    {
+        int* temp = gameLevel->tilearray(y);
+        for (int x = 0; x < 120; x++)
+        {
+            areaArray[x][y] = temp[x];
+        }
+        delete[] temp;
+    }
+}
+
+
 void BackgroundManager::Process(float deltaTime)
 {
+      gameLevel->Process(deltaTime);
 }
 
 void BackgroundManager::Draw(Renderer& renderer)
@@ -121,6 +149,7 @@ void BackgroundManager::Draw(Renderer& renderer)
     {
         DrawGround(renderer, m_tilesScrollX);
     }
+    gameLevel->Draw(renderer);
 }
 
 void BackgroundManager::DrawLayer(Renderer& renderer, Sprite* layer, float scrollX)
@@ -138,20 +167,20 @@ void BackgroundManager::DrawLayer(Renderer& renderer, Sprite* layer, float scrol
     float scaledW = static_cast<float>(layer->GetWidth()); // Already includes scaling
 
     // Calculate scroll offset
-    float offsetX = fmodf(scrollX, scaledW); 
+    float offsetX = fmodf(scrollX, scaledW);
     if (offsetX > 0.0f)
     {
         offsetX -= scaledW; // wrap backwards
     }
 
-    float startX = offsetX - scaledW; 
-     
+    float startX = offsetX - scaledW;
+
     // Calculate how many copies are needed to fully cover the screen
-    int numCopies = static_cast<int>(ceil(screenW / scaledW)) + 3; 
+    int numCopies = static_cast<int>(ceil(screenW / scaledW)) + 3;
 
     for (int i = 0; i < numCopies; ++i)
     {
-        float posX = startX + (i * scaledW); 
+        float posX = startX + (i * scaledW);
         layer->SetX(posX);
         layer->SetY(originalY);
         layer->Draw(renderer);
@@ -166,26 +195,26 @@ void BackgroundManager::DrawGround(Renderer& renderer, float scrollX)
 {
     if (!m_pBackgroundTileRock || !m_pBackgroundTileMoss)
         return;
-
+    
     const float screenW = static_cast<float>(renderer.GetWidth());
 
     const float tileWidth = static_cast<float>(m_pBackgroundTileRock->GetWidth());
     const float tileScale = m_pBackgroundTileRock->GetScaleX();
     const float scaledWidth = tileWidth * tileScale;
-    
+
     //overlap tiles to remove gaps
-    const float overlapTileWidth = scaledWidth * 0.195f; 
+    const float overlapTileWidth = scaledWidth * 0.195f;
 
     // calculate horizontal offset so tiles scroll smoothly in both ways
     float offsetX = scrollX;
-    while (offsetX < 0.0f)  
+    while (offsetX < 0.0f)
     {
-        offsetX += overlapTileWidth; 
+        offsetX += overlapTileWidth;
     }
 
     offsetX = fmodf(scrollX, overlapTileWidth);
 
-    offsetX -= overlapTileWidth; 
+    offsetX -= overlapTileWidth;
 
     const float startX = offsetX - overlapTileWidth * 2; // Start off-screen
     const int tileCount = static_cast<int>(ceil(screenW / overlapTileWidth)) + 10;
@@ -204,7 +233,7 @@ void BackgroundManager::DrawGround(Renderer& renderer, float scrollX)
         // Select which tile to draw: rock or moss
         Sprite* tile = (globalTileIndex == 0) ? m_pBackgroundTileRock : m_pBackgroundTileMoss;
         const float y = (globalTileIndex == 0) ? yRock : yMoss;
-
+       // gameLevel->changePos(scrollX, 0);
         tile->SetX(posX);
         tile->SetY(y);
         tile->Draw(renderer);
@@ -264,11 +293,11 @@ void BackgroundManager::SetMiddleLayerScale(float scaleX, float scaleY)
 {
     if (m_pBackgroundMiddle)
     {
-        m_pBackgroundMiddle->SetScale(scaleX, scaleY); 
+        m_pBackgroundMiddle->SetScale(scaleX, scaleY);
     }
 }
- 
-void BackgroundManager::SetTilesLayerScale(float scaleX, float scaleY) 
+
+void BackgroundManager::SetTilesLayerScale(float scaleX, float scaleY)
 {
     if (m_pBackgroundTileRock)
     {
