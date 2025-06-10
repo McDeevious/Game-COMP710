@@ -168,6 +168,7 @@
     <ClCompile Include="matrix4.cpp" />
     <ClCompile Include="orc.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
+    <ClCompile Include="projectile.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="riderOrc.cpp" />
     <ClCompile Include="SceneGuide.cpp" />
@@ -207,6 +208,7 @@
     <ClInclude Include="matrix4.h" />
     <ClInclude Include="orc.h" />
     <ClInclude Include="PauseMenu.h" />
+    <ClInclude Include="projectile.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="riderOrc.h" />
     <ClInclude Include="scene.h" />
