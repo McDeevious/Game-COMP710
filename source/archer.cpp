@@ -35,7 +35,6 @@ Archer::Archer()
     , m_groundY(0)
     //atacking
     , m_archerAttack1(0)
-    , m_archerAttack2(0)
     , m_archerSpecial(0)
     , m_isAttacking(false)
     , m_attackState(ATTACK_NONE)
@@ -67,9 +66,6 @@ Archer::~Archer() {
     // Clean up attack animations
     delete m_archerAttack1;
     m_archerAttack1 = nullptr;
-
-    delete m_archerAttack2;
-    m_archerAttack2 = nullptr;
 
     delete m_archerSpecial;
     m_archerSpecial = nullptr;
@@ -109,7 +105,7 @@ bool Archer::Initialise(Renderer& renderer)
     fmod->createSound("../game/assets/Audio/Knight-Audio/knight_jump.wav", FMOD_DEFAULT, 0, &m_jumpSound);
 
     //Load knight's idle sprite
-    m_archerIdle = renderer.CreateAnimatedSprite("../game/assets/Sprites/Character/Archer/Archer with shadows/Archer-Idle.png");
+    m_archerIdle = renderer.CreateAnimatedSprite("../game/assets/Sprites/Characters/Archer/Archer with shadows/Archer-Idle.png");
     if (m_archerIdle)
     {
         m_archerIdle->SetupFrames(100, 100);
@@ -122,7 +118,7 @@ bool Archer::Initialise(Renderer& renderer)
     }
 
     //Load knight's walking sprite
-    m_archerWalk = renderer.CreateAnimatedSprite("../game/assets/Sprites/Character/Archer/Archer with shadows/Archer-Walk.png");
+    m_archerWalk = renderer.CreateAnimatedSprite("../game/assets/Sprites/Characters/Archer/Archer with shadows/Archer-Walk.png");
     if (m_archerWalk)
     {
         m_archerWalk->SetupFrames(100, 100);
@@ -136,7 +132,7 @@ bool Archer::Initialise(Renderer& renderer)
     }
 
     //Load knight's hurt sprite
-    m_archerHurt = renderer.CreateAnimatedSprite("../game/assets/Sprites/Character/Archer/Archer with shadows/Archer-Hurt.png");
+    m_archerHurt = renderer.CreateAnimatedSprite("../game/assets/Sprites/Characters/Archer/Archer with shadows/Archer-Hurt.png");
     if (m_archerHurt)
     {
         m_archerHurt->SetupFrames(100, 100);
@@ -148,7 +144,7 @@ bool Archer::Initialise(Renderer& renderer)
     }
 
     //Load knight's death sprite
-    m_archerDeath = renderer.CreateAnimatedSprite("../game/assets/Sprites/Character/Archer/Archer with shadows/Archer-Death.png");
+    m_archerDeath = renderer.CreateAnimatedSprite("../game/assets/Sprites/Characters/Archer/Archer with shadows/Archer-Death.png");
     if (m_archerDeath)
     {
         m_archerDeath->SetupFrames(100, 100);
@@ -160,7 +156,7 @@ bool Archer::Initialise(Renderer& renderer)
     }
 
     //Load Attack 1
-    m_archerAttack1 = renderer.CreateAnimatedSprite("../game/assets/Sprites/Character/Archer/Archer with shadows/Archer-Attack01.png");
+    m_archerAttack1 = renderer.CreateAnimatedSprite("../game/assets/Sprites/Characters/Archer/Archer with shadows/Archer-Attack01.png");
     if (m_archerAttack1)
     {
         m_archerAttack1->SetupFrames(100, 100);
@@ -172,7 +168,7 @@ bool Archer::Initialise(Renderer& renderer)
     }
 
     //Load Special Attack
-    m_archerSpecial = renderer.CreateAnimatedSprite("../game/assets/Sprites/Character/Archer/Archer with shadows/Archer-Attack02.png");
+    m_archerSpecial = renderer.CreateAnimatedSprite("../game/assets/Sprites/Characters/Archer/Archer with shadows/Archer-Attack02.png");
     if (m_archerSpecial)
     {
         m_archerSpecial->SetupFrames(100, 100);
@@ -183,7 +179,7 @@ bool Archer::Initialise(Renderer& renderer)
         m_archerSpecial->SetScale(7.5f, -7.5f);
     }
 
-    if (!m_archerIdle || !m_archerWalk || !m_archerHurt || !m_archerDeath || !m_archerAttack1 || !m_archerAttack2 || !m_archerSpecial)
+    if (!m_archerIdle || !m_archerWalk || !m_archerHurt || !m_archerDeath || !m_archerAttack1 || !m_archerSpecial)
     {
         LogManager::GetInstance().Log("Failed to load Knight sprites!");
         return false;

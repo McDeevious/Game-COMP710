@@ -80,7 +80,6 @@ private:
 	AttackType m_attackState;
 	bool m_isAttacking;
 	AnimatedSprite* m_archerAttack1;
-	AnimatedSprite* m_archerAttack2;
 	AnimatedSprite* m_archerSpecial;
 	float m_attackDuration;
 
