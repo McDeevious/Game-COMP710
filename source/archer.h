@@ -4,18 +4,19 @@
 #include "vector2.h"
 #include "collision.h"
 #include <fmod.hpp>
+#include "sharedenums.h"
 
 class AnimatedSprite;
 class Hitbox;
 class Renderer;
 class InputSystem;
 
-enum AttackType {
-	ATTACK_NONE,
-	ATTACK_1,
-	SP_ATTACK,
-	BLOCK
-};
+//enum AttackType {
+//	ATTACK_NONE,
+//	ATTACK_1,
+//	SP_ATTACK,
+//	BLOCK
+//};
 
 class Archer {
 public:

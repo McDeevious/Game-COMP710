@@ -216,6 +216,7 @@
     <ClInclude Include="SceneMushroomForest.h" />
     <ClInclude Include="SceneSplash.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="sharedenums.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texturemanager.h" />
     <ClInclude Include="texture.h" />

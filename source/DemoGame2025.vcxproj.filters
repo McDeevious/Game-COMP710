@@ -278,5 +278,8 @@
     <ClInclude Include="archer.h">
       <Filter>Header Files\Knight</Filter>
     </ClInclude>
+    <ClInclude Include="sharedenums.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

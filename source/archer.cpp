@@ -9,6 +9,7 @@
 #include "game.h"
 #include <cstdio>
 #include <string>  
+#include "sharedenums.h"
 
 Archer::Archer()
     : m_archerIdle(nullptr)

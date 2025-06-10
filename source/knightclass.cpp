@@ -9,6 +9,7 @@
 #include "game.h"
 #include <cstdio>
 #include <string>  
+#include "sharedenums.h"
 
 KnightClass::KnightClass()
     : m_knightIdle(nullptr)
