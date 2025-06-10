@@ -11,6 +11,7 @@ Projectile::Projectile()
 	, m_pProjectile(0)
 	, m_fHitBoxHeight(32.0f)
 	, m_fHitBoxWidth(32.0f)
+	, m_bActive(false)
 {
 
 }
@@ -69,4 +70,15 @@ Hitbox Projectile::GetHitbox() const
 		m_fHitBoxWidth,
 		m_fHitBoxHeight
 	};
+}
+
+const Vector2& Projectile::GetPosition() const
+{
+	return m_position;
+}
+
+void Projectile::SetPosition(Vector2 newPos)
+{
+	m_position.x = newPos.x;
+	m_position.y = newPos.y;
 }

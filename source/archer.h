@@ -6,17 +6,13 @@
 #include <fmod.hpp>
 #include "sharedenums.h"
 
+using namespace std;
+
 class AnimatedSprite;
 class Hitbox;
 class Renderer;
 class InputSystem;
-
-//enum AttackType {
-//	ATTACK_NONE,
-//	ATTACK_1,
-//	SP_ATTACK,
-//	BLOCK
-//};
+class Projectile;
 
 class Archer {
 public:
@@ -82,6 +78,7 @@ private:
 	AnimatedSprite* m_archerAttack1;
 	AnimatedSprite* m_archerSpecial;
 	float m_attackDuration;
+	vector<Projectile*> m_pArrows;
 
 	// Movement tracking for background scrolling
 	Vector2 m_lastMovementDirection;

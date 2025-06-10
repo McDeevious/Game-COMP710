@@ -21,8 +21,9 @@ public:
 	void Process(float deltaTime);
 	void Draw(Renderer& renderer);
 
-	// Get the knight's current position
+	// Get the arrow's current position
 	const Vector2& GetPosition() const;
+	void SetPosition(Vector2 newPos);
 
 	//Collisions 
 	Hitbox GetHitbox() const;
@@ -34,6 +35,9 @@ private:
 	float m_fHitBoxWidth;
 	float m_fHitBoxHeight;
 	float m_fSpeed;
+
+public:
+	bool m_bActive;
 };
 
 #endif // PROJECTILE_H

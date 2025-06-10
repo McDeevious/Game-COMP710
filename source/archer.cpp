@@ -1,4 +1,5 @@
 #include "archer.h"
+#include "projectile.h"
 #include "orc.h" 
 #include "animatedsprite.h"
 #include "renderer.h"
@@ -69,6 +70,11 @@ Archer::~Archer() {
 
     delete m_archerSpecial;
     m_archerSpecial = nullptr;
+    
+    for (Projectile* arrow : m_pArrows)
+    {
+        delete arrow;
+    }
 
     //Clean upi the audio
     if (m_attackSound) {
@@ -497,6 +503,12 @@ void Archer::StartAttack(AttackType attackType) {
 
     AnimatedSprite* attackSprite = nullptr;
     float frameDuration = 0.1f; // Default frame duration
+
+    // push back new projectile
+    Projectile* newArrow = new Projectile();
+    newArrow->SetPosition(m_archerPosition);
+    newArrow->m_bActive = true;
+    m_pArrows.push_back(newArrow);
 
     switch (attackType) {
     case ATTACK_1:
