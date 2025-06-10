@@ -144,7 +144,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="animatedsprite.cpp" />
-    <ClCompile Include="area.cpp" />
+    <ClCompile Include="area.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="armoredOrcs.cpp" />
     <ClCompile Include="BackgroundManager.cpp" />
     <ClCompile Include="collision.cpp" />
