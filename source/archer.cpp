@@ -11,16 +11,16 @@
 #include <string>  
 
 Archer::Archer()
-    : m_knightIdle(nullptr)
-    , m_knightWalk(nullptr)
-    , m_knightHurt(nullptr)
-    , m_knightDeath(nullptr)
-    , m_knightSpeed(0.5f)
-    , m_knightLeft(false)
+    : m_archerIdle(nullptr)
+    , m_archerWalk(nullptr)
+    , m_archerHurt(nullptr)
+    , m_archerDeath(nullptr)
+    , m_archerSpeed(0.5f)
+    , m_archerLeft(false)
     , m_isMoving(false)
     , m_isHurt(false)
     , m_isDead(false)
-    , m_knighthealth(125)
+    , m_archerhealth(125)
     //boundaries
     , m_leftBoundary(0.0f)
     , m_rightBoundary(1024.0f)
@@ -33,10 +33,9 @@ Archer::Archer()
     , m_jumpStrength(-650.0f)
     , m_groundY(0)
     //atacking
-    , m_knightAttack1(0)
-    , m_knightAttack2(0)
-    , m_knightSpecial(0)
-    , m_knightBlock(0)
+    , m_archerAttack1(0)
+    , m_archerAttack2(0)
+    , m_archerSpecial(0)
     , m_isAttacking(false)
     , m_alternateAttacks(false)
     , m_attackState(ATTACK_NONE)
@@ -47,36 +46,33 @@ Archer::Archer()
     , m_jumpSound(nullptr)
     , m_sfxVolume(0.4f)
 {
-    m_knightPosition.Set(100, 618);
+    m_archerPosition.Set(100, 618);
     m_lastMovementDirection.Set(0.0f, 0.0f);
 }
 
 Archer::~Archer() {
     //Clean up normal animations
-    delete m_knightWalk;
-    m_knightWalk = nullptr;
+    delete m_archerWalk;
+    m_archerWalk = nullptr;
 
-    delete m_knightIdle;
-    m_knightIdle = nullptr;
+    delete m_archerIdle;
+    m_archerIdle = nullptr;
 
-    delete m_knightHurt;
-    m_knightHurt = nullptr;
+    delete m_archerHurt;
+    m_archerHurt = nullptr;
 
-    delete m_knightDeath;
-    m_knightDeath = nullptr;
+    delete m_archerDeath;
+    m_archerDeath = nullptr;
 
     // Clean up attack animations
-    delete m_knightAttack1;
-    m_knightAttack1 = nullptr;
+    delete m_archerAttack1;
+    m_archerAttack1 = nullptr;
 
-    delete m_knightAttack2;
-    m_knightAttack2 = nullptr;
+    delete m_archerAttack2;
+    m_archerAttack2 = nullptr;
 
-    delete m_knightSpecial;
-    m_knightSpecial = nullptr;
-
-    delete m_knightBlock;
-    m_knightBlock = nullptr;
+    delete m_archerSpecial;
+    m_archerSpecial = nullptr;
 
     //Clean upi the audio
     if (m_attackSound) {
@@ -104,7 +100,7 @@ Archer::~Archer() {
 bool Archer::Initialise(Renderer& renderer)
 {
     m_groundY = renderer.GetHeight() * 0.8;
-    m_knightPosition.y = m_groundY;
+    m_archerPosition.y = m_groundY;
     FMOD::System* fmod = Game::GetInstance().GetFMODSystem();
 
     fmod->createSound("../game/assets/Audio/Knight-Audio/knight_attack.mp3", FMOD_DEFAULT, 0, &m_attackSound);
@@ -113,105 +109,93 @@ bool Archer::Initialise(Renderer& renderer)
     fmod->createSound("../game/assets/Audio/Knight-Audio/knight_jump.wav", FMOD_DEFAULT, 0, &m_jumpSound);
 
     //Load knight's idle sprite
-    m_knightIdle = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Idle.png");
-    if (m_knightIdle)
+    m_archerIdle = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Idle.png");
+    if (m_archerIdle)
     {
-        m_knightIdle->SetupFrames(100, 100);
-        m_knightIdle->SetFrameDuration(0.1f);
-        m_knightIdle->SetLooping(true);
-        m_knightIdle->SetX(m_knightPosition.x);
-        m_knightIdle->SetY(m_knightPosition.y);
-        m_knightIdle->SetScale(7.5f, -7.5f);
-        m_knightIdle->Animate();
+        m_archerIdle->SetupFrames(100, 100);
+        m_archerIdle->SetFrameDuration(0.1f);
+        m_archerIdle->SetLooping(true);
+        m_archerIdle->SetX(m_archerPosition.x);
+        m_archerIdle->SetY(m_archerPosition.y);
+        m_archerIdle->SetScale(7.5f, -7.5f);
+        m_archerIdle->Animate();
     }
 
     //Load knight's walking sprite
-    m_knightWalk = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Walk.png");
-    if (m_knightWalk)
+    m_archerWalk = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Walk.png");
+    if (m_archerWalk)
     {
-        m_knightWalk->SetupFrames(100, 100);
-        m_knightWalk->SetFrameDuration(0.1f);
-        m_knightWalk->SetLooping(true);
-        m_knightWalk->SetX(m_knightPosition.x);
-        m_knightWalk->SetY(m_knightPosition.y);
-        m_knightWalk->SetScale(7.5f, -7.5f);
-        m_knightWalk->Animate();
+        m_archerWalk->SetupFrames(100, 100);
+        m_archerWalk->SetFrameDuration(0.1f);
+        m_archerWalk->SetLooping(true);
+        m_archerWalk->SetX(m_archerPosition.x);
+        m_archerWalk->SetY(m_archerPosition.y);
+        m_archerWalk->SetScale(7.5f, -7.5f);
+        m_archerWalk->Animate();
         SetBoundaries(0, renderer.GetWidth(), 0, renderer.GetHeight());
     }
 
     //Load knight's hurt sprite
-    m_knightHurt = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Hurt.png");
-    if (m_knightHurt)
+    m_archerHurt = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Hurt.png");
+    if (m_archerHurt)
     {
-        m_knightHurt->SetupFrames(100, 100);
-        m_knightHurt->SetFrameDuration(0.12f);
-        m_knightHurt->SetLooping(false);
-        m_knightHurt->SetX(m_knightPosition.x);
-        m_knightHurt->SetY(m_knightPosition.y);
-        m_knightHurt->SetScale(7.5f, -7.5f);
+        m_archerHurt->SetupFrames(100, 100);
+        m_archerHurt->SetFrameDuration(0.12f);
+        m_archerHurt->SetLooping(false);
+        m_archerHurt->SetX(m_archerPosition.x);
+        m_archerHurt->SetY(m_archerPosition.y);
+        m_archerHurt->SetScale(7.5f, -7.5f);
     }
 
     //Load knight's death sprite
-    m_knightDeath = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Death.png");
-    if (m_knightDeath)
+    m_archerDeath = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Death.png");
+    if (m_archerDeath)
     {
-        m_knightDeath->SetupFrames(100, 100);
-        m_knightDeath->SetFrameDuration(0.15f);
-        m_knightDeath->SetLooping(false);
-        m_knightDeath->SetX(m_knightPosition.x);
-        m_knightDeath->SetY(m_knightPosition.y);
-        m_knightDeath->SetScale(7.5f, -7.5f);
+        m_archerDeath->SetupFrames(100, 100);
+        m_archerDeath->SetFrameDuration(0.15f);
+        m_archerDeath->SetLooping(false);
+        m_archerDeath->SetX(m_archerPosition.x);
+        m_archerDeath->SetY(m_archerPosition.y);
+        m_archerDeath->SetScale(7.5f, -7.5f);
     }
 
     //Load Attack 1
-    m_knightAttack1 = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Attack01.png");
-    if (m_knightAttack1)
+    m_archerAttack1 = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Attack01.png");
+    if (m_archerAttack1)
     {
-        m_knightAttack1->SetupFrames(100, 100);
-        m_knightAttack1->SetFrameDuration(0.1f);
-        m_knightAttack1->SetLooping(false);
-        m_knightAttack1->SetX(m_knightPosition.x);
-        m_knightAttack1->SetY(m_knightPosition.y);
-        m_knightAttack1->SetScale(7.5f, -7.5f);
+        m_archerAttack1->SetupFrames(100, 100);
+        m_archerAttack1->SetFrameDuration(0.1f);
+        m_archerAttack1->SetLooping(false);
+        m_archerAttack1->SetX(m_archerPosition.x);
+        m_archerAttack1->SetY(m_archerPosition.y);
+        m_archerAttack1->SetScale(7.5f, -7.5f);
     }
 
     //Load Attack 2
-    m_knightAttack2 = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Attack02.png");
-    if (m_knightAttack2)
+    m_archerAttack2 = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Attack02.png");
+    if (m_archerAttack2)
     {
-        m_knightAttack2->SetupFrames(100, 100);
-        m_knightAttack2->SetFrameDuration(0.1f);
-        m_knightAttack2->SetLooping(false);
-        m_knightAttack2->SetX(m_knightPosition.x);
-        m_knightAttack2->SetY(m_knightPosition.y);
-        m_knightAttack2->SetScale(7.5f, -7.5f);
+        m_archerAttack2->SetupFrames(100, 100);
+        m_archerAttack2->SetFrameDuration(0.1f);
+        m_archerAttack2->SetLooping(false);
+        m_archerAttack2->SetX(m_archerPosition.x);
+        m_archerAttack2->SetY(m_archerPosition.y);
+        m_archerAttack2->SetScale(7.5f, -7.5f);
     }
 
     //Load Special Attack
-    m_knightSpecial = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Attack03.png");
-    if (m_knightSpecial)
+    m_archerSpecial = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Attack03.png");
+    if (m_archerSpecial)
     {
-        m_knightSpecial->SetupFrames(100, 100);
-        m_knightSpecial->SetFrameDuration(0.1f);
-        m_knightSpecial->SetLooping(false);
-        m_knightSpecial->SetX(m_knightPosition.x);
-        m_knightSpecial->SetY(m_knightPosition.y);
-        m_knightSpecial->SetScale(7.5f, -7.5f);
+        m_archerSpecial->SetupFrames(100, 100);
+        m_archerSpecial->SetFrameDuration(0.1f);
+        m_archerSpecial->SetLooping(false);
+        m_archerSpecial->SetX(m_archerPosition.x);
+        m_archerSpecial->SetY(m_archerPosition.y);
+        m_archerSpecial->SetScale(7.5f, -7.5f);
     }
 
-    //Load Block
-    m_knightBlock = renderer.CreateAnimatedSprite("../game/assets/Sprites/Knight/Knight/Knight-Block.png");
-    if (m_knightBlock)
-    {
-        m_knightBlock->SetupFrames(100, 100);
-        m_knightBlock->SetFrameDuration(0.1f);
-        m_knightBlock->SetLooping(false);
-        m_knightBlock->SetX(m_knightPosition.x);
-        m_knightBlock->SetY(m_knightPosition.y);
-        m_knightBlock->SetScale(7.5f, -7.5f);
-    }
-
-    if (!m_knightIdle || !m_knightWalk || !m_knightHurt || !m_knightDeath || !m_knightAttack1 || !m_knightAttack2 || !m_knightSpecial || !m_knightBlock)
+    if (!m_archerIdle || !m_archerWalk || !m_archerHurt || !m_archerDeath || !m_archerAttack1 || !m_archerAttack2 || !m_archerSpecial)
     {
         LogManager::GetInstance().Log("Failed to load Knight sprites!");
         return false;
@@ -225,14 +209,14 @@ void Archer::Process(float deltaTime) {
     //Process hurt animation
     if (m_isHurt)
     {
-        if (m_knightHurt) {
-            m_knightHurt->Process(deltaTime);
-            m_knightHurt->SetX(m_knightPosition.x);
-            m_knightHurt->SetY(m_knightPosition.y);
+        if (m_archerHurt) {
+            m_archerHurt->Process(deltaTime);
+            m_archerHurt->SetX(m_archerPosition.x);
+            m_archerHurt->SetY(m_archerPosition.y);
         }
 
 
-        if (!m_knightHurt->IsAnimating() || m_knightHurt->GetCurrentFrame() >= 3)
+        if (!m_archerHurt->IsAnimating() || m_archerHurt->GetCurrentFrame() >= 3)
         {
             m_isHurt = false;
         }
@@ -242,16 +226,16 @@ void Archer::Process(float deltaTime) {
     //Process death animation
     if (m_isDead)
     {
-        if (m_knightDeath) {
+        if (m_archerDeath) {
 
-            m_knightDeath->Process(deltaTime);
-            m_knightDeath->SetX(m_knightPosition.x);
-            m_knightDeath->SetY(m_knightPosition.y);
+            m_archerDeath->Process(deltaTime);
+            m_archerDeath->SetX(m_archerPosition.x);
+            m_archerDeath->SetY(m_archerPosition.y);
 
             //freeze last death frame
-            if (m_knightDeath->GetCurrentFrame() >= 3) {
-                m_knightDeath->StopAnimating();
-                m_knightDeath->SetCurrentFrame(3);
+            if (m_archerDeath->GetCurrentFrame() >= 3) {
+                m_archerDeath->StopAnimating();
+                m_archerDeath->SetCurrentFrame(3);
             }
         }
 
@@ -269,40 +253,16 @@ void Archer::Process(float deltaTime) {
         switch (m_attackState)
         {
         case ATTACK_1:
-            activeAttack = m_knightAttack1;
+            activeAttack = m_archerAttack1;
             timeoutDuration = 0.8f;
             break;
         case ATTACK_2:
-            activeAttack = m_knightAttack2;
+            activeAttack = m_archerAttack2;
             timeoutDuration = 0.9f;
             break;
         case SP_ATTACK:
-            activeAttack = m_knightSpecial;
+            activeAttack = m_archerSpecial;
             timeoutDuration = 1.2f;
-            break;
-        case BLOCK:
-            activeAttack = m_knightBlock;
-            timeoutDuration = 10000.0f; // Very long timeout
-
-            // Manual frame control for block animation
-            if (activeAttack) {
-                // Stop animation system
-                activeAttack->StopAnimating();
-
-                if (m_attackDuration < 0.1f) {
-                    activeAttack->SetCurrentFrame(0);
-                }
-                else if (m_attackDuration < 0.2f) {
-                    activeAttack->SetCurrentFrame(1);
-                }
-                else if (m_attackDuration < 0.3f) {
-                    activeAttack->SetCurrentFrame(2);
-                }
-                else {
-                    // Lock to frame 3
-                    activeAttack->SetCurrentFrame(3);
-                }
-            }
             break;
         default:
             m_isAttacking = false;
@@ -315,10 +275,10 @@ void Archer::Process(float deltaTime) {
                 activeAttack->Process(deltaTime);
             }
 
-            activeAttack->SetX(m_knightPosition.x);
-            activeAttack->SetY(m_knightPosition.y);
+            activeAttack->SetX(m_archerPosition.x);
+            activeAttack->SetY(m_archerPosition.y);
 
-            float scaleX = (m_knightWalk) ? m_knightWalk->GetScaleX() : 7.5f;
+            float scaleX = (m_archerWalk) ? m_archerWalk->GetScaleX() : 7.5f;
             float direction = (scaleX < 0) ? -7.5f : 7.5f;
             activeAttack->SetScale(direction, -7.5f);
 
@@ -341,20 +301,20 @@ void Archer::Process(float deltaTime) {
     if (m_isJumping) {
         m_jumpVelocity += m_gravity * deltaTime;
 
-        m_knightPosition.y += m_jumpVelocity * deltaTime;
+        m_archerPosition.y += m_jumpVelocity * deltaTime;
 
         // Check for landing
-        if (m_knightPosition.y >= m_groundY) {
-            m_knightPosition.y = m_groundY;
+        if (m_archerPosition.y >= m_groundY) {
+            m_archerPosition.y = m_groundY;
             m_isJumping = false;
             m_jumpVelocity = 0.0f;
 
             // Resume animations after landing
-            if (m_isMoving && m_knightWalk) {
-                m_knightWalk->Animate();
+            if (m_isMoving && m_archerWalk) {
+                m_archerWalk->Animate();
             }
-            else if (m_knightIdle) {
-                m_knightIdle->Animate();
+            else if (m_archerIdle) {
+                m_archerIdle->Animate();
             }
         }
     }
@@ -364,46 +324,46 @@ void Archer::Process(float deltaTime) {
 
         if (m_isJumping) {
 
-            if (m_knightWalk) {
-                m_knightWalk->StopAnimating();
-                m_knightWalk->SetX(m_knightPosition.x);
-                m_knightWalk->SetY(m_knightPosition.y);
+            if (m_archerWalk) {
+                m_archerWalk->StopAnimating();
+                m_archerWalk->SetX(m_archerPosition.x);
+                m_archerWalk->SetY(m_archerPosition.y);
 
-                float direction = m_knightLeft ? -7.5f : 7.5f;
-                m_knightWalk->SetScale(direction, -7.5f);
+                float direction = m_archerLeft ? -7.5f : 7.5f;
+                m_archerWalk->SetScale(direction, -7.5f);
             }
         }
         //Handle normal movement animations
         else if (m_isMoving) {
             //Use walking animation when moving
-            if (m_knightWalk && !m_knightWalk->IsAnimating()) {
-                m_knightWalk->Animate();
+            if (m_archerWalk && !m_archerWalk->IsAnimating()) {
+                m_archerWalk->Animate();
             }
 
             //Process walking animation
-            if (m_knightWalk) {
-                m_knightWalk->Process(deltaTime);
-                m_knightWalk->SetX(m_knightPosition.x);
-                m_knightWalk->SetY(m_knightPosition.y);
+            if (m_archerWalk) {
+                m_archerWalk->Process(deltaTime);
+                m_archerWalk->SetX(m_archerPosition.x);
+                m_archerWalk->SetY(m_archerPosition.y);
 
-                float direction = m_knightLeft ? -7.5 : 7.5;
-                m_knightWalk->SetScale(direction, -7.5);
+                float direction = m_archerLeft ? -7.5 : 7.5;
+                m_archerWalk->SetScale(direction, -7.5);
             }
         }
         else {
             // Use idle animation when not moving
-            if (m_knightIdle && !m_knightIdle->IsAnimating()) {
-                m_knightIdle->Animate();
+            if (m_archerIdle && !m_archerIdle->IsAnimating()) {
+                m_archerIdle->Animate();
             }
 
             //Process idle animation
-            if (m_knightIdle) {
-                m_knightIdle->Process(deltaTime);
-                m_knightIdle->SetX(m_knightPosition.x);
-                m_knightIdle->SetY(m_knightPosition.y);
+            if (m_archerIdle) {
+                m_archerIdle->Process(deltaTime);
+                m_archerIdle->SetX(m_archerPosition.x);
+                m_archerIdle->SetY(m_archerPosition.y);
 
-                float direction = m_knightLeft ? -7.5 : 7.5;
-                m_knightIdle->SetScale(direction, -7.5);
+                float direction = m_archerLeft ? -7.5 : 7.5;
+                m_archerIdle->SetScale(direction, -7.5);
             }
 
         }
@@ -412,18 +372,18 @@ void Archer::Process(float deltaTime) {
 
 void Archer::Draw(Renderer& renderer) {
     // Hurt override
-    if (m_isHurt && m_knightHurt) {
-        if (!m_knightHurt->IsAnimating()) {
-            m_knightHurt->Restart();
-            m_knightHurt->Animate();
+    if (m_isHurt && m_archerHurt) {
+        if (!m_archerHurt->IsAnimating()) {
+            m_archerHurt->Restart();
+            m_archerHurt->Animate();
         }
-        m_knightHurt->Draw(renderer);
+        m_archerHurt->Draw(renderer);
         return;
     }
 
     // Death override
-    if (m_isDead && m_knightDeath) {
-        m_knightDeath->Draw(renderer);
+    if (m_isDead && m_archerDeath) {
+        m_archerDeath->Draw(renderer);
         return;
     }
 
@@ -431,20 +391,20 @@ void Archer::Draw(Renderer& renderer) {
     if (!m_isAttacking) {
 
         if (m_isJumping) {
-            if (m_knightWalk) {
-                m_knightWalk->Draw(renderer);
+            if (m_archerWalk) {
+                m_archerWalk->Draw(renderer);
             }
         }
         else if (m_isMoving) {
             // Use walking animation when moving
-            if (m_knightWalk) {
-                m_knightWalk->Draw(renderer);
+            if (m_archerWalk) {
+                m_archerWalk->Draw(renderer);
             }
         }
         else {
             // Use idle animation when not moving
-            if (m_knightIdle) {
-                m_knightIdle->Draw(renderer);
+            if (m_archerIdle) {
+                m_archerIdle->Draw(renderer);
             }
         }
     }
@@ -452,35 +412,30 @@ void Archer::Draw(Renderer& renderer) {
         // Draw appropriate attack animation 
         switch (m_attackState) {
         case ATTACK_1:
-            if (m_knightAttack1) {
-                m_knightAttack1->Draw(renderer);
+            if (m_archerAttack1) {
+                m_archerAttack1->Draw(renderer);
             }
             break;
         case ATTACK_2:
-            if (m_knightAttack2) {
-                m_knightAttack2->Draw(renderer);
+            if (m_archerAttack2) {
+                m_archerAttack2->Draw(renderer);
             }
             break;
         case SP_ATTACK:
-            if (m_knightSpecial) {
-                m_knightSpecial->Draw(renderer);
-            }
-            break;
-        case BLOCK:
-            if (m_knightBlock) {
-                m_knightBlock->Draw(renderer);
+            if (m_archerSpecial) {
+                m_archerSpecial->Draw(renderer);
             }
             break;
         default:
             // Fall back to appropriate idle/walk animation
             if (m_isJumping) {
-                if (m_knightWalk) m_knightWalk->Draw(renderer);
+                if (m_archerWalk) m_archerWalk->Draw(renderer);
             }
-            else if (!m_isMoving && m_knightIdle) {
-                m_knightIdle->Draw(renderer);
+            else if (!m_isMoving && m_archerIdle) {
+                m_archerIdle->Draw(renderer);
             }
-            else if (m_knightWalk) {
-                m_knightWalk->Draw(renderer);
+            else if (m_archerWalk) {
+                m_archerWalk->Draw(renderer);
             }
             break;
         }
@@ -489,7 +444,7 @@ void Archer::Draw(Renderer& renderer) {
 
 void Archer::ProcessInput(InputSystem& inputSystem) {
     bool isWalking = false;
-    m_knightPosition.x = 150.0f;
+    m_archerPosition.x = 150.0f;
     Vector2 direction;
     direction.Set(0, 0);
 
@@ -518,12 +473,12 @@ void Archer::ProcessInput(InputSystem& inputSystem) {
 
     if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_LEFT) == BS_HELD || (controller && (stick.x < -threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_LEFT) == BS_HELD))) {
         direction.x = -1.0f;
-        m_knightLeft = true; // Left 
+        m_archerLeft = true; // Left 
         isWalking = true;
     }
     else if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_RIGHT) == BS_HELD || (controller && (stick.x > threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_RIGHT) == BS_HELD))) {
         direction.x = 1.0f;
-        m_knightLeft = false; // Right 
+        m_archerLeft = false; // Right 
         isWalking = true;
     }
 
@@ -551,19 +506,14 @@ void Archer::ProcessInput(InputSystem& inputSystem) {
         m_isAttacking = false;
         m_attackState = ATTACK_NONE;
         m_attackDuration = 0.0f;
-
-        if (m_knightBlock) {
-            m_knightBlock->SetCurrentFrame(0);
-            m_knightBlock->StopAnimating();
-        }
     }
 
     // Store the movement direction for background scrolling
     m_lastMovementDirection = direction;
     // Update player horizontal position
     if (isWalking) {
-        Vector2 movement = direction * m_knightSpeed * 0.016f;
-        m_knightPosition.x += movement.x;
+        Vector2 movement = direction * m_archerSpeed * 0.016f;
+        m_archerPosition.x += movement.x;
 
         ClampPositionToBoundaries();
         m_isMoving = true;
@@ -582,22 +532,13 @@ void Archer::StartAttack(AttackType attackType) {
 
     switch (attackType) {
     case ATTACK_1:
-        attackSprite = m_knightAttack1;
+        attackSprite = m_archerAttack1;
         break;
     case ATTACK_2:
-        attackSprite = m_knightAttack2;
+        attackSprite = m_archerAttack2;
         break;
     case SP_ATTACK:
-        attackSprite = m_knightSpecial;
-        break;
-    case BLOCK:
-        attackSprite = m_knightBlock;
-        // Special handling for block animation
-        if (attackSprite) {
-            m_attackDuration = 0.0f; // Reset duration to start animation sequence
-            attackSprite->SetCurrentFrame(0); // Start at frame 0
-            attackSprite->StopAnimating();
-        }
+        attackSprite = m_archerSpecial;
         break;
     default:
         m_isAttacking = false;
@@ -678,23 +619,23 @@ void Archer::SetBoundaries(float left, float right, float top, float bottom)
 void Archer::ClampPositionToBoundaries()
 {
     // Clamp X position
-    if (m_knightPosition.x < m_leftBoundary)
+    if (m_archerPosition.x < m_leftBoundary)
     {
-        m_knightPosition.x = m_leftBoundary;
+        m_archerPosition.x = m_leftBoundary;
     }
-    else if (m_knightPosition.x > m_rightBoundary)
+    else if (m_archerPosition.x > m_rightBoundary)
     {
-        m_knightPosition.x = m_rightBoundary;
+        m_archerPosition.x = m_rightBoundary;
     }
 
     // Clamp Y position
-    if (m_knightPosition.y < m_topBoundary)
+    if (m_archerPosition.y < m_topBoundary)
     {
-        m_knightPosition.y = m_topBoundary;
+        m_archerPosition.y = m_topBoundary;
     }
-    else if (m_knightPosition.y > m_bottomBoundary)
+    else if (m_archerPosition.y > m_bottomBoundary)
     {
-        m_knightPosition.y = m_bottomBoundary;
+        m_archerPosition.y = m_bottomBoundary;
     }
 }
 
@@ -704,12 +645,12 @@ const Vector2& Archer::GetLastMovementDirection() const
 }
 
 int Archer::GetHealth() const {
-    return m_knighthealth;
+    return m_archerhealth;
 }
 
 const Vector2& Archer::GetPosition() const
 {
-    return m_knightPosition;
+    return m_archerPosition;
 }
 
 Hitbox Archer::GetHitbox() const {
@@ -722,8 +663,8 @@ Hitbox Archer::GetHitbox() const {
     }
 
     return {
-        m_knightPosition.x - halfWidth,
-        m_knightPosition.y - 100.0f * 7.5f,
+        m_archerPosition.x - halfWidth,
+        m_archerPosition.y - 100.0f * 7.5f,
         halfWidth * 2.0f,
         halfHeight * 2.0f
     };
@@ -734,13 +675,13 @@ Hitbox Archer::GetHitbox() const {
 Hitbox Archer::GetAttackHitbox() const {
     float attackWidth = 80.0f;  // Width of the attack zone
     float attackHeight = 100.0f * 7.5f;
-    float direction = (m_knightWalk && m_knightWalk->GetScaleX() < 0) ? -7.5f : 7.5f;
+    float direction = (m_archerWalk && m_archerWalk->GetScaleX() < 0) ? -7.5f : 7.5f;
 
     float offsetX = (direction < 0) ? 50.0f : -attackWidth - 50.0f;
 
     return {
-        m_knightPosition.x + offsetX,
-        m_knightPosition.y - (attackHeight / 2.0f),
+        m_archerPosition.x + offsetX,
+        m_archerPosition.y - (attackHeight / 2.0f),
         attackWidth,
         attackHeight
     };
@@ -753,20 +694,20 @@ void Archer::TakeDamage(int amount) {
     }
 
     // Don't take damage during hurt animation
-    if (m_isHurt && m_knightHurt && m_knightHurt->IsAnimating()) {
+    if (m_isHurt && m_archerHurt && m_archerHurt->IsAnimating()) {
         return;
     }
 
-    m_knighthealth -= amount;
+    m_archerhealth -= amount;
 
     // Cancel any current attack
     m_isAttacking = false;
     m_attackState = ATTACK_NONE;
     m_attackDuration = 0.0f;
 
-    if (m_knighthealth <= 0) {
+    if (m_archerhealth <= 0) {
         // Handle death
-        m_knighthealth = 0;
+        m_archerhealth = 0;
         m_isDead = true;
         m_isHurt = false;
 
@@ -781,10 +722,10 @@ void Archer::TakeDamage(int amount) {
         }
 
         // Start death animation
-        if (m_knightDeath) {
-            m_knightDeath->SetCurrentFrame(0);
-            m_knightDeath->Restart();
-            m_knightDeath->Animate();
+        if (m_archerDeath) {
+            m_archerDeath->SetCurrentFrame(0);
+            m_archerDeath->Restart();
+            m_archerDeath->Animate();
         }
     }
     else {
@@ -802,10 +743,10 @@ void Archer::TakeDamage(int amount) {
         }
 
         // Start hurt animation
-        if (m_knightHurt) {
-            m_knightHurt->SetCurrentFrame(0);
-            m_knightHurt->Restart();
-            m_knightHurt->Animate();
+        if (m_archerHurt) {
+            m_archerHurt->SetCurrentFrame(0);
+            m_archerHurt->Restart();
+            m_archerHurt->Animate();
         }
     }
 }
@@ -814,6 +755,3 @@ bool Archer::IsDead() const
 {
     return m_isDead;
 }
-
-
-
