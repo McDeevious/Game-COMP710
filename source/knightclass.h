@@ -15,8 +15,7 @@ class InputSystem;
 //	ATTACK_NONE,
 //	ATTACK_1,
 //	ATTACK_2,
-//	SP_ATTACK,
-//	BLOCK
+//	SP_ATTACK
 //};
 
 class KnightClass {
@@ -45,7 +44,6 @@ public:
 	//Damage taking
 	void TakeDamage(int amount); 
 	int AttackDamage() const;
-	bool isBlocking() const;
 	bool isAttacking() const; 
 
 	// State checking

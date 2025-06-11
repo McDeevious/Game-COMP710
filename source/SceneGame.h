@@ -72,7 +72,7 @@ protected:
     BackgroundManager* m_pBackgroundManager;
     PauseMenu* m_pPauseMenu;
     GameOverMenu* m_pGameOverMenu;
-    Wizard* m_pKnightClass;
+    KnightClass* m_pKnightClass;
     Renderer* m_pRenderer;
     KnightHUD* m_pKnightHUD;
     SceneGuide* m_pSceneGuide; 
