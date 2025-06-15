@@ -13,6 +13,8 @@ public:
 	virtual bool Initialise(Renderer& renderer) = 0;
 	virtual void Process(float deltaTime) = 0;
 	virtual void Draw(Renderer& renderer) = 0;
+	virtual int getData(int type)=0;//for passing data through scenes, connect scenes with ony two functions to make it easy
+	virtual void setData(int type, float data)=0;
 protected:
 private:
 	Scene(const Scene& scene);

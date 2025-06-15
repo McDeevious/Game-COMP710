@@ -127,6 +127,16 @@ void SceneSplash::Draw(Renderer& renderer)
     }
 }
 
+
+int SceneSplash::getData(int type)
+{
+    return 0;
+}
+void SceneSplash::setData(int type, float data)
+{
+
+}
+
 int SceneSplash::GetStage() const {
     return m_stage;
 }

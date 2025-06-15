@@ -48,6 +48,8 @@ public:
     virtual bool Initialise(Renderer& renderer);
     virtual void Process(float deltaTime);
     virtual void Draw(Renderer& renderer);
+    int getData(int type) override;
+    void setData(int type, float data) override;
 
     void ProcessInput(InputSystem& inputSystem);
 
