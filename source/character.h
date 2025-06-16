@@ -13,7 +13,7 @@ class Hitbox;
 class Character {
 public:
     Character();
-    virtual ~Character() {}
+    virtual ~Character();
 
     // Core interface
     virtual bool Initialise(Renderer& renderer) = 0;

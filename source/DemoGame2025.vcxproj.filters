@@ -168,6 +168,9 @@
     <ClCompile Include="wizard.cpp">
       <Filter>Source Files\Knight</Filter>
     </ClCompile>
+    <ClCompile Include="character.cpp">
+      <Filter>Source Files\Knight</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -291,6 +294,9 @@
       <Filter>Header Files\Knight</Filter>
     </ClInclude>
     <ClInclude Include="wizard.h">
+      <Filter>Header Files\Knight</Filter>
+    </ClInclude>
+    <ClInclude Include="character.h">
       <Filter>Header Files\Knight</Filter>
     </ClInclude>
   </ItemGroup>

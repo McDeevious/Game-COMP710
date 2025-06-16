@@ -12,6 +12,7 @@
 class KnightClass;
 class Archer;
 class Wizard;
+class Character;
 class Orc;
 class Renderer;
 class BackgroundManager;
@@ -72,7 +73,7 @@ protected:
     BackgroundManager* m_pBackgroundManager;
     PauseMenu* m_pPauseMenu;
     GameOverMenu* m_pGameOverMenu;
-    KnightClass* m_pKnightClass;
+    Character* m_pKnightClass;
     Renderer* m_pRenderer;
     KnightHUD* m_pKnightHUD;
     SceneGuide* m_pSceneGuide; 

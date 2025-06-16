@@ -3,6 +3,7 @@
 
 #include "vector2.h"
 #include "collision.h"
+#include "character.h"
 #include <fmod.hpp>
 #include "sharedenums.h"
 #include "projectile.h"
@@ -17,7 +18,8 @@ class Renderer;
 class InputSystem;
 class Projectile;
 
-class Wizard {
+class Wizard : public Character
+{
 public:
 	Wizard();
 	~Wizard();

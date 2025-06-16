@@ -8,6 +8,7 @@
 #include "projectile.h"
 #include <vector>
 #include "renderer.h"
+#include "character.h"
 
 using namespace std;
 
@@ -17,7 +18,8 @@ class Renderer;
 class InputSystem;
 class Projectile;
 
-class Archer {
+class Archer : public Character
+{
 public:
 	Archer();
 	~Archer();

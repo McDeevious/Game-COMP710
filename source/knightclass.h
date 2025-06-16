@@ -2,6 +2,7 @@
 #define KNIGHTCLASS_H
 
 #include "vector2.h"
+#include "character.h"
 #include "collision.h"
 #include <fmod.hpp>
 #include "sharedenums.h"	
@@ -18,7 +19,8 @@ class InputSystem;
 //	SP_ATTACK
 //};
 
-class KnightClass {
+class KnightClass : public Character
+{
 public:
 	KnightClass();
 	~KnightClass();
