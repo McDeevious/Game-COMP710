@@ -24,7 +24,7 @@ SceneGame::SceneGame()
     , m_pGameOverMenu(nullptr)
     , m_pRenderer(nullptr)
     , m_pKnightHUD(nullptr)
-    ,m_pSceneGuide(nullptr)
+    , m_pSceneGuide(nullptr)
     , m_scrollDistance(0.0f)
     , m_gameState(GAME_STATE_PLAYING)
     , m_score(0)
@@ -33,6 +33,7 @@ SceneGame::SceneGame()
     , m_gameVolume(0.2f)
     , m_gameStartPlayed(false)
     , m_nextWaveOffset(0.0f)
+    , m_coinChannel(nullptr)
 {
 }
 
@@ -44,14 +45,14 @@ SceneGame::~SceneGame()
     delete m_pPauseMenu;
     m_pPauseMenu = nullptr;
 
-    delete m_pGameOverMenu; 
+    delete m_pGameOverMenu;
     m_pGameOverMenu = nullptr;
 
     delete m_pKnightClass;
     m_pKnightClass = nullptr;
 
     delete m_pKnightHUD;
-    m_pKnightHUD = nullptr; 
+    m_pKnightHUD = nullptr;
 
     for (Orc* orc : m_orcs)
     {
@@ -109,6 +110,12 @@ bool SceneGame::Initialise(Renderer& renderer)
         m_pKnightHUD->InitialiseScore(renderer);
     }
 
+    FMOD::System* fmodSystem = Game::GetInstance().GetFMODSystem(); //
+    if (fmodSystem)
+    {
+        fmodSystem->createSound("../game/assets/Audio/coin2.wav", FMOD_DEFAULT, 0, &m_pCoinSound);
+    }
+
     return true;
 }
 
@@ -133,7 +140,7 @@ void SceneGame::Process(float deltaTime)
 
         if (!m_gameStartPlayed) {
             FMOD::System* fmod = Game::GetInstance().GetFMODSystem();
-            fmod->createSound("../game/assets/Audio/Menu-Audio/8BitGameplay.mp3", FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_LOOP_NORMAL, 0, &m_gameMusic); 
+            fmod->createSound("../game/assets/Audio/Menu-Audio/8BitGameplay.mp3", FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_LOOP_NORMAL, 0, &m_gameMusic);
             fmod->playSound(m_gameMusic, 0, false, &m_gameChannel);
             if (m_gameChannel) {
                 m_gameChannel->setVolume(m_gameVolume);
@@ -143,10 +150,10 @@ void SceneGame::Process(float deltaTime)
 
         CheckKnightState();
 
-        float worldX = m_scrollDistance + m_pKnightClass->GetPosition().x; 
-        Vector2 worldKnightPos(worldX, m_pKnightClass->GetPosition().y); 
+        float worldX = m_scrollDistance + m_pKnightClass->GetPosition().x;
+        Vector2 worldKnightPos(worldX, m_pKnightClass->GetPosition().y);
 
-        SpawnOrcs(*m_pRenderer); 
+        SpawnOrcs(*m_pRenderer);
 
         for (Orc* orc : m_orcs) {
             if (orc) {
@@ -166,6 +173,24 @@ void SceneGame::Process(float deltaTime)
 
             if (m_pKnightHUD) {
                 m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
+            }
+
+
+            // Spawn a coin at orc’s position//
+            Coin* coin = new Coin();
+            if (coin->Initialise(*m_pRenderer, orc->GetPosition().x, orc->GetPosition().y)) {
+                m_coins.push_back(coin);
+            }
+            else {
+                delete coin; // clean up if initialization failed
+            }
+        }
+        // Coin update block goes here — once per frame
+        for (Coin* coin : m_coins)
+        {
+            if (coin && !coin->IsCollected())
+            {
+                coin->Process(deltaTime);
             }
         }
 
@@ -197,7 +222,9 @@ void SceneGame::Process(float deltaTime)
                 }
             }
         }
+        CheckCoinPickup();//
     }
+
     else if (m_gameState == GAME_STATE_RESTART)
     {
         m_gameState = GAME_STATE_PLAYING;
@@ -215,8 +242,18 @@ void SceneGame::Draw(Renderer& renderer)
         }
     }
 
+    // Draw coins before knight to keep them behind if needed
+    for (Coin* coin : m_coins)
+    {
+        if (coin && !coin->IsCollected())
+        {
+            coin->Draw(renderer, m_scrollDistance); // pass scrollDistance
+        }
+    }
+    //
+
     if (m_pSceneGuide && !m_pSceneGuide->IsFinished()) {
-        m_pSceneGuide->Draw(renderer); 
+        m_pSceneGuide->Draw(renderer);
     }
 
     m_pKnightClass->Draw(renderer);
@@ -227,12 +264,12 @@ void SceneGame::Draw(Renderer& renderer)
 
     if (m_gameState == GAME_STATE_PAUSED)
     {
-        m_pPauseMenu->Draw(renderer);  
+        m_pPauseMenu->Draw(renderer);
     }
 
     // Display game over message
     if (m_gameState == GAME_STATE_GAME_OVER) {
-        m_pGameOverMenu->Draw(renderer); 
+        m_pGameOverMenu->Draw(renderer);
     }
 }
 
@@ -281,14 +318,14 @@ void SceneGame::ProcessInput(InputSystem& inputSystem)
 
         GameOverState state = m_pGameOverMenu->GetState();
 
-        if (state == GAME_OVER_RETRY) { 
-            RestartGame(); 
-            m_gameState = GAME_STATE_RESTART; 
+        if (state == GAME_OVER_RETRY) {
+            RestartGame();
+            m_gameState = GAME_STATE_RESTART;
             m_pGameOverMenu->Reset();
         }
         else if (state == GAME_OVER_EXIT) {
-            SDL_Quit(); 
-            exit(0); 
+            SDL_Quit();
+            exit(0);
         }
     }
 }
@@ -326,8 +363,8 @@ void SceneGame::SpawnOrcWave(const OrcPlacement* wave, int count, float offset, 
     sprintf_s(buffer, "Spawning Orc Wave with offset: %.2f", offset);
     LogManager::GetInstance().Log(buffer);
 
-    for (int i = 0; i < count; i++) 
-    { 
+    for (int i = 0; i < count; i++)
+    {
         Orc* orc = nullptr;
 
         switch (wave[i].type)
@@ -354,19 +391,19 @@ void SceneGame::SpawnOrcWave(const OrcPlacement* wave, int count, float offset, 
         }
 
         float spawnX = wave[i].posX + offset;
-        orc->SetPosition(spawnX, wave[i].posY); 
-        orc->SetBehavior(wave[i].behavior); 
+        orc->SetPosition(spawnX, wave[i].posY);
+        orc->SetBehavior(wave[i].behavior);
 
-        if (wave[i].behavior != ORC_IDLE) { 
-            orc->SetPatrolRange(spawnX - wave[i].patrolRange, spawnX + wave[i].patrolRange); 
+        if (wave[i].behavior != ORC_IDLE) {
+            orc->SetPatrolRange(spawnX - wave[i].patrolRange, spawnX + wave[i].patrolRange);
             LogManager::GetInstance().Log(buffer);
         }
 
         m_orcs.push_back(orc);
     }
 
-    sprintf_s(buffer, "Wave spawn complete. Total orcs now: %zu", m_orcs.size()); 
-    LogManager::GetInstance().Log(buffer); 
+    sprintf_s(buffer, "Wave spawn complete. Total orcs now: %zu", m_orcs.size());
+    LogManager::GetInstance().Log(buffer);
 }
 
 int SceneGame::GetOrcAttackDamage(Orc* orc) const {
@@ -375,10 +412,10 @@ int SceneGame::GetOrcAttackDamage(Orc* orc) const {
 
     // Check orc type using dynamic_cast
     if (dynamic_cast<ArmoredOrc*>(orc)) {
-        return baseDamage + 5; 
+        return baseDamage + 5;
     }
-    else if (dynamic_cast<EliteOrc*>(orc)) { 
-        return baseDamage + 12;  
+    else if (dynamic_cast<EliteOrc*>(orc)) {
+        return baseDamage + 12;
     }
     else if (dynamic_cast<RiderOrc*>(orc)) {
         return baseDamage + 10;
@@ -423,4 +460,44 @@ void SceneGame::RestartGame()
     }
 
     LogManager::GetInstance().Log("Game restarted!");
+}
+
+void SceneGame::CheckCoinPickup()
+{
+    if (!m_pKnightClass)
+        return;
+
+    Vector2 knightPos = m_pKnightClass->GetPosition();
+
+    for (Coin* coin : m_coins)
+    {
+        if (!coin || coin->IsCollected())
+            continue;
+
+        float dx = (coin->GetX() - m_scrollDistance) - knightPos.x;
+        float dy = coin->GetY() - knightPos.y;
+        float distanceSquared = dx * dx + dy * dy;
+
+        const float pickupRadius = 64.0f; // adjust if needed
+        if (distanceSquared < pickupRadius * pickupRadius)
+        {
+            coin->Collect();
+            LogManager::GetInstance().Log("Coin collected!"); // ✅ Add this line here
+            m_score += 10;
+
+            if (m_pKnightHUD)
+            {
+                m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
+            }
+
+            if (m_pCoinSound)
+            {
+                if (m_coinChannel)
+                    m_coinChannel->stop();  // stop previous coin sound if needed
+
+                Game::GetInstance().GetFMODSystem()->playSound(m_pCoinSound, 0, false, &m_coinChannel);
+                m_coinChannel->setVolume(m_gameVolume);
+            }
+        }
+    }
 }

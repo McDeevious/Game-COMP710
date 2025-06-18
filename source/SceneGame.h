@@ -9,23 +9,25 @@
 #include <string>
 #include <fmod.hpp>
 
+#include "coin.h" // drop coin feature
+
 class KnightClass;
 class Orc;
 class Renderer;
 class BackgroundManager;
-class PauseMenu; 
+class PauseMenu;
 class GameOverMenu;
-class AnimatedSprite; 
+class AnimatedSprite;
 class ArmoredOrc;
 class EliteOrc;
 class RiderOrc;
-class KnightHUD; 
-class SceneGuide; 
+class KnightHUD;
+class SceneGuide;
 
 // Define game states
 enum GameState {
     GAME_STATE_PLAYING,
-    GAME_STATE_PAUSED, 
+    GAME_STATE_PAUSED,
     GAME_STATE_GAME_OVER,
     GAME_STATE_RESTART
 };
@@ -61,7 +63,7 @@ public:
     // Helper to check if knight is dead and manage state transitions
     void CheckKnightState();
 
-    
+
     // Restart the game and reset all game elements
     void RestartGame();
 
@@ -73,11 +75,11 @@ protected:
     KnightClass* m_pKnightClass;
     Renderer* m_pRenderer;
     KnightHUD* m_pKnightHUD;
-    SceneGuide* m_pSceneGuide; 
+    SceneGuide* m_pSceneGuide;
 
     // Enemy list
-    std::vector<Orc*> m_orcs;   
-    
+    std::vector<Orc*> m_orcs;
+
     // Game state
     float m_scrollDistance;
     GameState m_gameState;
@@ -92,6 +94,10 @@ protected:
 
     float m_nextWaveOffset;
 
+    std::vector<Coin*> m_coins; // coin
+    FMOD::Sound* m_pCoinSound; //coin
+    FMOD::Channel* m_coinChannel;
+    void CheckCoinPickup();  //
 };
 
 #endif // __SCENEGAME_H_
