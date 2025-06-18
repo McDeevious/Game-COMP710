@@ -86,7 +86,7 @@ bool SceneGame::Initialise(Renderer& renderer)
     if (!m_pPauseMenu->Initialise(renderer))
         return false;
 
-    m_pKnightClass = new KnightClass();
+    m_pKnightClass = new Archer();
     if (!m_pKnightClass->Initialise(renderer))
         return false;
 
@@ -410,7 +410,7 @@ void SceneGame::RestartGame()
 
     // Recreate knight
     delete m_pKnightClass;
-    m_pKnightClass = new KnightClass(); 
+    m_pKnightClass = new Archer(); 
     m_pKnightClass->Initialise(*m_pRenderer);
     m_pKnightClass->SetBoundaries(50, m_pRenderer->GetWidth() - 50, 50, m_pRenderer->GetHeight() - 50);
 
