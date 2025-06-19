@@ -17,6 +17,7 @@ class Hitbox;
 class Renderer;
 class InputSystem;
 class Projectile;
+class Orc;
 
 class Archer : public Character
 {
@@ -53,7 +54,7 @@ public:
 
 	//Collisions 
 	Hitbox GetHitbox() const;
-	Hitbox GetAttackHitbox() const;
+	Hitbox GetAttackHitbox(Orc orc) const;
 
 private:
 	//Clamp knight to boundaries

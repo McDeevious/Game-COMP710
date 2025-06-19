@@ -52,6 +52,15 @@ SceneGame::~SceneGame()
     delete m_pKnightClass;
     m_pKnightClass = nullptr;
 
+    delete m_pWizard;
+    m_pWizard = nullptr;
+
+    delete m_pArcher;
+    m_pArcher = nullptr;
+    
+    delete m_pSwordsman;
+    m_pSwordsman = nullptr;
+
     delete m_pKnightHUD;
     m_pKnightHUD = nullptr; 
 
@@ -80,9 +89,20 @@ int SceneGame::getData(int type)
 }
 void SceneGame::setData(int type, float data)
 {
-    if (type == 0)
+    if (data == 0)
     {
-        //character = data, add code here,data wil be from 0-2
+        m_pKnightClass = m_pWizard;
+        m_pKnightClass->characterType = WIZARD;
+    }
+    else if (data == 1)
+    {
+        m_pKnightClass = m_pArcher;
+        m_pKnightClass->characterType = ARCHER;
+    }
+    else if (data == 2)
+    {
+        m_pKnightClass = m_pSwordsman;
+        m_pKnightClass->characterType = SWORDSMAN;
     }
 }
 
@@ -98,8 +118,17 @@ bool SceneGame::Initialise(Renderer& renderer)
     if (!m_pPauseMenu->Initialise(renderer))
         return false;
 
-    m_pKnightClass = new Archer();
-    if (!m_pKnightClass->Initialise(renderer))
+    // Character classes
+    m_pSwordsman = new KnightClass();
+    if (!m_pSwordsman->Initialise(renderer))
+        return false;
+
+    m_pArcher = new Archer();
+    if (!m_pArcher->Initialise(renderer))
+        return false;
+
+    m_pWizard = new Wizard();
+    if (!m_pWizard->Initialise(renderer))
         return false;
 
     m_pGameOverMenu = new GameOverMenu();
@@ -114,7 +143,9 @@ bool SceneGame::Initialise(Renderer& renderer)
     if (!m_pSceneGuide->Initialise(renderer))
         return false;
 
-    m_pKnightClass->SetBoundaries(50, renderer.GetWidth() - 50, 50, renderer.GetHeight() - 50);
+    m_pKnightClass = m_pWizard; // Place holder until data is set 
+
+    m_pKnightClass->SetBoundaries(50, m_pRenderer->GetWidth() - 50, 50, m_pRenderer->GetHeight() - 50);
 
     SpawnOrcs(renderer);
 
@@ -183,14 +214,27 @@ void SceneGame::Process(float deltaTime)
             }
         }
 
-        if (m_pKnightClass->isAttacking() && m_pKnightClass->AttackDamage() > 0) {
-            Hitbox knightAttackBox = m_pKnightClass->GetAttackHitbox();
-            knightAttackBox.x += m_scrollDistance;
-
+        // Section to handle the attacking case of the character class
+        if (m_pKnightClass && m_pKnightClass->isAttacking() && m_pKnightClass->AttackDamage() > 0) {
             for (Orc* orc : m_orcs) {
                 if (!orc || !orc->IsAlive()) continue;
 
-                if (Collision::CheckCollision(knightAttackBox, orc->GetHitbox())) {
+                Hitbox attackHitbox;
+
+                // Handle ranged classes (Archer/Wizard) that use projectile-based hitboxes
+                if (auto* archer = dynamic_cast<Archer*>(m_pKnightClass)) {
+                    attackHitbox = archer->GetAttackHitbox(*orc);
+                }
+                else if (auto* wizard = dynamic_cast<Wizard*>(m_pKnightClass)) {
+                    attackHitbox = wizard->GetAttackHitbox(*orc);
+                }
+                else {
+                    // Default to melee character like Knight
+                    attackHitbox = m_pKnightClass->GetAttackHitbox(*orc);
+                    attackHitbox.x += m_scrollDistance;
+                }
+
+                if (Collision::CheckCollision(attackHitbox, orc->GetHitbox())) {
                     orc->TakeDamage(m_pKnightClass->AttackDamage());
                 }
             }

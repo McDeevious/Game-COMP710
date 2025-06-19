@@ -11,6 +11,7 @@ class AnimatedSprite;
 class Hitbox; 
 class Renderer;
 class InputSystem;
+class Orc;
 
 //enum AttackType {
 //	ATTACK_NONE,
@@ -53,7 +54,7 @@ public:
 
 	//Collisions 
 	Hitbox GetHitbox() const;  
-	Hitbox GetAttackHitbox() const; 
+	Hitbox GetAttackHitbox(Orc orc) const; 
 
 private:
 	//Clamp knight to boundaries

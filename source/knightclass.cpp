@@ -652,7 +652,7 @@ Hitbox KnightClass::GetHitbox() const {
 
 }
 
-Hitbox KnightClass::GetAttackHitbox() const {
+Hitbox KnightClass::GetAttackHitbox(Orc orc) const {
     float attackWidth = 80.0f;  // Width of the attack zone
     float attackHeight = 100.0f * 7.5f;
     float direction = (m_knightWalk && m_knightWalk->GetScaleX() < 0) ? -7.5f : 7.5f;
