@@ -16,6 +16,8 @@ public:
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime) override;
     void Draw(Renderer& renderer) override;
+    int getData(int type) override;
+    void setData(int type, float data) override;
     bool IsFinished() const;
     int GetStage() const; 
     float GetAlpha() const;

@@ -8,6 +8,8 @@
 class Sprite;
 class Renderer;
 
+class area;
+class AnimatedSprite;
 class BackgroundManager
 {
 public:
@@ -16,37 +18,45 @@ public:
 
     bool Initialise(Renderer& renderer);
     void Process(float deltaTime);
-    void Draw(Renderer& renderer); 
+    void Draw(Renderer& renderer);
     void DrawLayer(Renderer& renderer, Sprite* layer, float scrollX);
-    void DrawGround(Renderer& renderer, float scrollX); 
-    
+    void DrawGround(Renderer& renderer, float scrollX);
+
     // Method to update scroll position based on character movement
     void UpdateScrollFromCharacterMovement(const Vector2& movementDirection, float deltaTime);
-    
+
     // Adjust background layers positions
     void AdjustBackLayerPosition(int offsetX, int offsetY);
     void AdjustMiddleLayerPosition(int offsetX, int offsetY);
     void AdjustTilesLayerPosition(int offsetX, int offsetY);
-    
+
     // Adjust background layers scales
     void SetBackLayerScale(float scaleX, float scaleY);
     void SetMiddleLayerScale(float scaleX, float scaleY);
     void SetTilesLayerScale(float scaleX, float scaleY);
+   
+    
+    void getAreaArray();
 
 private:
     // Background layers
     Sprite* m_pBackgroundBack;
-    Sprite* m_pBackgroundMiddle; 
-    Sprite* m_pBackgroundTileRock; 
-    Sprite* m_pBackgroundTileMoss; 
-    float m_backScrollX; 
-    float m_middleScrollX; 
-    float m_tilesScrollX; 
-    
+    Sprite* m_pBackgroundMiddle;
+    Sprite* m_pBackgroundTileRock;
+ //   Sprite* m_pBackgroundTileMoss;
+    Sprite* m_pBackgroundTileMoss;
+    float m_backScrollX;
+    float m_middleScrollX;
+    float m_tilesScrollX;
+
     // Scroll speeds
     float m_backScrollSpeed;
     float m_middleScrollSpeed;
     float m_tilesScrollSpeed;
+   
+    int areaArray[120][40];//wide, height
+    area* gameLevel;
+
 };
 
 #endif // BACKGROUNDMANAGER_H

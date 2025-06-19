@@ -26,12 +26,14 @@ public:
 	int GetWidth() const;
 	int GetHeight() const;
 	void DebugDraw();
-	
+
 	// New methods for frame selection and tracking
 	void SetFrameX(int x);
 	void SetFrameY(int y);
-	int GetCurrentFrame() const; 
-	void SetCurrentFrame(int frame);  
+	int GetCurrentFrame() const;
+	void SetCurrentFrame(int frame);
+	void setLastFrame(int frame);
+	void setType();
 protected:
 private:
 	AnimatedSprite(const AnimatedSprite& animatedsprite);
@@ -40,6 +42,7 @@ private:
 public:
 protected:
 	VertexArray* m_pVertexData;
+	int type;
 	int m_iFrameWidth;
 	int m_iFrameHeight;
 	int m_iCurrentFrame;
@@ -49,11 +52,13 @@ protected:
 	float totalTime;
 	bool m_bAnimating;
 	bool m_bLooping;
-	
+
+	int m_iStartFrame;
 	// Keep track of row and column for sprite sheets
 	int m_iFrameX;
 	int m_iFrameY;
 	int m_iFramesPerRow;
+
 private:
 };
 #endif // ANIMATEDSPRITE_H

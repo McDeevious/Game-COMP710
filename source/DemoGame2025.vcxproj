@@ -145,6 +145,9 @@
   <ItemGroup>
     <ClCompile Include="animatedsprite.cpp" />
     <ClCompile Include="archer.cpp" />
+    <ClCompile Include="area.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="armoredOrcs.cpp" />
     <ClCompile Include="BackgroundManager.cpp" />
     <ClCompile Include="character.cpp" />
@@ -189,6 +192,7 @@
   <ItemGroup>
     <ClInclude Include="animatedsprite.h" />
     <ClInclude Include="archer.h" />
+    <ClInclude Include="area.h" />
     <ClInclude Include="armoredOrc.h" />
     <ClInclude Include="BackgroundManager.h" />
     <ClInclude Include="character.h" />
@@ -218,10 +222,8 @@
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="SceneGuide.h" />
     <ClInclude Include="SceneMenu.h" />
-    <ClInclude Include="SceneMushroomForest.h" />
     <ClInclude Include="SceneSplash.h" />
     <ClInclude Include="shader.h" />
-    <ClInclude Include="sharedenums.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texturemanager.h" />
     <ClInclude Include="texture.h" />

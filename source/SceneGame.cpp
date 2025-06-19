@@ -74,6 +74,18 @@ SceneGame::~SceneGame()
     }
 }
 
+int SceneGame::getData(int type)
+{
+    return 0;
+}
+void SceneGame::setData(int type, float data)
+{
+    if (type == 0)
+    {
+        //character = data, add code here,data wil be from 0-2
+    }
+}
+
 bool SceneGame::Initialise(Renderer& renderer)
 {
     m_pRenderer = &renderer;
