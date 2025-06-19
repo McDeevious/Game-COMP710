@@ -83,6 +83,14 @@ void SceneGuide::Draw(Renderer& renderer)
     }
 
 }
+int SceneGuide::getData(int type)
+{
+    return 0;
+}
+void SceneGuide::setData(int type, float data)
+{
+
+}
 
 bool SceneGuide::IsFinished() const
 {

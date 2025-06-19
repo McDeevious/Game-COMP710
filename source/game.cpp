@@ -191,6 +191,7 @@ void Game::Process(float deltaTime)
 
 		switch (m_pSceneMenu->GetState()) {
 		case MENU_START_GAME:
+			m_pSceneGame->setData(0, m_pSceneMenu->getData(0));
 			m_pSceneMenu->StopMusic();
 			m_menuComplete = true;
 			break;

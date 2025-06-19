@@ -159,17 +159,8 @@
     <ClCompile Include="SceneGuide.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="archer.cpp">
-      <Filter>Source Files\Knight</Filter>
-    </ClCompile>
-    <ClCompile Include="projectile.cpp">
-      <Filter>Source Files\Knight</Filter>
-    </ClCompile>
-    <ClCompile Include="wizard.cpp">
-      <Filter>Source Files\Knight</Filter>
-    </ClCompile>
-    <ClCompile Include="character.cpp">
-      <Filter>Source Files\Knight</Filter>
+    <ClCompile Include="area.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -281,23 +272,8 @@
     <ClInclude Include="SceneGuide.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="SceneMushroomForest.h">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="archer.h">
-      <Filter>Header Files\Knight</Filter>
-    </ClInclude>
-    <ClInclude Include="sharedenums.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="projectile.h">
-      <Filter>Header Files\Knight</Filter>
-    </ClInclude>
-    <ClInclude Include="wizard.h">
-      <Filter>Header Files\Knight</Filter>
-    </ClInclude>
-    <ClInclude Include="character.h">
-      <Filter>Header Files\Knight</Filter>
+    <ClInclude Include="area.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

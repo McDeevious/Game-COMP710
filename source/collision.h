@@ -21,4 +21,4 @@ public:
 	static bool PointHitbox(const Vector2& point, const Hitbox& b);
 };
 
-#endif COLLISION_H
+#endif //COLLISION_H

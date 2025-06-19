@@ -23,11 +23,13 @@ AnimatedSprite::AnimatedSprite()
 	, m_iFrameX(0)
 	, m_iFrameY(0)
 	, m_iFramesPerRow(0)
+	, m_iStartFrame(0)
+	, type(0)
 {
 }
 AnimatedSprite::~AnimatedSprite()
 {
-	delete m_pVertexData; 
+	delete m_pVertexData;
 	m_pVertexData = 0;
 }
 bool
@@ -110,25 +112,55 @@ AnimatedSprite::SetupFrames(int fixedFrameWidth, int fixedFrameHeight)
 void
 AnimatedSprite::Process(float deltaTime)
 {
-	totalTime += deltaTime;
-	if (m_bAnimating)
+	if (type)
 	{
-		m_fTimeElapsed += deltaTime;
-		if (m_fTimeElapsed > m_frameDuration)
+		totalTime += deltaTime;
+		if (m_bAnimating)
 		{
-			// Update the frame within the current row
-			m_iFrameX++;
-			if (m_iFrameX >= m_iFramesPerRow)
+			m_fTimeElapsed += deltaTime;
+			if (m_fTimeElapsed > m_frameDuration)
 			{
-				m_iFrameX = 0;
+				++m_iCurrentFrame;
+				if (m_iCurrentFrame >= m_iTotalFrames)
+				{
+					if (m_bLooping)
+					{
+						Restart();
+					}
+					else
+					{
+						Restart();
+						//m_iCurrentFrame = m_iTotalFrames - 1;
+						m_bAnimating = false;
+					}
+				}
+				m_fTimeElapsed = 0.0f;
 			}
-			
-			// Update the current frame based on X and Y position
-			m_iCurrentFrame = m_iFrameY * m_iFramesPerRow + m_iFrameX; 
-			
-			m_fTimeElapsed = 0.0f;
 		}
 	}
+	else
+	{
+		totalTime += deltaTime;
+		if (m_bAnimating)
+		{
+			m_fTimeElapsed += deltaTime;
+			if (m_fTimeElapsed > m_frameDuration)
+			{
+				// Update the frame within the current row
+				m_iFrameX++;
+				if (m_iFrameX >= m_iFramesPerRow)
+				{
+					m_iFrameX = 0;
+				}
+
+				// Update the current frame based on X and Y position
+				m_iCurrentFrame = m_iFrameY * m_iFramesPerRow + m_iFrameX;
+
+				m_fTimeElapsed = 0.0f;
+			}
+		}
+	}
+	
 }
 void
 AnimatedSprite::Draw(Renderer& renderer)
@@ -141,7 +173,7 @@ AnimatedSprite::Draw(Renderer& renderer)
 void AnimatedSprite::StopAnimating
 ()
 {
-	m_bAnimating = false; 
+	m_bAnimating = false;
 }
 void AnimatedSprite::Animate
 ()
@@ -161,8 +193,16 @@ AnimatedSprite::SetLooping(bool loop)
 void AnimatedSprite::Restart
 ()
 {
-	m_iCurrentFrame = 0;
-	m_iFrameX = 0;
+	if (type)
+	{
+		m_iCurrentFrame = m_iStartFrame;
+	}
+	else
+	{
+		m_iCurrentFrame = 0;
+		m_iCurrentFrame = m_iStartFrame;
+		m_iFrameX = 0;
+	}
 	m_fTimeElapsed = 0.0f;
 }
 void AnimatedSprite::DebugDraw
@@ -191,17 +231,34 @@ void AnimatedSprite::SetFrameY(int y)
 
 int AnimatedSprite::GetCurrentFrame() const
 {
-    return m_iCurrentFrame;
+	return m_iCurrentFrame;
 }
 
 void AnimatedSprite::SetCurrentFrame(int frame)
 {
-    if (frame >= 0 && frame < m_iTotalFrames)
-    {
-        m_iCurrentFrame = frame;
-        // Update X and Y positions for the frame
-        m_iFrameY = frame / m_iFramesPerRow;
-        m_iFrameX = frame % m_iFramesPerRow;
-    }
+	if (type)
+	{
+
+		m_iStartFrame = frame;
+	}
+	else
+	{
+		if (frame >= 0 && frame < m_iTotalFrames)
+		{
+			m_iCurrentFrame = frame;
+			// Update X and Y positions for the frame
+			m_iFrameY = frame / m_iFramesPerRow;
+			m_iFrameX = frame % m_iFramesPerRow;
+		}
+	}
 }
 
+
+void AnimatedSprite::setLastFrame(int frame)
+{
+	m_iTotalFrames = frame;
+}
+void AnimatedSprite::setType()
+{
+	type ^= 1;
+}
