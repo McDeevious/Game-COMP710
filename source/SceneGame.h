@@ -96,8 +96,8 @@ protected:
 
     std::vector<Coin*> m_coins; // coin
     FMOD::Sound* m_pCoinSound; //coin
-    FMOD::Channel* m_coinChannel;
-    void CheckCoinPickup();  //
+    FMOD::Channel* m_coinChannel; // coin sound
+    void CheckCoinPickup();  // check coin pick up
 };
 
 #endif // __SCENEGAME_H_

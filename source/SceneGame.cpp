@@ -33,7 +33,7 @@ SceneGame::SceneGame()
     , m_gameVolume(0.2f)
     , m_gameStartPlayed(false)
     , m_nextWaveOffset(0.0f)
-    , m_coinChannel(nullptr)
+    , m_coinChannel(nullptr) //coin sound channel
 {
 }
 
@@ -222,7 +222,7 @@ void SceneGame::Process(float deltaTime)
                 }
             }
         }
-        CheckCoinPickup();//
+        CheckCoinPickup();// coin pick up
     }
 
     else if (m_gameState == GAME_STATE_RESTART)
@@ -462,7 +462,7 @@ void SceneGame::RestartGame()
     LogManager::GetInstance().Log("Game restarted!");
 }
 
-void SceneGame::CheckCoinPickup()
+void SceneGame::CheckCoinPickup()  // check coin pick up
 {
     if (!m_pKnightClass)
         return;
