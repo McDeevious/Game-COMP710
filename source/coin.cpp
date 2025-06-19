@@ -24,7 +24,7 @@ Coin::~Coin()
 bool Coin::Initialise(Renderer& renderer, float x, float y)
 {
     // TEMP: Use known good image like the knight sprite
-    m_pSprite = renderer.CreateSprite("../game/assets/Sprites/Coin.png");
+    m_pSprite = renderer.CreateSprite("../game/assets/Sprites/goldC.png");
    
     if (m_pSprite == nullptr)
     {
@@ -36,7 +36,7 @@ bool Coin::Initialise(Renderer& renderer, float x, float y)
     m_Y = y;
     m_pSprite->SetX(m_X);
     m_pSprite->SetY(m_Y);
-    m_pSprite->SetScale(1.0f, 1.0f);
+    m_pSprite->SetScale(1.0f, 1.0f); 
     return true;
 }
 
