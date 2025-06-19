@@ -93,6 +93,7 @@ protected:
     GameState m_gameState;
 
     int m_score;
+    bool testbool;
 
     //Audio setup
     FMOD::Sound* m_gameMusic;

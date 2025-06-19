@@ -35,6 +35,7 @@ SceneGame::SceneGame()
     , m_gameVolume(0.2f)
     , m_gameStartPlayed(false)
     , m_nextWaveOffset(0.0f)
+    , testbool(false)
 {
 }
 
@@ -215,24 +216,14 @@ void SceneGame::Process(float deltaTime)
         }
 
         // Section to handle the attacking case of the character class
-        if (m_pKnightClass && m_pKnightClass->isAttacking() && m_pKnightClass->AttackDamage() > 0) {
+        if (m_pKnightClass && (m_pKnightClass->isAttacking() || m_pKnightClass->isProjectilesActive())) {
             for (Orc* orc : m_orcs) {
                 if (!orc || !orc->IsAlive()) continue;
 
                 Hitbox attackHitbox;
 
-                // Handle ranged classes (Archer/Wizard) that use projectile-based hitboxes
-                if (auto* archer = dynamic_cast<Archer*>(m_pKnightClass)) {
-                    attackHitbox = archer->GetAttackHitbox(*orc);
-                }
-                else if (auto* wizard = dynamic_cast<Wizard*>(m_pKnightClass)) {
-                    attackHitbox = wizard->GetAttackHitbox(*orc);
-                }
-                else {
-                    // Default to melee character like Knight
-                    attackHitbox = m_pKnightClass->GetAttackHitbox(*orc);
-                    attackHitbox.x += m_scrollDistance;
-                }
+                attackHitbox = m_pKnightClass->GetAttackHitbox(*orc);
+                attackHitbox.x += m_scrollDistance;
 
                 if (Collision::CheckCollision(attackHitbox, orc->GetHitbox())) {
                     orc->TakeDamage(m_pKnightClass->AttackDamage());

@@ -614,6 +614,18 @@ bool Archer::isAttacking() const {
     return m_isAttacking && m_attackState != ATTACK_NONE;
 }
 
+bool Archer::isProjectilesActive() const {
+    // Loop through projects and return true if any active
+    for (Projectile* proj : m_pArrows)
+    {
+        if (proj->m_bActive)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Archer::SetBoundaries(float left, float right, float top, float bottom)
 {
     // Calculate effective sprite size for boundary padding
@@ -687,7 +699,7 @@ Hitbox Archer::GetHitbox() const {
 }
 
 // Need to change it so that it will only calculate it for the closest arrow projectile
-Hitbox Archer::GetAttackHitbox(Orc orc) const 
+Hitbox Archer::GetAttackHitbox(const Orc& orc) const
 {
     if (m_pArrows.empty())
     {
@@ -713,7 +725,7 @@ Hitbox Archer::GetAttackHitbox(Orc orc) const
         }
     }
 
-    return (closestProj ? closestProj->GetHitbox() : Hitbox{ 0, 0, 0, 0 });
+    return (closestProj ? closestProj->GetHitbox() : Hitbox{0, 0, 0, 0});
 }
 
 void Archer::TakeDamage(int amount) {

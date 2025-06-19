@@ -31,6 +31,7 @@ public:
     virtual void TakeDamage(int amount) = 0;
     virtual int AttackDamage() const = 0;
     virtual bool isAttacking() const = 0;
+    virtual bool isProjectilesActive() const = 0;
     virtual bool IsDead() const = 0;
 
     // Optional
@@ -38,7 +39,7 @@ public:
 
     // Collision
     virtual Hitbox GetHitbox() const = 0;
-    virtual Hitbox GetAttackHitbox(Orc orc) const = 0;
+    virtual Hitbox GetAttackHitbox(const Orc& orc) const = 0;
 
     CharacterType characterType;
 };

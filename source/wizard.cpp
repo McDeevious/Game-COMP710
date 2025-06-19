@@ -614,6 +614,18 @@ bool Wizard::isAttacking() const {
     return m_isAttacking && m_attackState != ATTACK_NONE;
 }
 
+bool Wizard::isProjectilesActive() const {
+    // Loop through projects and return true if any active
+    for (Projectile* proj : m_pFire)
+    {
+        if (proj->m_bActive)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Wizard::SetBoundaries(float left, float right, float top, float bottom)
 {
     // Calculate effective sprite size for boundary padding
@@ -687,7 +699,7 @@ Hitbox Wizard::GetHitbox() const {
 }
 
 // Need to change it so that it will only calculate it for the closest arrow projectile
-Hitbox Wizard::GetAttackHitbox(Orc orc) const {
+Hitbox Wizard::GetAttackHitbox(const Orc& orc) const {
     if (m_pFire.empty())
     {
         return { 0, 0, 0, 0 };

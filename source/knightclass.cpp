@@ -580,6 +580,11 @@ bool KnightClass::isAttacking() const {
     return m_isAttacking && m_attackState != ATTACK_NONE;
 }
 
+bool KnightClass::isProjectilesActive() const {
+    // Knight class has no projectiles
+    return false;
+}
+
 void KnightClass::SetBoundaries(float left, float right, float top, float bottom)
 {
     // Calculate effective sprite size for boundary padding
@@ -652,7 +657,7 @@ Hitbox KnightClass::GetHitbox() const {
 
 }
 
-Hitbox KnightClass::GetAttackHitbox(Orc orc) const {
+Hitbox KnightClass::GetAttackHitbox(const Orc& orc) const {
     float attackWidth = 80.0f;  // Width of the attack zone
     float attackHeight = 100.0f * 7.5f;
     float direction = (m_knightWalk && m_knightWalk->GetScaleX() < 0) ? -7.5f : 7.5f;
