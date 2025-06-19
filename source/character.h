@@ -36,10 +36,6 @@ public:
 
     // Collision
     virtual Hitbox GetHitbox() const = 0;
-    
-    // This class will need to be changed to make it so that it takes orc object as a parameter
-    // This will be useful for classes where attack hitbox determiend by projectile
-    // Will return the hitbox of the projectile that is closests to the orc object
     virtual Hitbox GetAttackHitbox() const = 0;
 };
 
