@@ -25,7 +25,6 @@ bool EliteOrc::Initialise(Renderer& renderer) {
     fmod->createSound("../game/assets/Audio/Orc-Audio/orc_hurt.wav", FMOD_DEFAULT, 0, &m_hurtSound);
     fmod->createSound("../game/assets/Audio/Orc-Audio/orc_death.wav", FMOD_DEFAULT, 0, &m_deathSound);
 
-
     // Load orc's idle sprite 
     m_orcIdle = renderer.CreateAnimatedSprite("../game/assets/Sprites/Orcs/Elite Orc/Elite Orc/Elite Orc-Idle.png");
     if (m_orcIdle) {
@@ -161,7 +160,7 @@ void EliteOrc::Process(float deltaTime) {
                 m_attackState = ORC_ATTACK_NONE;
                 m_attackDuration = 0.0f;
 
-                if (m_currentBehavior == ORC_AGGRESSIVE) {
+                if (m_currentBehavior == AGGRESSIVE) {
                     m_orcIsMoving = true;
                 }
             }

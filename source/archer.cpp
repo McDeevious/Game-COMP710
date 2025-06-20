@@ -23,7 +23,7 @@ Archer::Archer()
     , m_isMoving(false)
     , m_isHurt(false)
     , m_isDead(false)
-    , m_archerhealth(125)
+    , m_archerhealth(1250)
     //boundaries
     , m_leftBoundary(0.0f)
     , m_rightBoundary(1024.0f)

@@ -25,7 +25,7 @@ Orc::Orc()
     , m_isAttacking(false)
     , m_attackDuration(0.0f)
     // AI attributes
-    , m_currentBehavior(ORC_IDLE) 
+    , m_currentBehavior(IDLE)
     , m_patrolRangeLeft(0.0f)
     , m_patrolRangeRight(0.0f)
     , m_detectionRange(350.0f)
@@ -211,7 +211,7 @@ void Orc::Process(float deltaTime) {
                 m_attackState = ORC_ATTACK_NONE;
                 m_attackDuration = 0.0f;
 
-                if (m_currentBehavior == ORC_AGGRESSIVE) {
+                if (m_currentBehavior == AGGRESSIVE) {
                     m_orcIsMoving = true;
                 }
             }
@@ -316,7 +316,7 @@ Vector2 Orc::GetPosition() const {
     return m_orcPosition;
 }
 
-void Orc::SetBehavior(OrcBehavior behavior) {
+void Orc::SetBehavior(EnemyBehavior behavior) {
     m_currentBehavior = behavior;
 }
  
@@ -405,7 +405,7 @@ void Orc::TakeDamage(int amount) {
     }
 }
 
-OrcAttackType Orc::GetAttackState() const {
+EnemyAttackType Orc::GetAttackState() const {
     return m_attackState;
 }
 
@@ -423,16 +423,16 @@ void Orc::UpdateAI(const Vector2& playerPos, float deltaTime) {
     switch (m_currentBehavior)
     {
     //Orc in idle
-    case ORC_IDLE: 
+    case IDLE: 
         m_orcIsMoving = false;
 
         if (distance < m_detectionRange) {
-            m_currentBehavior = ORC_AGGRESSIVE;
+            m_currentBehavior = AGGRESSIVE;
         }
         break;
 
     //Orc in patrol
-    case ORC_PATROL:
+    case PATROL:
     {
         m_orcIsMoving = true;
 
@@ -449,13 +449,13 @@ void Orc::UpdateAI(const Vector2& playerPos, float deltaTime) {
         }
 
         if (distance < m_detectionRange) {
-            m_currentBehavior = ORC_AGGRESSIVE;
+            m_currentBehavior = AGGRESSIVE;
         }
         break;
     }
 
     //Orc is aggressive
-    case ORC_AGGRESSIVE:
+    case AGGRESSIVE:
     {
         //face the player
         m_orcDirection = (playerPos.x < m_orcPosition.x) ? -1 : 1;
@@ -495,13 +495,13 @@ void Orc::UpdateAI(const Vector2& playerPos, float deltaTime) {
         
 
         if (distance > m_detectionRange * 2.0f) {
-            m_currentBehavior = ORC_PATROL;
+            m_currentBehavior = PATROL;
         }
         break;
     }
 
     default:
-        m_currentBehavior = ORC_IDLE;
+        m_currentBehavior = IDLE;
         m_orcIsMoving = false;
         break;
     }

@@ -161,7 +161,7 @@ void RiderOrc::Process(float deltaTime) {
                 m_attackState = ORC_ATTACK_NONE;
                 m_attackDuration = 0.0f;
 
-                if (m_currentBehavior == ORC_AGGRESSIVE) {
+                if (m_currentBehavior == AGGRESSIVE) {
                     m_orcIsMoving = true;
                 }
             }

@@ -4,32 +4,12 @@
 
 #include "vector2.h"
 #include "collision.h"
+#include "enemytype.h"
 #include <fmod.hpp>
 
 class AnimatedSprite;
 class Hitbox;
 class Renderer;
-
-enum OrcType {
-    ORC,
-    ORC_ARMORED,
-    ORC_ELITE,
-    ORC_RIDER 
-};
-
-// Type of attack the orc is performing
-enum OrcAttackType {
-    ORC_ATTACK_NONE,
-    ORC_ATTACK_1,
-    ORC_ATTACK_2,
-};
-
-// Orc behavior states for AI
-enum OrcBehavior {
-    ORC_IDLE, 
-    ORC_PATROL,   
-    ORC_AGGRESSIVE  
-};
 
 class Orc {
 public:
@@ -45,14 +25,14 @@ public:
     Vector2 GetPosition() const;
 
     // AI behavior
-    void SetBehavior(OrcBehavior behavior);
+    void SetBehavior(EnemyBehavior behavior);
     void SetPatrolRange(float left, float right);
     void UpdateAI(const Vector2& playerPosition, float deltaTime);
 
     // Combat
     void TakeDamage(int amount);
     bool IsAlive() const;
-    OrcAttackType GetAttackState() const;
+    EnemyAttackType GetAttackState() const;
     bool IsAttacking() const;
 
     //Score value
@@ -83,15 +63,15 @@ protected:
     bool m_orcIsHurt;
 
     // Attack state
-    OrcAttackType m_attackState;
+    EnemyAttackType m_attackState;
     bool m_isAttacking;
     float m_attackDuration;
 
     bool m_wasScored;
 
     // AI behavior
-    OrcType m_orcType; 
-    OrcBehavior m_currentBehavior;
+    EnemyType m_orcType; 
+    EnemyBehavior m_currentBehavior;
     float m_patrolRangeLeft;
     float m_patrolRangeRight;
     float m_detectionRange;  

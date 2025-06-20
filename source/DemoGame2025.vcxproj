@@ -149,12 +149,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="armoredOrcs.cpp" />
+    <ClCompile Include="armoredSkeleton.cpp" />
     <ClCompile Include="BackgroundManager.cpp" />
     <ClCompile Include="character.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="eliteOrc.cpp" />
     <ClCompile Include="eliteOrc.h" />
     <ClCompile Include="GameOverMenu.cpp" />
+    <ClCompile Include="greatSkeleton.cpp" />
     <ClCompile Include="knightHUD.cpp" />
     <ClCompile Include="knightHUD.h" />
     <ClCompile Include="game.cpp" />
@@ -181,11 +183,14 @@
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="SceneSplash.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="skeleton.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="texturemanager.cpp" />
     <ClCompile Include="vector2.cpp" />
     <ClCompile Include="vertexarray.cpp" />
+    <ClCompile Include="werebear.cpp" />
+    <ClCompile Include="werewolf.cpp" />
     <ClCompile Include="wizard.cpp" />
     <ClCompile Include="xboxcontroller.cpp" />
   </ItemGroup>
@@ -194,11 +199,14 @@
     <ClInclude Include="archer.h" />
     <ClInclude Include="area.h" />
     <ClInclude Include="armoredOrc.h" />
+    <ClInclude Include="armoredSkeleton.h" />
     <ClInclude Include="BackgroundManager.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="collision.h" />
+    <ClInclude Include="enemytype.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="GameOverMenu.h" />
+    <ClInclude Include="greatSkeleton.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_opengl3.h" />
@@ -224,11 +232,14 @@
     <ClInclude Include="SceneMenu.h" />
     <ClInclude Include="SceneSplash.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="skeleton.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texturemanager.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="vector2.h" />
     <ClInclude Include="vertexarray.h" />
+    <ClInclude Include="werebear.h" />
+    <ClInclude Include="werewolf.h" />
     <ClInclude Include="wizard.h" />
     <ClInclude Include="xboxcontroller.h" />
   </ItemGroup>
