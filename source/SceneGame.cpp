@@ -14,6 +14,7 @@
 #include "game.h"
 #include "xboxcontroller.h"
 //enemies
+#include "enemy.h" 
 #include "orc.h"
 #include "armoredOrc.h"
 #include "eliteOrc.h"

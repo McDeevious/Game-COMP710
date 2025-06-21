@@ -189,6 +189,9 @@
     <ClCompile Include="skeleton.cpp">
       <Filter>Source Files\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="enemy.cpp">
+      <Filter>Source Files\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -314,9 +317,6 @@
     <ClInclude Include="projectile.h">
       <Filter>Header Files\Knight</Filter>
     </ClInclude>
-    <ClInclude Include="enemytype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="werebear.h">
       <Filter>Header Files\Enemies</Filter>
     </ClInclude>
@@ -333,6 +333,9 @@
       <Filter>Header Files\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="enemy.h">
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="enemytype.h">
       <Filter>Header Files\Enemies</Filter>
     </ClInclude>
   </ItemGroup>

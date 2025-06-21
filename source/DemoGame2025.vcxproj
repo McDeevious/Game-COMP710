@@ -155,6 +155,7 @@
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="eliteOrc.cpp" />
     <ClCompile Include="eliteOrc.h" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="GameOverMenu.cpp" />
     <ClCompile Include="greatSkeleton.cpp" />
     <ClCompile Include="knightHUD.cpp" />

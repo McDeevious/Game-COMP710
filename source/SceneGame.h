@@ -8,6 +8,7 @@
 #include "skeleton.h"
 #include "werebear.h"
 #include "werewolf.h"
+#include "enemy.h"
 #include <vector>
 #include <string>
 #include <fmod.hpp>

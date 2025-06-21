@@ -574,7 +574,6 @@ int KnightClass::AttackDamage() const {
     }
 }
 
-
 bool KnightClass::isAttacking() const {
 
     return m_isAttacking && m_attackState != ATTACK_NONE;
