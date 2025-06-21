@@ -614,6 +614,18 @@ bool Wizard::isAttacking() const {
     return m_isAttacking && m_attackState != ATTACK_NONE;
 }
 
+bool Wizard::isProjectilesActive() const {
+    // Loop through projects and return true if any active
+    for (Projectile* proj : m_pFire)
+    {
+        if (proj->m_bActive)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Wizard::SetBoundaries(float left, float right, float top, float bottom)
 {
     // Calculate effective sprite size for boundary padding
@@ -687,19 +699,32 @@ Hitbox Wizard::GetHitbox() const {
 }
 
 // Need to change it so that it will only calculate it for the closest arrow projectile
-Hitbox Wizard::GetAttackHitbox() const {
-    float attackWidth = 80.0f;  // Width of the attack zone
-    float attackHeight = 100.0f * 7.5f;
-    float direction = (m_wizardWalk && m_wizardWalk->GetScaleX() < 0) ? -7.5f : 7.5f;
+Hitbox Wizard::GetAttackHitbox(const Orc& orc) const {
+    if (m_pFire.empty())
+    {
+        return { 0, 0, 0, 0 };
+    }
 
-    float offsetX = (direction < 0) ? 50.0f : -attackWidth - 50.0f;
+    // Get orc x pos and set closest current distance value to high val
+    float orcX = orc.GetPosition().x;
+    float closestDist = FLT_MAX;
+    Projectile* closestProj = nullptr;
 
-    return {
-        m_wizardPosition.x + offsetX,
-        m_wizardPosition.y - (attackHeight / 2.0f),
-        attackWidth,
-        attackHeight
-    };
+    for (Projectile* proj : m_pFire)
+    {
+        if (proj && proj->m_bActive)
+        {
+            // absolute value of difference between orcX and projectile X
+            float dist = fabs(proj->GetPosition().x - orcX);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                closestProj = proj;
+            }
+        }
+    }
+
+    return (closestProj ? closestProj->GetHitbox() : Hitbox{ 0, 0, 0, 0 });
 }
 
 void Wizard::TakeDamage(int amount) {

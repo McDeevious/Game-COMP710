@@ -614,6 +614,18 @@ bool Archer::isAttacking() const {
     return m_isAttacking && m_attackState != ATTACK_NONE;
 }
 
+bool Archer::isProjectilesActive() const {
+    // Loop through projects and return true if any active
+    for (Projectile* proj : m_pArrows)
+    {
+        if (proj->m_bActive)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Archer::SetBoundaries(float left, float right, float top, float bottom)
 {
     // Calculate effective sprite size for boundary padding
@@ -687,19 +699,33 @@ Hitbox Archer::GetHitbox() const {
 }
 
 // Need to change it so that it will only calculate it for the closest arrow projectile
-Hitbox Archer::GetAttackHitbox() const {
-    float attackWidth = 80.0f;  // Width of the attack zone
-    float attackHeight = 100.0f * 7.5f;
-    float direction = (m_archerWalk && m_archerWalk->GetScaleX() < 0) ? -7.5f : 7.5f;
+Hitbox Archer::GetAttackHitbox(const Orc& orc) const
+{
+    if (m_pArrows.empty())
+    {
+        return { 0, 0, 0, 0 };
+    }
 
-    float offsetX = (direction < 0) ? 50.0f : -attackWidth - 50.0f;
+    // Get orc x pos and set closest current distance value to high val
+    float orcX = orc.GetPosition().x;
+    float closestDist = FLT_MAX;
+    Projectile* closestProj = nullptr;
 
-    return {
-        m_archerPosition.x + offsetX,
-        m_archerPosition.y - (attackHeight / 2.0f),
-        attackWidth,
-        attackHeight
-    };
+    for (Projectile* proj : m_pArrows)
+    {
+        if (proj && proj->m_bActive)
+        {
+            // absolute value of difference between orcX and projectile X
+            float dist = fabs(proj->GetPosition().x - orcX);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                closestProj = proj;
+            }
+        }
+    }
+
+    return (closestProj ? closestProj->GetHitbox() : Hitbox{0, 0, 0, 0});
 }
 
 void Archer::TakeDamage(int amount) {

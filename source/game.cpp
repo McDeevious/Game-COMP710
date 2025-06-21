@@ -202,7 +202,7 @@ void Game::Process(float deltaTime)
 			break;
 		}
 	}
-	else if (m_pSceneGame)
+	else if (m_pSceneGame && m_menuComplete)
 	{
 		// Process game scene and pass input to it
 		m_pSceneGame->ProcessInput(*m_pInputSystem);

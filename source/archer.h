@@ -17,6 +17,7 @@ class Hitbox;
 class Renderer;
 class InputSystem;
 class Projectile;
+class Orc;
 
 class Archer : public Character
 {
@@ -47,13 +48,14 @@ public:
 	int AttackDamage() const;
 	bool isBlocking() const;
 	bool isAttacking() const;
+	bool isProjectilesActive() const;
 
 	// State checking
 	bool IsDead() const;
 
 	//Collisions 
 	Hitbox GetHitbox() const;
-	Hitbox GetAttackHitbox() const;
+	Hitbox GetAttackHitbox(const Orc& orc) const;
 
 private:
 	//Clamp knight to boundaries

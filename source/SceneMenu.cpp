@@ -43,7 +43,7 @@ SceneMenu::SceneMenu()
 	, isMenu(0)
 	, m_settings(0)
 	, character{0}
-, currentCharacter(0)
+	, currentCharacter(0)
 {
 }
 
