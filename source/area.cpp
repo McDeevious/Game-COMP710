@@ -18,7 +18,7 @@ area::area()
 	, scale(0)
 	, sscene(0)
 	, stage(0)
-	
+	, m_position{0,0}
 {
 
 
@@ -58,14 +58,25 @@ bool area::Initialise(Renderer& renderer)
 }
 void area::changePos(float x, float y)
 {
-	for (int y = 0; y < height; y++)
+	m_position.x = x;
+	m_position.y = y;
+	/** for (int y = 0; y < height; y++)
 	{
 		for (int x = 0; x < wide; x++)
 		{
-			tile[stage][x + y * wide]->SetX(/*tile[stage][x + y * wide]->GetX() */ +x);
+			tile[stage][x + y * wide]->SetX(tile[stage][x + y * wide]->GetX()  +x);
 			tile[stage][x + y * wide]->SetY(tile[stage][x + y * wide]->GetY() + y);
 		}
 	}
+	**/
+}
+float area::getYpos()
+{
+	return m_position.y;
+}
+float area::getXpos()
+{
+	return m_position.x;
 }
 void area::setScene(int scene)
 {
@@ -310,11 +321,25 @@ float area::getScale()
 
 void area::Process(float deltaTime)
 {
-
+	
 	for (int y = 0; y < height; y++)
 	{
 		for (int x = 0; x < wide; x++)
 		{
+			
+			tile[stage][x + y * wide]->SetY(y * size + ((((y + 1) * size) - (y * size)) / 2) + m_position.y);
+			if (x > 0)
+			{
+				tile[stage][x + y * wide]->SetX(tile[stage][x - 1 + y * wide]->GetX() + size);
+			}
+			else
+			{
+				tile[stage][x + y * wide]->SetX(tile[stage][x + y * wide]->GetX() + m_position.x );
+			}
+			//	tile[stage][x + y * wide]->SetX((tile[stage][x + y * wide]->GetX() + size  + m_position.x));
+	
+		//	tile[stage][y * wide + x]->SetX(x  + m_position.x);
+			//tile[stage][y * wide + x]->SetX(y  + m_position.y);
 			tile[stage][y * wide + x]->Process(deltaTime);
 		}
 	}

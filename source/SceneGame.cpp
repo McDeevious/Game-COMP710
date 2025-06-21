@@ -174,9 +174,10 @@ void SceneGame::Process(float deltaTime)
     if (m_gameState == GAME_STATE_PLAYING)
     {
         Vector2 move = m_pKnightClass->GetLastMovementDirection();
-        m_scrollDistance += move.x * deltaTime * 120.0f;
-        m_pBackgroundManager->UpdateScrollFromCharacterMovement(move, deltaTime);
-
+       // Vector2 test = m_pKnightClass->GetPosition();
+        m_scrollDistance += move.x * deltaTime; //* 120.0f;
+            // m_pBackgroundManager->UpdateScrollFromCharacterMovement(move, deltaTime);
+            m_pBackgroundManager->UpdateScrollFromCharacterMovement(move, deltaTime);
         if (!m_gameStartPlayed) {
             FMOD::System* fmod = Game::GetInstance().GetFMODSystem();
             fmod->createSound("../game/assets/Audio/Menu-Audio/8BitGameplay.mp3", FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_LOOP_NORMAL, 0, &m_gameMusic); 
@@ -189,7 +190,7 @@ void SceneGame::Process(float deltaTime)
 
         CheckKnightState();
 
-        float worldX = m_scrollDistance + m_pKnightClass->GetPosition().x; 
+        float worldX = /*m_scrollDistance*/ + m_pKnightClass->GetPosition().x;
         Vector2 worldKnightPos(worldX, m_pKnightClass->GetPosition().y); 
 
         SpawnOrcs(*m_pRenderer); 

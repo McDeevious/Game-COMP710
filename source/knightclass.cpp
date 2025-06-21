@@ -441,7 +441,7 @@ void KnightClass::Draw(Renderer& renderer) {
 
 void KnightClass::ProcessInput(InputSystem& inputSystem) {
     bool isWalking = false;
-    //m_knightPosition.x = 150.0f;  
+    m_knightPosition.x = 150.0f;  
     Vector2 direction;
     direction.Set(0, 0);
 
@@ -468,17 +468,17 @@ void KnightClass::ProcessInput(InputSystem& inputSystem) {
         m_jumpVelocity = m_jumpStrength;
     }
 
-    if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_LEFT) == BS_HELD || (controller && (stick.x < -threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_LEFT) == BS_HELD))) {
-        direction.x = -1.0f;
+    if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_LEFT) == BS_HELD || (controller && (stick.x < -threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_LEFT) == BS_HELD))) { 
+        direction.x = -1.0f; 
         m_knightLeft = true; // Left 
-        isWalking = true;
-    }
-    else if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_RIGHT) == BS_HELD || (controller && (stick.x > threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_RIGHT) == BS_HELD))) {
-        direction.x = 1.0f;
+        isWalking = true; 
+    } 
+    else if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_RIGHT) == BS_HELD || (controller && (stick.x > threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_RIGHT) == BS_HELD))) { 
+        direction.x = 1.0f; 
         m_knightLeft = false; // Right 
-        isWalking = true;
-    }
-
+        isWalking = true; 
+    } 
+    
     // Process attacking inputs
     if (!m_isAttacking && !m_isHurt && !m_isDead) {
         // LCTRL for basic attack
@@ -498,11 +498,11 @@ void KnightClass::ProcessInput(InputSystem& inputSystem) {
     // Store the movement direction for background scrolling
     m_lastMovementDirection = direction;
     // Update player horizontal position
-    if (isWalking) {
-        Vector2 movement = direction * m_knightSpeed * 0.016f;
-        m_knightPosition.x += movement.x;
-
-        ClampPositionToBoundaries();
+    if (isWalking) { 
+        Vector2 movement = direction * m_knightSpeed * 0.016f; 
+        m_knightPosition.x += movement.x; 
+        
+        ClampPositionToBoundaries(); 
         m_isMoving = true;
     }
     else {
