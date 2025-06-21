@@ -10,6 +10,7 @@
 #include <fmod.hpp>
 
 #include "coin.h" // drop coin feature
+#include "buffscene.h" // item buff
 
 class KnightClass;
 class Orc;
@@ -23,6 +24,8 @@ class EliteOrc;
 class RiderOrc;
 class KnightHUD;
 class SceneGuide;
+class BuffScene; // item buff
+
 
 // Define game states
 enum GameState {
@@ -98,6 +101,9 @@ protected:
     FMOD::Sound* m_pCoinSound; //coin
     FMOD::Channel* m_coinChannel; // coin sound
     void CheckCoinPickup();  // check coin pick up
+
+    BuffScene* m_pBuffScene; // item buff
+    bool m_buffApplied;      // item buff
 };
 
 #endif // __SCENEGAME_H_

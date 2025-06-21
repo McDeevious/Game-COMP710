@@ -14,6 +14,9 @@
 #include <cassert>
 #include <SDL.h>
 
+// Global instance of the input system
+InputSystem inputSystem;
+
 InputSystem::InputSystem()
 	: m_pCurrentKeyboardState(0)
 	, m_previousMouseButtons(0)

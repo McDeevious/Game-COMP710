@@ -165,6 +165,9 @@
     <ClCompile Include="coin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="buffscene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -279,6 +282,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="coin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="buff.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="buffscene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

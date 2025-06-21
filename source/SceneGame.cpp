@@ -17,6 +17,9 @@
 #include "eliteOrc.h"
 #include "riderOrc.h"
 
+extern InputSystem inputSystem; // item buff
+
+
 SceneGame::SceneGame()
     : m_pBackgroundManager(nullptr)
     , m_pKnightClass(nullptr)
@@ -34,6 +37,8 @@ SceneGame::SceneGame()
     , m_gameStartPlayed(false)
     , m_nextWaveOffset(0.0f)
     , m_coinChannel(nullptr) //coin sound channel
+    , m_pBuffScene(nullptr) // item buff
+    , m_buffApplied(false) // item buff
 {
 }
 
@@ -53,6 +58,9 @@ SceneGame::~SceneGame()
 
     delete m_pKnightHUD;
     m_pKnightHUD = nullptr;
+
+    delete m_pBuffScene; // item buff
+    m_pBuffScene = nullptr; //item buff
 
     for (Orc* orc : m_orcs)
     {
@@ -101,6 +109,10 @@ bool SceneGame::Initialise(Renderer& renderer)
     if (!m_pSceneGuide->Initialise(renderer))
         return false;
 
+    m_pBuffScene = new BuffScene(); // item buff
+    if (!m_pBuffScene->Initialise(renderer)) // item buff
+        return false; // item buff
+
     m_pKnightClass->SetBoundaries(50, renderer.GetWidth() - 50, 50, renderer.GetHeight() - 50);
 
     SpawnOrcs(renderer);
@@ -121,6 +133,19 @@ bool SceneGame::Initialise(Renderer& renderer)
 
 void SceneGame::Process(float deltaTime)
 {
+    // If buff scene is active, pause game updates and wait for input
+    if (m_pBuffScene && m_pBuffScene->IsActive()) {
+        m_pBuffScene->ProcessInput(inputSystem);
+
+        if (!m_buffApplied && !m_pBuffScene->IsActive()) {
+            m_pKnightClass->ApplyBuff(m_pBuffScene->GetChosenBuff());  // Create a full Buff object from BuffType // Apply the full buff to the knight
+            m_buffApplied = true;
+        }
+
+        return;
+    }
+
+
     m_pKnightClass->Process(deltaTime);
     m_pBackgroundManager->Process(deltaTime);
 
@@ -184,6 +209,13 @@ void SceneGame::Process(float deltaTime)
             else {
                 delete coin; // clean up if initialization failed
             }
+
+            // item buff
+            if (m_pBuffScene) {
+                m_pBuffScene->GenerateRandomBuffs(*m_pRenderer);
+                m_buffApplied = false;
+            }
+
         }
         // Coin update block goes here — once per frame
         for (Coin* coin : m_coins)
@@ -266,6 +298,12 @@ void SceneGame::Draw(Renderer& renderer)
     {
         m_pPauseMenu->Draw(renderer);
     }
+
+    // item buff
+    if (m_pBuffScene && m_pBuffScene->IsActive()) {
+        m_pBuffScene->Draw(renderer);
+    }
+
 
     // Display game over message
     if (m_gameState == GAME_STATE_GAME_OVER) {

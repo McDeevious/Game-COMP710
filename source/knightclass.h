@@ -4,6 +4,7 @@
 #include "vector2.h"
 #include "collision.h"
 #include <fmod.hpp>
+#include "buff.h" // item buff
 
 class AnimatedSprite;
 class Hitbox; 
@@ -53,6 +54,16 @@ public:
 	//Collisions 
 	Hitbox GetHitbox() const;  
 	Hitbox GetAttackHitbox() const; 
+
+	// Buff setters
+	void AddHealth(int amount);
+	void AddDamageBoost(float amount);
+	void AddDefenseBoost(float multiplier);
+	void AddSpeedBoost(float multiplier);
+	void AddJumpBoost(float multiplier);
+	void EnableRegen();
+
+	void ApplyBuff(const Buff& buff); // item buff
 
 private:
 	//Clamp knight to boundaries
@@ -107,6 +118,16 @@ private:
 	FMOD::Sound* m_deathSound;
 	FMOD::Sound* m_jumpSound;
 	float m_sfxVolume; 
+
+	// Buff system variables
+	int m_knightMaxHealth;
+	float m_damageBoost;
+	float m_defenseMultiplier;
+	float m_speedMultiplier;
+	float m_jumpMultiplier;
+	bool m_regenEnabled;
+	float m_regenCooldown;
+	float m_regenTimer;
 };
 
 #endif // KNIGHTCLASS_H

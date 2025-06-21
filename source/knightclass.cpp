@@ -46,6 +46,14 @@ KnightClass::KnightClass()
     , m_deathSound(nullptr)
     , m_jumpSound(nullptr)
     , m_sfxVolume(0.4f)
+    , m_knightMaxHealth(125) // item buff
+    , m_damageBoost(1.0f) // item buff
+    , m_defenseMultiplier(1.0f) // item buff
+    , m_speedMultiplier(1.0f) // item buff
+    , m_jumpMultiplier(1.0f) // item buff
+    , m_regenEnabled(false) // item buff
+    , m_regenCooldown(3.0f) // item buff
+    , m_regenTimer(0.0f) // item buff
 {
     m_knightPosition.Set(100, 618);
     m_lastMovementDirection.Set(0.0f, 0.0f); 
@@ -814,5 +822,65 @@ bool KnightClass::IsDead() const
     return m_isDead;
 }
 
+// item buff
+void KnightClass::AddHealth(int amount)
+{
+    m_knighthealth += amount;
+    if (m_knighthealth > m_knightMaxHealth)
+        m_knighthealth = m_knightMaxHealth;
+}
 
+void KnightClass::AddDamageBoost(float amount)
+{
+    m_damageBoost += amount;
+}
 
+void KnightClass::AddDefenseBoost(float multiplier)
+{
+    m_defenseMultiplier *= multiplier;
+}
+
+void KnightClass::AddSpeedBoost(float multiplier)
+{
+    m_speedMultiplier *= multiplier;
+}
+
+void KnightClass::AddJumpBoost(float multiplier)
+{
+    m_jumpMultiplier *= multiplier;
+}
+
+void KnightClass::EnableRegen()
+{
+    m_regenEnabled = true;
+    m_regenCooldown = 3.0f;  // Regenerate every 3 seconds
+    m_regenTimer = 0.0f;
+}
+
+// item buff
+void KnightClass::ApplyBuff(const Buff& buff)
+{
+    switch (buff.type)
+    {
+    case BuffType::ExtraHealth:
+        AddHealth(static_cast<int>(buff.value));
+        break;
+    case BuffType::DamageBoost:
+        AddDamageBoost(buff.value);
+        break;
+    case BuffType::DamageReduction:
+        AddDefenseBoost(buff.value);
+        break;
+    case BuffType::SpeedBoost:
+        AddSpeedBoost(buff.value);
+        break;
+    case BuffType::JumpBoost:
+        AddJumpBoost(buff.value);
+        break;
+    case BuffType::HealthRegen:
+        EnableRegen();
+        break;
+    default:
+        break;
+    }
+}
