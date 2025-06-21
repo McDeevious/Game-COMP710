@@ -18,7 +18,7 @@ public:
 
     virtual void SetBehavior(EnemyBehavior behavior);
     virtual void SetPatrolRange(float left, float right);
-    virtual void UpdateAI(const Vector2& playerPosition, float deltaTime);
+    //virtual void UpdateAI(const Vector2& playerPosition, float deltaTime);
 
     virtual void TakeDamage(int amount);
     virtual bool IsAlive() const;
@@ -41,7 +41,7 @@ protected:
     AnimatedSprite* m_orcAttack1;
     AnimatedSprite* m_orcAttack2;
 
-    void UpdateSpriteScales(); // Optional: scale flipping based on direction
+    //void UpdateSpriteScales(); // Optional: scale flipping based on direction
 };
 
 #endif // ORC_H

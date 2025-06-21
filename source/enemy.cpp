@@ -173,11 +173,15 @@ void Enemy::MarkScored() {
     m_wasScored = true;
 }
 
-void Enemy::UpdateSpriteScales() {
+void Enemy::UpdateSpriteScales() 
+{
     float scaleX = (m_direction > 0) ? 7.5f : -7.5f;
 
-    for (AnimatedSprite* sprite : m_flipSprites) {
-        if (sprite && sprite->GetScaleX() != scaleX) {
+    for (AnimatedSprite* sprite : m_flipSprites)
+    {
+        if (sprite && sprite->GetScaleX() != scaleX)
+        {
             sprite->SetScale(scaleX, -7.5f);
         }
+    }
 }

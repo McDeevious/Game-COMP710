@@ -253,38 +253,55 @@ void SceneGame::Process(float deltaTime)
             }
         }
 
-        if (m_pKnightClass->isAttacking() && m_pKnightClass->AttackDamage() > 0) {
-            Hitbox knightAttackBox = m_pKnightClass->GetAttackHitbox();
-            knightAttackBox.x += m_scrollDistance;
+        // Section to handle the attacking case of the character class
+        if (m_pKnightClass && (m_pKnightClass->isAttacking() || m_pKnightClass->isProjectilesActive())) {
+            
+            Hitbox attackHitbox;
 
-            for (Orc* orc : m_orcs) {
+            for (Orc* orc : m_orcs) 
+            {
                 if (!orc || !orc->IsAlive()) continue;
 
-                if (Collision::CheckCollision(knightAttackBox, orc->GetHitbox())) {
+                attackHitbox = m_pKnightClass->GetAttackHitbox(*orc);
+                attackHitbox.x += m_scrollDistance;
+
+                if (Collision::CheckCollision(attackHitbox, orc->GetHitbox())) {
                     orc->TakeDamage(m_pKnightClass->AttackDamage());
                 }
             }
 
-            for (Skeleton* skeleton : m_skeletons) {
+            for (Skeleton* skeleton : m_skeletons)
+            {
                 if (!skeleton || !skeleton->IsAlive()) continue;
 
-                if (Collision::CheckCollision(knightAttackBox, skeleton->GetHitbox())) {
+                attackHitbox = m_pKnightClass->GetAttackHitbox(*skeleton);
+                attackHitbox.x += m_scrollDistance;
+
+                if (Collision::CheckCollision(attackHitbox, skeleton->GetHitbox())) {
                     skeleton->TakeDamage(m_pKnightClass->AttackDamage());
                 }
             }
 
-            for (Werewolf* wolf : m_werewolf) {
+            for (Werewolf* wolf : m_werewolf)
+            {
                 if (!wolf || !wolf->IsAlive()) continue;
 
-                if (Collision::CheckCollision(knightAttackBox, wolf->GetHitbox())) {
+                attackHitbox = m_pKnightClass->GetAttackHitbox(*wolf);
+                attackHitbox.x += m_scrollDistance;
+
+                if (Collision::CheckCollision(attackHitbox, wolf->GetHitbox())) {
                     wolf->TakeDamage(m_pKnightClass->AttackDamage());
                 }
             }
 
-            for (Werebear* bear : m_werebear) {
+            for (Werebear* bear : m_werebear)
+            {
                 if (!bear || !bear->IsAlive()) continue;
 
-                if (Collision::CheckCollision(knightAttackBox, bear->GetHitbox())) {
+                attackHitbox = m_pKnightClass->GetAttackHitbox(*bear);
+                attackHitbox.x += m_scrollDistance;
+
+                if (Collision::CheckCollision(attackHitbox, bear->GetHitbox())) {
                     bear->TakeDamage(m_pKnightClass->AttackDamage());
                 }
             }

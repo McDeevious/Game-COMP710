@@ -25,7 +25,7 @@ public:
 
     virtual void SetBehavior(EnemyBehavior behavior);
     virtual void SetPatrolRange(float left, float right);
-    virtual void UpdateAI(const Vector2& playerPosition, float deltaTime);
+    void UpdateAI(const Vector2& playerPosition, float deltaTime);
 
     virtual void TakeDamage(int amount);
     virtual bool IsAlive() const;
