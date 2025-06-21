@@ -6,12 +6,12 @@
 
 Werebear::Werebear()
 {
-    m_werewolfHealth = 100;
+    m_health = 100;
     m_attackCooldown = 4.5f;
     m_detectionRange = 450.0f;
     m_attackRange = 150.0f;
-    m_werewolfSpeed = 0.25f;
-    m_werewolfType = WEREBEAR;
+    m_speed = 0.25f;
+    m_type = WEREBEAR;
 }
 
 Werebear::~Werebear()
@@ -111,16 +111,16 @@ void Werebear::Process(float deltaTime) {
     }
 
     // Process hurt animation
-    if (m_werewolfIsHurt) {
+    if (m_isHurt) {
         if (m_werewolfHurt) {
             m_werewolfHurt->Process(deltaTime);
 
             if (!m_werewolfHurt->IsAnimating() || m_werewolfHurt->GetCurrentFrame() >= 3) {
-                m_werewolfIsHurt = false;
+                m_isHurt = false;
             }
         }
         else {
-            m_werewolfIsHurt = false;
+            m_isHurt = false;
         }
         return;
     }
@@ -136,11 +136,11 @@ void Werebear::Process(float deltaTime) {
         float timeoutDuration = 1.2f;
         switch (m_attackState)
         {
-        case LYCAN_ATTACK_1:
+        case ATTACK_1:
             activeAttack = m_werewolfAttack1;
             timeoutDuration = 0.7f;
             break;
-        case LYCAN_ATTACK_2:
+        case ATTACK_2:
             activeAttack = m_werewolfAttack2;
             timeoutDuration = 0.8f;
             break;
@@ -160,24 +160,24 @@ void Werebear::Process(float deltaTime) {
 
             if (animationComplete || timedOut) {
                 m_isAttacking = false;
-                m_attackState = LYCAN_ATTACK_NONE;
+                m_attackState = ATTACK_NONE;
                 m_attackDuration = 0.0f;
 
-                if (m_currentBehavior == AGGRESSIVE) {
-                    m_werewolfIsMoving = true;
+                if (m_behavior == AGGRESSIVE) {
+                    m_isMoving = true;
                 }
             }
         }
         else {
             // No valid attack sprite, so cancel the attack state
             m_isAttacking = false;
-            m_attackState = LYCAN_ATTACK_NONE; 
+            m_attackState = ATTACK_NONE; 
             m_attackDuration = 0.0f;
         }
     }
 
     if (!m_isAttacking) {
-        if (m_werewolfIsMoving && m_werewolfWalk) {
+        if (m_isMoving && m_werewolfWalk) {
             if (!m_werewolfWalk->IsAnimating()) {
                 m_werewolfWalk->Animate();
             }

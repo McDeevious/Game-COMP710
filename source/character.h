@@ -5,12 +5,12 @@
 #include "collision.h"
 #include <fmod.hpp>
 #include "sharedenums.h"
-#include "orc.h"
+#include "enemy.h"
 
 class Renderer;
 class InputSystem;
 class Hitbox;
-class Orc;
+class Enemy;
 
 class Character {
 public:
@@ -39,7 +39,7 @@ public:
 
     // Collision
     virtual Hitbox GetHitbox() const = 0;
-    virtual Hitbox GetAttackHitbox(const Orc& orc) const = 0;
+    virtual Hitbox GetAttackHitbox(const Enemy& enemy) const = 0;
 
     CharacterType characterType;
 };

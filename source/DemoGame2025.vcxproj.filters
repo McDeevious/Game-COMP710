@@ -37,23 +37,11 @@
     <Filter Include="Source Files\Knight">
       <UniqueIdentifier>{621e063d-9af4-436e-8f13-bf8cb04733a2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Enemies Forest">
+    <Filter Include="Header Files\Enemies">
       <UniqueIdentifier>{d3917158-4205-4322-8401-8132ee69a12b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Enemies Mist">
-      <UniqueIdentifier>{1f051055-8a8e-4de9-b225-ac5dd915ce2d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Enemies Fort">
-      <UniqueIdentifier>{1c2483bf-f743-47d0-8c0f-1c86dc088765}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Enemies Mist">
-      <UniqueIdentifier>{96460878-6e40-4b37-a845-800a76196ca1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Enemies Forest">
+    <Filter Include="Source Files\Enemies">
       <UniqueIdentifier>{bbe3ace8-182c-4827-aa4f-90de73f3cef0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Enemies Fort">
-      <UniqueIdentifier>{b5b0dcce-e56d-41ac-baa0-ac06e1392b20}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -121,16 +109,16 @@
       <Filter>Source Files\Framework</Filter>
     </ClCompile>
     <ClCompile Include="armoredOrcs.cpp">
-      <Filter>Source Files\Enemies Forest</Filter>
+      <Filter>Source Files\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="eliteOrc.h">
-      <Filter>Header Files\Enemies Forest</Filter>
+      <Filter>Header Files\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="eliteOrc.cpp">
-      <Filter>Source Files\Enemies Forest</Filter>
+      <Filter>Source Files\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="riderOrc.cpp">
-      <Filter>Source Files\Enemies Forest</Filter>
+      <Filter>Source Files\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="SceneSplash.cpp">
       <Filter>Source Files\Scenes</Filter>
@@ -166,7 +154,7 @@
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="orc.cpp">
-      <Filter>Source Files\Enemies Forest</Filter>
+      <Filter>Source Files\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="SceneGuide.cpp">
       <Filter>Source Files\Scenes</Filter>
@@ -186,20 +174,20 @@
     <ClCompile Include="projectile.cpp">
       <Filter>Source Files\Knight</Filter>
     </ClCompile>
-    <ClCompile Include="skeleton.cpp">
-      <Filter>Source Files\Enemies Mist</Filter>
-    </ClCompile>
-    <ClCompile Include="armoredSkeleton.cpp">
-      <Filter>Source Files\Enemies Mist</Filter>
-    </ClCompile>
-    <ClCompile Include="greatSkeleton.cpp">
-      <Filter>Source Files\Enemies Mist</Filter>
+    <ClCompile Include="werebear.cpp">
+      <Filter>Source Files\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="werewolf.cpp">
-      <Filter>Source Files\Enemies Fort</Filter>
+      <Filter>Source Files\Enemies</Filter>
     </ClCompile>
-    <ClCompile Include="werebear.cpp">
-      <Filter>Source Files\Enemies Fort</Filter>
+    <ClCompile Include="armoredSkeleton.cpp">
+      <Filter>Source Files\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="greatSkeleton.cpp">
+      <Filter>Source Files\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="skeleton.cpp">
+      <Filter>Source Files\Enemies</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -276,13 +264,13 @@
       <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="orc.h">
-      <Filter>Header Files\Enemies Forest</Filter>
+      <Filter>Header Files\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="armoredOrc.h">
-      <Filter>Header Files\Enemies Forest</Filter>
+      <Filter>Header Files\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="riderOrc.h">
-      <Filter>Header Files\Enemies Forest</Filter>
+      <Filter>Header Files\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="SceneSplash.h">
       <Filter>Header Files\Scenes</Filter>
@@ -326,23 +314,26 @@
     <ClInclude Include="projectile.h">
       <Filter>Header Files\Knight</Filter>
     </ClInclude>
-    <ClInclude Include="skeleton.h">
-      <Filter>Header Files\Enemies Mist</Filter>
-    </ClInclude>
-    <ClInclude Include="armoredSkeleton.h">
-      <Filter>Header Files\Enemies Mist</Filter>
-    </ClInclude>
-    <ClInclude Include="greatSkeleton.h">
-      <Filter>Header Files\Enemies Mist</Filter>
-    </ClInclude>
     <ClInclude Include="enemytype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="werewolf.h">
-      <Filter>Header Files\Enemies Fort</Filter>
-    </ClInclude>
     <ClInclude Include="werebear.h">
-      <Filter>Header Files\Enemies Fort</Filter>
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="werewolf.h">
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="armoredSkeleton.h">
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="greatSkeleton.h">
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="skeleton.h">
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>Header Files\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

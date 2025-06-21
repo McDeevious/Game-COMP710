@@ -1,10 +1,9 @@
 #pragma once
 enum AttackType {
-	ATTACK_NONE,
-	ATTACK_1,
-	ATTACK_2,
-	SP_ATTACK,
-	BLOCK
+	CLASS_ATTACK_NONE,
+	CLASS_ATTACK_1,
+	CLASS_ATTACK_2,
+	CLASS_SP_ATTACK, 
 };
 
 enum ProjectileType {

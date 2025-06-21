@@ -6,12 +6,12 @@
 
 RiderOrc::RiderOrc()
 {
-    m_orcHealth = 100;
+    m_health = 100;
     m_attackCooldown = 4.5f;
     m_detectionRange = 450.0f;
     m_attackRange = 150.0f;
-    m_orcSpeed = 0.25f;
-    m_orcType = ORC_RIDER;
+    m_speed = 0.25f;
+    m_type = ORC_RIDER;
 } 
 
 RiderOrc::~RiderOrc()
@@ -110,15 +110,15 @@ void RiderOrc::Process(float deltaTime) {
     }
 
     //Process hurt animation
-    if (m_orcIsHurt) {
+    if (m_isHurt) {
         if (m_orcHurt) {
             m_orcHurt->Process(deltaTime);
             
             if (!m_orcHurt->IsAnimating() || m_orcHurt->GetCurrentFrame() >= 3) {
-                m_orcIsHurt = false;
+                m_isHurt = false; 
             }
         } else {
-            m_orcIsHurt = false;
+            m_isHurt = false; 
         }
         return;
     }
@@ -134,11 +134,11 @@ void RiderOrc::Process(float deltaTime) {
         float timeoutDuration = 1.2f;
         switch (m_attackState)
         {
-        case ORC_ATTACK_1:
+        case ATTACK_1:
             activeAttack = m_orcAttack1;
             timeoutDuration = 0.8f;
             break;
-        case ORC_ATTACK_2:
+        case ATTACK_2:
             activeAttack = m_orcAttack2;
             timeoutDuration = 0.9f;
             break;
@@ -158,23 +158,23 @@ void RiderOrc::Process(float deltaTime) {
 
             if (animationComplete || timedOut) {
                 m_isAttacking = false;
-                m_attackState = ORC_ATTACK_NONE;
+                m_attackState = ATTACK_NONE;
                 m_attackDuration = 0.0f;
 
-                if (m_currentBehavior == AGGRESSIVE) {
-                    m_orcIsMoving = true;
+                if (m_behavior == AGGRESSIVE) {
+                    m_isMoving = true;
                 }
             }
         }
         else {
             m_isAttacking = false;
-            m_attackState = ORC_ATTACK_NONE;
+            m_attackState = ATTACK_NONE;
             m_attackDuration = 0.0f;
         }
     }
 
     if (!m_isAttacking) {
-        if (m_orcIsMoving && m_orcWalk) {
+        if (m_isMoving && m_orcWalk) {
             if (!m_orcWalk->IsAnimating()) {
                 m_orcWalk->Animate();
             }

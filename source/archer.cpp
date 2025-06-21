@@ -39,7 +39,7 @@ Archer::Archer()
     , m_archerAttack1(0)
     , m_archerSpecial(0)
     , m_isAttacking(false)
-    , m_attackState(ATTACK_NONE)
+    , m_attackState(CLASS_ATTACK_NONE)
     , m_attackDuration(0.0f)
     , m_attackSound(nullptr)
     , m_hurtSound(nullptr)
@@ -253,11 +253,11 @@ void Archer::Process(float deltaTime) {
 
         switch (m_attackState)
         {
-        case ATTACK_1:
+        case CLASS_ATTACK_1:
             activeAttack = m_archerAttack1;
             timeoutDuration = 0.9f;
             break;
-        case SP_ATTACK:
+        case CLASS_SP_ATTACK:
             activeAttack = m_archerSpecial;
             timeoutDuration = 1.2f;
             break;
@@ -295,14 +295,14 @@ void Archer::Process(float deltaTime) {
                     }
                 }
                 m_isAttacking = false;
-                m_attackState = ATTACK_NONE;
+                m_attackState = CLASS_ATTACK_NONE;
                 m_attackDuration = 0.0f;
             }
         }
         else
         {
             m_isAttacking = false;
-            m_attackState = ATTACK_NONE;
+            m_attackState = CLASS_ATTACK_NONE;
             m_attackDuration = 0.0f;
         }
     }
@@ -443,12 +443,12 @@ void Archer::Draw(Renderer& renderer) {
     else {
         // Draw appropriate attack animation 
         switch (m_attackState) {
-        case ATTACK_1:
+        case CLASS_ATTACK_1:
             if (m_archerAttack1) {
                 m_archerAttack1->Draw(renderer);
             }
             break;
-        case SP_ATTACK:
+        case CLASS_SP_ATTACK:
             if (m_archerSpecial) {
                 m_archerSpecial->Draw(renderer);
             }
@@ -513,18 +513,18 @@ void Archer::ProcessInput(InputSystem& inputSystem) {
     if (!m_isAttacking && !m_isHurt && !m_isDead) {
         // LCTRL for basic attack
         if (inputSystem.GetKeyState(SDL_SCANCODE_LCTRL) == BS_PRESSED || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_X) == BS_PRESSED)) {
-            StartAttack(ATTACK_1);
+            StartAttack(CLASS_ATTACK_1);
         }
         // V for special attack
         else if (inputSystem.GetKeyState(SDL_SCANCODE_Q) == BS_PRESSED || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_Y) == BS_PRESSED)) {
-            StartAttack(SP_ATTACK);
+            StartAttack(CLASS_SP_ATTACK);
         }
     }
 
     // Check if we need to end blocking when button is released
     if (m_isAttacking && m_attackState == BLOCK && inputSystem.GetKeyState(SDL_SCANCODE_W) == BS_RELEASED || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_B) == BS_RELEASED)) {
         m_isAttacking = false;
-        m_attackState = ATTACK_NONE;
+        m_attackState = CLASS_ATTACK_NONE;
         m_attackDuration = 0.0f;
     }
 
@@ -551,10 +551,10 @@ void Archer::StartAttack(AttackType attackType) {
     float frameDuration = 0.1f; // Default frame duration
 
     switch (attackType) {
-    case ATTACK_1:
+    case CLASS_ATTACK_1:
         attackSprite = m_archerAttack1;
         break;
-    case SP_ATTACK:
+    case CLASS_SP_ATTACK:
         attackSprite = m_archerSpecial;
         break;
     default:
@@ -573,7 +573,7 @@ void Archer::StartAttack(AttackType attackType) {
     }
     else {
         m_isAttacking = false;
-        m_attackState = ATTACK_NONE;
+        m_attackState = CLASS_ATTACK_NONE;
     }
 
     if (m_attackState != BLOCK && m_attackSound) {
@@ -589,10 +589,10 @@ void Archer::StartAttack(AttackType attackType) {
 
 int Archer::AttackDamage() const {
     switch (m_attackState) {
-    case ATTACK_1:
+    case CLASS_ATTACK_1:
         return 10;
         break;
-    case SP_ATTACK:
+    case CLASS_SP_ATTACK:
         return 25;
         break;
     case BLOCK:
@@ -699,7 +699,7 @@ Hitbox Archer::GetHitbox() const {
 }
 
 // Need to change it so that it will only calculate it for the closest arrow projectile
-Hitbox Archer::GetAttackHitbox(const Orc& orc) const
+Hitbox Archer::GetAttackHitbox(const Enemy& enemy) const
 {
     if (m_pArrows.empty())
     {
@@ -707,7 +707,7 @@ Hitbox Archer::GetAttackHitbox(const Orc& orc) const
     }
 
     // Get orc x pos and set closest current distance value to high val
-    float orcX = orc.GetPosition().x;
+    float enemyX = enemy.GetPosition().x;
     float closestDist = FLT_MAX;
     Projectile* closestProj = nullptr;
 
@@ -716,7 +716,7 @@ Hitbox Archer::GetAttackHitbox(const Orc& orc) const
         if (proj && proj->m_bActive)
         {
             // absolute value of difference between orcX and projectile X
-            float dist = fabs(proj->GetPosition().x - orcX);
+            float dist = fabs(proj->GetPosition().x - enemyX);
             if (dist < closestDist)
             {
                 closestDist = dist;
@@ -743,7 +743,7 @@ void Archer::TakeDamage(int amount) {
 
     // Cancel any current attack
     m_isAttacking = false;
-    m_attackState = ATTACK_NONE;
+    m_attackState = CLASS_ATTACK_NONE;
     m_attackDuration = 0.0f;
 
     if (m_archerhealth <= 0) {

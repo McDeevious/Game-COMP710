@@ -14,33 +14,29 @@ Skeleton::Skeleton()
     , m_skeletonDeath(nullptr)
     , m_skeletonAttack1(nullptr)
     , m_skeletonAttack2(nullptr)
-    , m_skeletonSpeed(1.0f)
-    , m_skeletonDirection(1)
-    , m_skeletonIsMoving(false)
-    , m_skeletonIsHurt(false)
-    , m_skeletonType(SKELETON)
-    , m_wasScored(false)
-    // Attack attributes
-    , m_attackState(SKELETON_ATTACK_NONE)
-    , m_isAttacking(false)
-    , m_attackDuration(0.0f)
-    // AI attributes
-    , m_currentBehavior(IDLE)
-    , m_patrolRangeLeft(0.0f)
-    , m_patrolRangeRight(0.0f)
-    , m_detectionRange(350.0f)
-    , m_attackRange(120.0f)
-    // Combat attributes
-    , m_skeletonHealth(50)
-    , m_isAlive(true)
-    , m_attackCooldown(2.5f)
-    , m_currentAttackCooldown(0.0f)
-    //Skeleton Audio
-    , m_attackSound(nullptr)
-    , m_hurtSound(nullptr)
-    , m_deathSound(nullptr)
-    , m_sfxVolume(0.4f)
 {
+    m_type = SKELETON; 
+    m_health = 50;
+    m_speed = 1.0f;
+    m_direction = 1;
+    m_isMoving = false;
+    m_isHurt = false;
+    m_wasScored = false;
+    m_attackState = ATTACK_NONE; 
+    m_isAttacking = false;
+    m_attackDuration = 0.0f;
+    m_behavior = IDLE;
+    m_patrolRangeLeft = 0.0f;
+    m_patrolRangeRight = 0.0f;
+    m_detectionRange = 350.0f;
+    m_attackRange = 120.0f;
+    m_isAlive = true;
+    m_attackCooldown = 2.5f;
+    m_currentAttackCooldown = 0.0f;
+    m_attackSound = nullptr;
+    m_hurtSound = nullptr;
+    m_deathSound = nullptr;
+    m_sfxVolume = 0.4f;
 }
 
 Skeleton::~Skeleton() {
@@ -65,6 +61,15 @@ Skeleton::~Skeleton() {
 
 bool Skeleton::Initialise(Renderer& renderer) {
     FMOD::System* fmod = Game::GetInstance().GetFMODSystem();
+
+    m_flipSprites = {
+    m_skeletonIdle,
+    m_skeletonWalk,
+    m_skeletonAttack1,
+    m_skeletonAttack2,
+    m_skeletonHurt,
+    m_skeletonDeath
+    };
 
     //Load audio
     fmod->createSound("../game/assets/Audio/Skeleton-Audio/skeleton_attack.mp3", FMOD_DEFAULT, 0, &m_attackSound);
@@ -156,18 +161,18 @@ void Skeleton::Process(float deltaTime) {
     }
 
     // Process hurt animation
-    if (m_skeletonIsHurt) {
-        if (m_skeletonIsHurt) {
+    if (m_isHurt) {
+        if (m_isHurt) {
             m_skeletonHurt->Process(deltaTime);
 
             //Check animation state if the hurt sprite exists
             if (!m_skeletonHurt->IsAnimating() || m_skeletonHurt->GetCurrentFrame() >= 3) {
-                m_skeletonIsHurt = false;
+                m_isHurt = false;
             }
         }
         else {
             // If no hurt sprite, exit hurt state
-            m_skeletonIsHurt = false;
+            m_isHurt = false;
         }
         return;
     }
@@ -185,11 +190,11 @@ void Skeleton::Process(float deltaTime) {
         float timeoutDuration = 1.2f;
         switch (m_attackState)
         {
-        case SKELETON_ATTACK_1:
+        case ATTACK_1:
             activeAttack = m_skeletonAttack1;
             timeoutDuration = 0.6f;
             break;
-        case SKELETON_ATTACK_2:
+        case ATTACK_2:
             activeAttack = m_skeletonAttack2;
             timeoutDuration = 0.7f; 
             break;
@@ -209,25 +214,25 @@ void Skeleton::Process(float deltaTime) {
 
             if (animationComplete || timedOut) {
                 m_isAttacking = false;
-                m_attackState = SKELETON_ATTACK_NONE; 
+                m_attackState = ATTACK_NONE; 
                 m_attackDuration = 0.0f;
 
-                if (m_currentBehavior == AGGRESSIVE) { 
-                    m_skeletonIsMoving = true;  
+                if (m_behavior == AGGRESSIVE) { 
+                    m_isMoving = true;  
                 }
             }
         }
         else {
             // No valid attack sprite found
             m_isAttacking = false;
-            m_attackState = SKELETON_ATTACK_NONE; 
+            m_attackState = ATTACK_NONE; 
             m_attackDuration = 0.0f;
         }
     }
 
     //Process the movements when not attacking
     if (!m_isAttacking) {
-        if (m_skeletonIsMoving && m_skeletonWalk) {
+        if (m_isMoving && m_skeletonWalk) {
             if (!m_skeletonWalk->IsAnimating()) {
                 m_skeletonWalk->Animate();
             }
@@ -249,8 +254,8 @@ void Skeleton::Process(float deltaTime) {
 
 void Skeleton::Draw(Renderer& renderer, float scrollX) {
     // Calculate screen position
-    float drawX = m_skeletonPosition.x - scrollX; 
-    float drawY = m_skeletonPosition.y; 
+    float drawX = m_position.x - scrollX; 
+    float drawY = m_position.y;
 
     // Draw the death animation
     if (!m_isAlive) {
@@ -263,14 +268,14 @@ void Skeleton::Draw(Renderer& renderer, float scrollX) {
     }
 
     // Draw the hurt animation
-    if (m_skeletonIsHurt) {
+    if (m_isHurt) {
         if (m_skeletonHurt) {
             m_skeletonHurt->SetX(drawX);
             m_skeletonHurt->SetY(drawY);
             m_skeletonHurt->Draw(renderer);
         }
         else {
-            m_skeletonIsHurt = false; // Reset hurt state to avoid getting stuck
+            m_isHurt = false; // Reset hurt state to avoid getting stuck
         }
         return;
     }
@@ -279,13 +284,13 @@ void Skeleton::Draw(Renderer& renderer, float scrollX) {
     if (m_isAttacking) {
         bool drewAttack = false;
 
-        if (m_attackState == SKELETON_ATTACK_1 && m_skeletonAttack1) {
+        if (m_attackState == ATTACK_1 && m_skeletonAttack1) {
             m_skeletonAttack1->SetX(drawX);
             m_skeletonAttack1->SetY(drawY);
             m_skeletonAttack1->Draw(renderer);
             drewAttack = true;
         }
-        else if (m_attackState == SKELETON_ATTACK_2 && m_skeletonAttack2) {
+        else if (m_attackState == ATTACK_2 && m_skeletonAttack2) {
             m_skeletonAttack2->SetX(drawX);
             m_skeletonAttack2->SetY(drawY);
             m_skeletonAttack2->Draw(renderer);
@@ -298,7 +303,7 @@ void Skeleton::Draw(Renderer& renderer, float scrollX) {
     }
 
     // Draw walking or idle animation
-    if (m_skeletonIsMoving && m_skeletonWalk) {
+    if (m_isMoving && m_skeletonWalk) {
         m_skeletonWalk->SetX(drawX);
         m_skeletonWalk->SetY(drawY);
         m_skeletonWalk->Draw(renderer);
@@ -311,15 +316,15 @@ void Skeleton::Draw(Renderer& renderer, float scrollX) {
 }
 
 void Skeleton::SetPosition(float x, float y) {
-    m_skeletonPosition.Set(x, y);
+    m_position.Set(x, y);
 }
 
 Vector2 Skeleton::GetPosition() const {
-    return m_skeletonPosition;
+    return m_position;
 }
 
 void Skeleton::SetBehavior(EnemyBehavior behavior) {
-    m_currentBehavior = behavior;
+    m_behavior = behavior;
 }
 
 void Skeleton::SetPatrolRange(float left, float right) {
@@ -343,14 +348,14 @@ void Skeleton::SetPatrolRange(float left, float right) {
     m_patrolRangeRight = right;
 
     // Set initial direction based on position
-    if (m_skeletonPosition.x <= m_patrolRangeLeft) {
-        m_skeletonDirection = 1;  // Move right
+    if (m_position.x <= m_patrolRangeLeft) {
+        m_direction = 1;  // Move right
     }
-    else if (m_skeletonPosition.x >= m_patrolRangeRight) {
-        m_skeletonDirection = -1; // Move left
+    else if (m_position.x >= m_patrolRangeRight) {
+        m_direction = -1; // Move left
     }
-    else if (m_skeletonDirection == 0) {
-        m_skeletonDirection = 1;  // Default to moving right
+    else if (m_direction == 0) {
+        m_direction = 1;  // Default to moving right
     }
 }
 
@@ -360,13 +365,13 @@ bool Skeleton::IsAlive() const {
 
 void Skeleton::TakeDamage(int amount) {
     // Already dead or in hurt state, can't take more damage
-    if (!m_isAlive || m_skeletonIsHurt) return;
+    if (!m_isAlive || m_isHurt) return;
 
-    m_skeletonHealth -= amount;
+    m_health -= amount;
 
     //Check to see if orc is dead or taking damage
-    if (m_skeletonHealth <= 0) {
-        m_skeletonHealth = 0;
+    if (m_health <= 0) {
+        m_health = 0;
         m_isAlive = false;
 
         //Play death sound when orc dies
@@ -388,7 +393,7 @@ void Skeleton::TakeDamage(int amount) {
     }
     else {
         // Trigger hurt state
-        m_skeletonIsHurt = true;
+        m_isHurt = true;
 
         //Play the hurt audio when orc gets hurt
         if (m_hurtSound) {
@@ -417,110 +422,13 @@ bool Skeleton::IsAttacking() const {
     return m_isAttacking;
 }
 
-void Skeleton::UpdateAI(const Vector2& playerPos, float deltaTime) {
-    if (!m_isAlive) return;
-
-    float distance = fabs(playerPos.x - m_skeletonPosition.x);
-    bool playerInAttackRange = distance <= m_attackRange;
-
-    //Define thebehaviors of the orc
-    switch (m_currentBehavior)
-    {
-        //Orc in idle
-    case IDLE: 
-        m_skeletonIsMoving = false;
-
-        if (distance < m_detectionRange) {
-            m_currentBehavior = AGGRESSIVE; 
-        }
-        break;
-
-        //Orc in patrol
-    case PATROL: 
-    {
-        m_skeletonIsMoving = true;
-
-        float moveAmount = m_skeletonSpeed * deltaTime * 60.0f;
-        m_skeletonPosition.x += m_skeletonDirection * moveAmount;
-
-        if (m_skeletonPosition.x <= m_patrolRangeLeft) {
-            m_skeletonPosition.x = m_patrolRangeLeft;
-            m_skeletonDirection = 1;
-        }
-        else if (m_skeletonPosition.x >= m_patrolRangeRight) {
-            m_skeletonPosition.x = m_patrolRangeRight;
-            m_skeletonDirection = -1;  
-        }
-
-        if (distance < m_detectionRange) {
-            m_currentBehavior = AGGRESSIVE; 
-        }
-        break;
-    }
-
-    //Orc is aggressive
-    case AGGRESSIVE: 
-    {
-        //face the player
-        m_skeletonDirection = (playerPos.x < m_skeletonPosition.x) ? -1 : 1; 
-
-        //distance from player to attack
-        float attackDist = 80.0f;
-
-        if (playerInAttackRange && m_currentAttackCooldown <= 0.0f) {
-            if (m_attackSound) {
-                FMOD::System* fmod = Game::GetInstance().GetFMODSystem();
-                FMOD::Channel* m_attackChannel = nullptr;
-
-                fmod->playSound(m_attackSound, nullptr, false, &m_attackChannel);
-                if (m_attackChannel) {
-                    m_attackChannel->setVolume(m_sfxVolume);
-                }
-            }
-
-            m_isAttacking = true;
-            m_attackState = (rand() % 2 == 0) ? SKELETON_ATTACK_1 : SKELETON_ATTACK_2; 
-            m_attackDuration = 0.0f;
-            m_currentAttackCooldown = m_attackCooldown;
-            m_skeletonIsMoving = false;
-        }
-        else if (!m_isAttacking && distance > attackDist) {
-            float moveAmount = m_skeletonSpeed * deltaTime * 60.0f;
-            float newX = m_skeletonPosition.x + m_skeletonDirection * moveAmount;
-
-            m_skeletonPosition.x = newX;
-            m_skeletonIsMoving = true;
-
-        }
-        else {
-            m_skeletonIsMoving = false;
-        }
-
-
-
-        if (distance > m_detectionRange * 2.0f) {
-            m_currentBehavior = PATROL;
-        }
-        break;
-    }
-
-    default:
-        m_currentBehavior = IDLE; 
-        m_skeletonIsMoving = false;
-        break;
-    }
-
-    UpdateSpriteScales();
-
-}
-
 Hitbox Skeleton::GetHitbox() const {
     float halfWidth = (100.0f * 5.0f) / 2.0f;
     float halfHeight = (100.0f * 5.0f) / 2.0f;
 
     return {
-        m_skeletonPosition.x - halfWidth, 
-        m_skeletonPosition.y - halfHeight, 
+        m_position.x - halfWidth,
+        m_position.y - halfHeight,
         halfWidth * 2.0f,
         halfHeight * 2.0f
     };
@@ -537,45 +445,24 @@ Hitbox Skeleton::GetAttackHitbox() const {
     float attackHeight = 100.0f * 5.0f;
 
     // Make Attack2 hitbox slightly larger for more impact
-    if (m_attackState == ORC_ATTACK_2) {
+    if (m_attackState == ATTACK_2) {
         attackWidth = 85.0f; // Wider attack hitbox for Attack2
     }
 
-    float offsetX = (m_skeletonDirection == 1) ? 40.0f : -attackWidth - 40.0f;
+    float offsetX = (m_direction == 1) ? 40.0f : -attackWidth - 40.0f;
 
     return {
-        m_skeletonPosition.x + offsetX,
-        m_skeletonPosition.y - (attackHeight / 2.0f),
+        m_position.x + offsetX,
+        m_position.y - (attackHeight / 2.0f),
         attackWidth,
         attackHeight
     };
 }
 
-void Skeleton::UpdateSpriteScales() {
-    // Set sprite scale based on direction
-    float scaleX = (m_skeletonDirection > 0) ? 7.5f : -7.5f;
-
-    if (m_skeletonWalk && m_skeletonWalk->GetScaleX() != scaleX) {
-        m_skeletonWalk->SetScale(scaleX, -7.5f);
-    }
-
-    if (m_skeletonIdle && m_skeletonIdle->GetScaleX() != scaleX) {
-        m_skeletonIdle->SetScale(scaleX, -7.5f);
-    }
-
-    if (m_skeletonAttack1 && m_skeletonAttack1->GetScaleX() != scaleX) {
-        m_skeletonAttack1->SetScale(scaleX, -7.5f);
-    }
-
-    if (m_skeletonAttack2 && m_skeletonAttack2->GetScaleX() != scaleX) {
-        m_skeletonAttack2->SetScale(scaleX, -7.5f);
-    }
-}
-
 int Skeleton::GetScore() const {
     int score = 0;
 
-    switch (m_skeletonType)
+    switch (m_type)
     {
     case SKELETON:
         score = 100;

@@ -14,33 +14,29 @@ Werewolf::Werewolf()
     , m_werewolfDeath(nullptr)
     , m_werewolfAttack1(nullptr)
     , m_werewolfAttack2(nullptr)
-    , m_werewolfSpeed(1.0f)
-    , m_werewolfDirection(1)
-    , m_werewolfIsMoving(false)
-    , m_werewolfIsHurt(false)
-    , m_werewolfType(WEREWOLF) 
-    , m_wasScored(false)
-    // Attack attributes
-    , m_attackState(LYCAN_ATTACK_NONE)
-    , m_isAttacking(false)
-    , m_attackDuration(0.0f)
-    // AI attributes
-    , m_currentBehavior(IDLE) 
-    , m_patrolRangeLeft(0.0f)
-    , m_patrolRangeRight(0.0f)
-    , m_detectionRange(350.0f)
-    , m_attackRange(120.0f)
-    // Combat attributes
-    , m_werewolfHealth(50)
-    , m_isAlive(true)
-    , m_attackCooldown(2.5f)
-    , m_currentAttackCooldown(0.0f)
-    //Skeleton Audio
-    , m_attackSound(nullptr)
-    , m_hurtSound(nullptr)
-    , m_deathSound(nullptr)
-    , m_sfxVolume(0.4f)
 {
+    m_type = WEREWOLF;
+    m_health = 50;
+    m_speed = 1.0f;
+    m_direction = 1;
+    m_isMoving = false;
+    m_isHurt = false;
+    m_wasScored = false;
+    m_attackState = ATTACK_NONE; 
+    m_isAttacking = false;
+    m_attackDuration = 0.0f;
+    m_behavior = IDLE;
+    m_patrolRangeLeft = 0.0f;
+    m_patrolRangeRight = 0.0f;
+    m_detectionRange = 350.0f;
+    m_attackRange = 120.0f;
+    m_isAlive = true;
+    m_attackCooldown = 2.5f;
+    m_currentAttackCooldown = 0.0f;
+    m_attackSound = nullptr;
+    m_hurtSound = nullptr;
+    m_deathSound = nullptr;
+    m_sfxVolume = 0.4f;
 }
 
 Werewolf::~Werewolf() {
@@ -65,6 +61,16 @@ Werewolf::~Werewolf() {
 
 bool Werewolf::Initialise(Renderer& renderer) {
     FMOD::System* fmod = Game::GetInstance().GetFMODSystem();
+
+    m_flipSprites = {
+    m_werewolfIdle,
+    m_werewolfWalk,
+    m_werewolfAttack1,
+    m_werewolfAttack2,
+    m_werewolfHurt,
+    m_werewolfDeath
+    };
+
 
     //Load audio
     fmod->createSound("../game/assets/Audio/Lycan-Audio/lycan_attack.mp3", FMOD_DEFAULT, 0, &m_attackSound);
@@ -156,18 +162,18 @@ void Werewolf::Process(float deltaTime) {
     }
 
     // Process hurt animation
-    if (m_werewolfIsHurt) {
-        if (m_werewolfIsHurt) {
+    if (m_isHurt) {
+        if (m_isHurt) {
             m_werewolfHurt->Process(deltaTime);
 
             //Check animation state if the hurt sprite exists
             if (!m_werewolfHurt->IsAnimating() || m_werewolfHurt->GetCurrentFrame() >= 3) {
-                m_werewolfIsHurt = false;
+                m_isHurt = false;
             }
         }
         else {
             // If no hurt sprite, exit hurt state
-            m_werewolfIsHurt = false;
+            m_isHurt = false;
         }
         return;
     }
@@ -185,11 +191,11 @@ void Werewolf::Process(float deltaTime) {
         float timeoutDuration = 1.2f;
         switch (m_attackState)
         {
-        case LYCAN_ATTACK_1: 
+        case ATTACK_1: 
             activeAttack = m_werewolfAttack1;
             timeoutDuration = 0.9f;
             break;
-        case LYCAN_ATTACK_2: 
+        case ATTACK_2: 
             activeAttack = m_werewolfAttack2;
             timeoutDuration = 0.13f;
             break;
@@ -209,25 +215,25 @@ void Werewolf::Process(float deltaTime) {
 
             if (animationComplete || timedOut) {
                 m_isAttacking = false;
-                m_attackState = LYCAN_ATTACK_NONE; 
+                m_attackState = ATTACK_NONE; 
                 m_attackDuration = 0.0f;
 
-                if (m_currentBehavior == AGGRESSIVE) {  
-                    m_werewolfIsMoving = true;
+                if (m_behavior == AGGRESSIVE) {  
+                    m_isMoving = true;
                 }
             }
         }
         else {
             // No valid attack sprite found
             m_isAttacking = false;
-            m_attackState = LYCAN_ATTACK_NONE;  
+            m_attackState = ATTACK_NONE;  
             m_attackDuration = 0.0f;
         }
     }
 
     //Process the movements when not attacking
     if (!m_isAttacking) {
-        if (m_werewolfIsMoving && m_werewolfWalk) {
+        if (m_isMoving && m_werewolfWalk) {
             if (!m_werewolfWalk->IsAnimating()) {
                 m_werewolfWalk->Animate();
             }
@@ -249,8 +255,8 @@ void Werewolf::Process(float deltaTime) {
 
 void Werewolf::Draw(Renderer& renderer, float scrollX) {
     // Calculate screen position
-    float drawX = m_werewolfPosition.x - scrollX;
-    float drawY = m_werewolfPosition.y;
+    float drawX = m_position.x - scrollX;
+    float drawY = m_position.y;
 
     // Draw the death animation
     if (!m_isAlive) {
@@ -263,14 +269,14 @@ void Werewolf::Draw(Renderer& renderer, float scrollX) {
     }
 
     // Draw the hurt animation
-    if (m_werewolfIsHurt) {
+    if (m_isHurt) {
         if (m_werewolfHurt) {
             m_werewolfHurt->SetX(drawX);
             m_werewolfHurt->SetY(drawY);
             m_werewolfHurt->Draw(renderer);
         }
         else {
-            m_werewolfIsHurt = false; // Reset hurt state to avoid getting stuck
+            m_isHurt = false; // Reset hurt state to avoid getting stuck
         }
         return;
     }
@@ -279,13 +285,13 @@ void Werewolf::Draw(Renderer& renderer, float scrollX) {
     if (m_isAttacking) {
         bool drewAttack = false;
 
-        if (m_attackState == LYCAN_ATTACK_1 && m_werewolfAttack1) {
+        if (m_attackState == ATTACK_1 && m_werewolfAttack1) {
             m_werewolfAttack1->SetX(drawX);
             m_werewolfAttack1->SetY(drawY);
             m_werewolfAttack1->Draw(renderer);
             drewAttack = true;
         } 
-        else if (m_attackState == LYCAN_ATTACK_2 && m_werewolfAttack2) {
+        else if (m_attackState == ATTACK_2 && m_werewolfAttack2) {
             m_werewolfAttack2->SetX(drawX);
             m_werewolfAttack2->SetY(drawY);
             m_werewolfAttack2->Draw(renderer);
@@ -298,7 +304,7 @@ void Werewolf::Draw(Renderer& renderer, float scrollX) {
     }
 
     // Draw walking or idle animation
-    if (m_werewolfIsMoving && m_werewolfWalk) {
+    if (m_isMoving && m_werewolfWalk) {
         m_werewolfWalk->SetX(drawX);
         m_werewolfWalk->SetY(drawY);
         m_werewolfWalk->Draw(renderer);
@@ -311,15 +317,15 @@ void Werewolf::Draw(Renderer& renderer, float scrollX) {
 }
 
 void Werewolf::SetPosition(float x, float y) {
-    m_werewolfPosition.Set(x, y);
+    m_position.Set(x, y);
 }
 
 Vector2 Werewolf::GetPosition() const {
-    return m_werewolfPosition;
+    return m_position;
 }
 
 void Werewolf::SetBehavior(EnemyBehavior behavior) {
-    m_currentBehavior = behavior;
+    m_behavior = behavior;
 }
 
 void Werewolf::SetPatrolRange(float left, float right) {
@@ -343,14 +349,14 @@ void Werewolf::SetPatrolRange(float left, float right) {
     m_patrolRangeRight = right;
 
     // Set initial direction based on position
-    if (m_werewolfPosition.x <= m_patrolRangeLeft) {
-        m_werewolfDirection = 1;  // Move right
+    if (m_position.x <= m_patrolRangeLeft) {
+        m_direction = 1;  // Move right
     }
-    else if (m_werewolfPosition.x >= m_patrolRangeRight) {
-        m_werewolfDirection = -1; // Move left
+    else if (m_position.x >= m_patrolRangeRight) {
+        m_direction = -1; // Move left
     }
-    else if (m_werewolfDirection == 0) {
-        m_werewolfDirection = 1;  // Default to moving right
+    else if (m_direction == 0) {
+        m_direction = 1;  // Default to moving right
     }
 }
 
@@ -360,13 +366,13 @@ bool Werewolf::IsAlive() const {
 
 void Werewolf::TakeDamage(int amount) {
     // Already dead or in hurt state, can't take more damage
-    if (!m_isAlive || m_werewolfIsHurt) return;
+    if (!m_isAlive || m_isHurt) return;
 
-    m_werewolfHealth -= amount;
+    m_health -= amount;
 
     //Check to see if orc is dead or taking damage
-    if (m_werewolfHealth <= 0) {
-        m_werewolfHealth = 0;
+    if (m_health <= 0) {
+        m_health = 0;
         m_isAlive = false;
 
         //Play death sound when orc dies
@@ -388,7 +394,7 @@ void Werewolf::TakeDamage(int amount) {
     }
     else {
         // Trigger hurt state
-        m_werewolfIsHurt = true;
+        m_isHurt = true;
 
         //Play the hurt audio when orc gets hurt
         if (m_hurtSound) {
@@ -417,110 +423,13 @@ bool Werewolf::IsAttacking() const {
     return m_isAttacking;
 }
 
-void Werewolf::UpdateAI(const Vector2& playerPos, float deltaTime) {
-    if (!m_isAlive) return;
-
-    float distance = fabs(playerPos.x - m_werewolfPosition.x);
-    bool playerInAttackRange = distance <= m_attackRange;
-
-    //Define thebehaviors of the orc
-    switch (m_currentBehavior)
-    {
-        //Orc in idle
-    case IDLE:
-        m_werewolfIsMoving = false;
-
-        if (distance < m_detectionRange) {
-            m_currentBehavior = AGGRESSIVE;
-        }
-        break;
-
-        //Orc in patrol
-    case PATROL:
-    {
-        m_werewolfIsMoving = true;
-
-        float moveAmount = m_werewolfSpeed * deltaTime * 60.0f;
-        m_werewolfPosition.x += m_werewolfDirection * moveAmount;
-
-        if (m_werewolfPosition.x <= m_patrolRangeLeft) {
-            m_werewolfPosition.x = m_patrolRangeLeft;
-            m_werewolfDirection = 1;
-        }
-        else if (m_werewolfPosition.x >= m_patrolRangeRight) {
-            m_werewolfPosition.x = m_patrolRangeRight;
-            m_werewolfDirection = -1;
-        }
-
-        if (distance < m_detectionRange) {
-            m_currentBehavior = AGGRESSIVE;
-        }
-        break;
-    }
-
-    //Orc is aggressive
-    case AGGRESSIVE:
-    {
-        //face the player
-        m_werewolfDirection = (playerPos.x < m_werewolfPosition.x) ? -1 : 1;
-
-        //distance from player to attack
-        float attackDist = 80.0f;
-
-        if (playerInAttackRange && m_currentAttackCooldown <= 0.0f) {
-            if (m_attackSound) {
-                FMOD::System* fmod = Game::GetInstance().GetFMODSystem();
-                FMOD::Channel* m_attackChannel = nullptr;
-
-                fmod->playSound(m_attackSound, nullptr, false, &m_attackChannel);
-                if (m_attackChannel) {
-                    m_attackChannel->setVolume(m_sfxVolume);
-                }
-            }
-
-            m_isAttacking = true;
-            m_attackState = (rand() % 2 == 0) ? LYCAN_ATTACK_1 : LYCAN_ATTACK_2; 
-            m_attackDuration = 0.0f;
-            m_currentAttackCooldown = m_attackCooldown;
-            m_werewolfIsMoving = false;
-        }
-        else if (!m_isAttacking && distance > attackDist) {
-            float moveAmount = m_werewolfSpeed * deltaTime * 60.0f;
-            float newX = m_werewolfPosition.x + m_werewolfDirection * moveAmount;
-
-            m_werewolfPosition.x = newX;
-            m_werewolfIsMoving = true;
-
-        }
-        else {
-            m_werewolfIsMoving = false;
-        }
-
-
-
-        if (distance > m_detectionRange * 2.0f) {
-            m_currentBehavior = PATROL; 
-        }
-        break;
-    }
-
-    default:
-        m_currentBehavior = IDLE; 
-        m_werewolfIsMoving = false;
-        break;
-    }
-
-    UpdateSpriteScales();
-
-}
-
 Hitbox Werewolf::GetHitbox() const {
     float halfWidth = (100.0f * 5.0f) / 2.0f;
     float halfHeight = (100.0f * 5.0f) / 2.0f;
 
     return {
-        m_werewolfPosition.x - halfWidth,
-        m_werewolfPosition.y - halfHeight,
+        m_position.x - halfWidth,
+        m_position.y - halfHeight,
         halfWidth * 2.0f,
         halfHeight * 2.0f
     };
@@ -537,45 +446,24 @@ Hitbox Werewolf::GetAttackHitbox() const {
     float attackHeight = 100.0f * 5.0f;
 
     // Make Attack2 hitbox slightly larger for more impact
-    if (m_attackState == LYCAN_ATTACK_2) {
+    if (m_attackState == ATTACK_2) {
         attackWidth = 85.0f; // Wider attack hitbox for Attack2
     }
 
-    float offsetX = (m_werewolfDirection == 1) ? 40.0f : -attackWidth - 40.0f;
+    float offsetX = (m_direction == 1) ? 40.0f : -attackWidth - 40.0f;
 
     return {
-        m_werewolfPosition.x + offsetX,
-        m_werewolfPosition.y - (attackHeight / 2.0f),
+        m_position.x + offsetX,
+        m_position.y - (attackHeight / 2.0f),
         attackWidth,
         attackHeight
     };
 }
 
-void Werewolf::UpdateSpriteScales() {
-    // Set sprite scale based on direction
-    float scaleX = (m_werewolfDirection > 0) ? 7.5f : -7.5f;
-
-    if (m_werewolfWalk && m_werewolfWalk->GetScaleX() != scaleX) {
-        m_werewolfWalk->SetScale(scaleX, -7.5f);
-    }
-
-    if (m_werewolfIdle && m_werewolfIdle->GetScaleX() != scaleX) {
-        m_werewolfIdle->SetScale(scaleX, -7.5f);
-    }
-
-    if (m_werewolfAttack1 && m_werewolfAttack1->GetScaleX() != scaleX) {
-        m_werewolfAttack1->SetScale(scaleX, -7.5f);
-    }
-
-    if (m_werewolfAttack2 && m_werewolfAttack2->GetScaleX() != scaleX) {
-        m_werewolfAttack2->SetScale(scaleX, -7.5f);
-    }
-}
-
 int Werewolf::GetScore() const {
     int score = 0;
 
-    switch (m_werewolfType)
+    switch (m_type)
     {
     case WEREWOLF:  
         score = 125;

@@ -37,7 +37,7 @@ KnightClass::KnightClass()
     , m_knightAttack2(0)
     , m_knightSpecial(0)
     , m_isAttacking(false)
-    , m_attackState(ATTACK_NONE)
+    , m_attackState(CLASS_ATTACK_NONE)
     , m_attackDuration(0.0f)
     , m_attackSound(nullptr)
     , m_hurtSound(nullptr)
@@ -251,15 +251,15 @@ void KnightClass::Process(float deltaTime) {
 
         switch (m_attackState)
         {
-        case ATTACK_1:
+        case CLASS_ATTACK_1:
             activeAttack = m_knightAttack1;
             timeoutDuration = 0.7f;
             break;
-        case ATTACK_2:
+        case CLASS_ATTACK_2:
             activeAttack = m_knightAttack2;
             timeoutDuration = 1.5f;
             break;
-        case SP_ATTACK:
+        case CLASS_SP_ATTACK:
             activeAttack = m_knightSpecial;
             timeoutDuration = 1.2f;
             break;
@@ -282,14 +282,14 @@ void KnightClass::Process(float deltaTime) {
             if ((!activeAttack->IsAnimating()) || m_attackDuration > timeoutDuration)
             {
                 m_isAttacking = false;
-                m_attackState = ATTACK_NONE;
+                m_attackState = CLASS_ATTACK_NONE;
                 m_attackDuration = 0.0f;
             }
         }
         else
         {
             m_isAttacking = false;
-            m_attackState = ATTACK_NONE;
+            m_attackState = CLASS_ATTACK_NONE;
             m_attackDuration = 0.0f;
         }
     }
@@ -408,17 +408,17 @@ void KnightClass::Draw(Renderer& renderer) {
     else {
         // Draw appropriate attack animation 
         switch (m_attackState) {
-        case ATTACK_1:
+        case CLASS_ATTACK_1:
             if (m_knightAttack1) {
                 m_knightAttack1->Draw(renderer);
             }
             break;
-        case ATTACK_2:
+        case CLASS_ATTACK_2:
             if (m_knightAttack2) {
                 m_knightAttack2->Draw(renderer);
             }
             break;
-        case SP_ATTACK:
+        case CLASS_SP_ATTACK:
             if (m_knightSpecial) {
                 m_knightSpecial->Draw(renderer);
             }
@@ -483,14 +483,14 @@ void KnightClass::ProcessInput(InputSystem& inputSystem) {
     if (!m_isAttacking && !m_isHurt && !m_isDead) {
         // LCTRL for basic attack
         if (inputSystem.GetKeyState(SDL_SCANCODE_LCTRL) == BS_PRESSED || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_X) == BS_PRESSED)) {
-            StartAttack(ATTACK_1);
+            StartAttack(CLASS_ATTACK_1);
         }
         else if (inputSystem.GetKeyState(SDL_SCANCODE_Q) == BS_PRESSED || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_X) == BS_PRESSED)) {
-            StartAttack(ATTACK_2);
+            StartAttack(CLASS_ATTACK_2);
         }
         // V for special attack
         else if (inputSystem.GetKeyState(SDL_SCANCODE_W) == BS_PRESSED || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_Y) == BS_PRESSED)) {
-            StartAttack(SP_ATTACK);
+            StartAttack(CLASS_SP_ATTACK);
         }
 
     }
@@ -518,13 +518,13 @@ void KnightClass::StartAttack(AttackType attackType) {
     float frameDuration = 0.1f; // Default frame duration
 
     switch (attackType) {
-    case ATTACK_1:
+    case CLASS_ATTACK_1:
         attackSprite = m_knightAttack1;
         break;
-    case ATTACK_2:
+    case CLASS_ATTACK_2:
         attackSprite = m_knightAttack2;
         break;
-    case SP_ATTACK:
+    case CLASS_SP_ATTACK:
         attackSprite = m_knightSpecial;
         break;
 
@@ -544,7 +544,7 @@ void KnightClass::StartAttack(AttackType attackType) {
     }
     else {
         m_isAttacking = false;
-        m_attackState = ATTACK_NONE;
+        m_attackState = CLASS_ATTACK_NONE;
     }
 
     if (m_attackState != BLOCK && m_attackSound) {
@@ -560,13 +560,13 @@ void KnightClass::StartAttack(AttackType attackType) {
 
 int KnightClass::AttackDamage() const {
     switch (m_attackState) {
-    case ATTACK_1:
+    case CLASS_ATTACK_1:
         return 10;
         break;
-    case ATTACK_2:
+    case CLASS_ATTACK_2:
         return 10;
         break;
-    case SP_ATTACK:
+    case CLASS_SP_ATTACK:
         return 25;
         break;
     default:
@@ -657,7 +657,7 @@ Hitbox KnightClass::GetHitbox() const {
 
 }
 
-Hitbox KnightClass::GetAttackHitbox(const Orc& orc) const {
+Hitbox KnightClass::GetAttackHitbox(const Enemy& enemy) const {
     float attackWidth = 80.0f;  // Width of the attack zone
     float attackHeight = 100.0f * 7.5f;
     float direction = (m_knightWalk && m_knightWalk->GetScaleX() < 0) ? -7.5f : 7.5f;
@@ -687,7 +687,7 @@ void KnightClass::TakeDamage(int amount) {
 
     // Cancel any current attack
     m_isAttacking = false;
-    m_attackState = ATTACK_NONE;
+    m_attackState = CLASS_ATTACK_NONE;
     m_attackDuration = 0.0f;
 
     if (m_knighthealth <= 0) {

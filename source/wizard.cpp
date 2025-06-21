@@ -39,7 +39,7 @@ Wizard::Wizard()
     , m_wizardAttack1(0)
     , m_wizardSpecial(0)
     , m_isAttacking(false)
-    , m_attackState(ATTACK_NONE)
+    , m_attackState(CLASS_ATTACK_NONE)
     , m_attackDuration(0.0f)
     , m_attackSound(nullptr)
     , m_hurtSound(nullptr)
@@ -253,11 +253,11 @@ void Wizard::Process(float deltaTime) {
 
         switch (m_attackState)
         {
-        case ATTACK_1:
+        case CLASS_ATTACK_1:
             activeAttack = m_wizardAttack1;
             timeoutDuration = 1.2f;
             break;
-        case SP_ATTACK:
+        case CLASS_SP_ATTACK:
             activeAttack = m_wizardSpecial;
             timeoutDuration = 1.2f;
             break;
@@ -295,14 +295,14 @@ void Wizard::Process(float deltaTime) {
                     }
                 }
                 m_isAttacking = false;
-                m_attackState = ATTACK_NONE;
+                m_attackState = CLASS_ATTACK_NONE;
                 m_attackDuration = 0.0f;
             }
         }
         else
         {
             m_isAttacking = false;
-            m_attackState = ATTACK_NONE;
+            m_attackState = CLASS_ATTACK_NONE;
             m_attackDuration = 0.0f;
         }
     }
@@ -443,12 +443,12 @@ void Wizard::Draw(Renderer& renderer) {
     else {
         // Draw appropriate attack animation 
         switch (m_attackState) {
-        case ATTACK_1:
+        case CLASS_ATTACK_1:
             if (m_wizardAttack1) {
                 m_wizardAttack1->Draw(renderer);
             }
             break;
-        case SP_ATTACK:
+        case CLASS_SP_ATTACK:
             if (m_wizardSpecial) {
                 m_wizardSpecial->Draw(renderer);
             }
@@ -513,18 +513,18 @@ void Wizard::ProcessInput(InputSystem& inputSystem) {
     if (!m_isAttacking && !m_isHurt && !m_isDead) {
         // LCTRL for basic attack
         if (inputSystem.GetKeyState(SDL_SCANCODE_LCTRL) == BS_PRESSED || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_X) == BS_PRESSED)) {
-            StartAttack(ATTACK_1);
+            StartAttack(CLASS_ATTACK_1);
         }
         // V for special attack
         else if (inputSystem.GetKeyState(SDL_SCANCODE_Q) == BS_PRESSED || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_Y) == BS_PRESSED)) {
-            StartAttack(SP_ATTACK);
+            StartAttack(CLASS_SP_ATTACK);
         }
     }
 
     // Check if we need to end blocking when button is released
     if (m_isAttacking && m_attackState == BLOCK && inputSystem.GetKeyState(SDL_SCANCODE_W) == BS_RELEASED || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_B) == BS_RELEASED)) {
         m_isAttacking = false;
-        m_attackState = ATTACK_NONE;
+        m_attackState = CLASS_ATTACK_NONE;
         m_attackDuration = 0.0f;
     }
 
@@ -551,10 +551,10 @@ void Wizard::StartAttack(AttackType attackType) {
     float frameDuration = 0.2f; // Default frame duration
 
     switch (attackType) {
-    case ATTACK_1:
+    case CLASS_ATTACK_1:
         attackSprite = m_wizardAttack1;
         break;
-    case SP_ATTACK:
+    case CLASS_SP_ATTACK:
         attackSprite = m_wizardSpecial;
         break;
     default:
@@ -573,7 +573,7 @@ void Wizard::StartAttack(AttackType attackType) {
     }
     else {
         m_isAttacking = false;
-        m_attackState = ATTACK_NONE;
+        m_attackState = CLASS_ATTACK_NONE;
     }
 
     if (m_attackState != BLOCK && m_attackSound) {
@@ -589,10 +589,10 @@ void Wizard::StartAttack(AttackType attackType) {
 
 int Wizard::AttackDamage() const {
     switch (m_attackState) {
-    case ATTACK_1:
+    case CLASS_ATTACK_1:
         return 10;
         break;
-    case SP_ATTACK:
+    case CLASS_SP_ATTACK:
         return 25;
         break;
     case BLOCK:
@@ -611,7 +611,7 @@ bool Wizard::isBlocking() const {
 
 bool Wizard::isAttacking() const {
 
-    return m_isAttacking && m_attackState != ATTACK_NONE;
+    return m_isAttacking && m_attackState != CLASS_ATTACK_NONE;
 }
 
 bool Wizard::isProjectilesActive() const {
@@ -699,14 +699,14 @@ Hitbox Wizard::GetHitbox() const {
 }
 
 // Need to change it so that it will only calculate it for the closest arrow projectile
-Hitbox Wizard::GetAttackHitbox(const Orc& orc) const {
+Hitbox Wizard::GetAttackHitbox(const Enemy& enemy) const {
     if (m_pFire.empty())
     {
         return { 0, 0, 0, 0 };
     }
 
     // Get orc x pos and set closest current distance value to high val
-    float orcX = orc.GetPosition().x;
+    float enemyX = enemy.GetPosition().x;
     float closestDist = FLT_MAX;
     Projectile* closestProj = nullptr;
 
@@ -715,7 +715,7 @@ Hitbox Wizard::GetAttackHitbox(const Orc& orc) const {
         if (proj && proj->m_bActive)
         {
             // absolute value of difference between orcX and projectile X
-            float dist = fabs(proj->GetPosition().x - orcX);
+            float dist = fabs(proj->GetPosition().x - enemyX);
             if (dist < closestDist)
             {
                 closestDist = dist;
@@ -742,7 +742,7 @@ void Wizard::TakeDamage(int amount) {
 
     // Cancel any current attack
     m_isAttacking = false;
-    m_attackState = ATTACK_NONE;
+    m_attackState = CLASS_ATTACK_NONE;
     m_attackDuration = 0.0f;
 
     if (m_wizardhealth <= 0) {
