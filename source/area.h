@@ -25,8 +25,6 @@ public:
 	void setScene(int scene);
 	void setLevel(Renderer& renderer, int level);
 	void changePos(float x, float y);
-	float getYpos();
-	float getXpos();
 	//	int tilearray(int row);
 	int getSpawnlevel();
 	float getSizeX();
@@ -48,7 +46,6 @@ public:
 	float size;
 	float sizex;
 	float sizey;
-	Vector2 m_position;
 
 private:
 };

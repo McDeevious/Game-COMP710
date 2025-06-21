@@ -6,7 +6,6 @@
 #include "area.h"
 
 #include <cmath>
-#include <iostream>
 
 BackgroundManager::BackgroundManager()
     : m_pBackgroundBack(nullptr)
@@ -136,7 +135,6 @@ void BackgroundManager::Process(float deltaTime)
 void BackgroundManager::Draw(Renderer& renderer)
 {
     // Draw background layers in order (back to front) with parallax scrolling
-  /**
     if (m_pBackgroundBack)
     {
         DrawLayer(renderer, m_pBackgroundBack, m_backScrollX);
@@ -151,9 +149,7 @@ void BackgroundManager::Draw(Renderer& renderer)
     {
         DrawGround(renderer, m_tilesScrollX);
     }
-    **/
     gameLevel->Draw(renderer);
-    
 }
 
 void BackgroundManager::DrawLayer(Renderer& renderer, Sprite* layer, float scrollX)
@@ -197,7 +193,6 @@ void BackgroundManager::DrawLayer(Renderer& renderer, Sprite* layer, float scrol
 
 void BackgroundManager::DrawGround(Renderer& renderer, float scrollX)
 {
-    gameLevel->changePos(scrollX,0);
     if (!m_pBackgroundTileRock || !m_pBackgroundTileMoss)
         return;
     
@@ -318,11 +313,10 @@ void BackgroundManager::SetTilesLayerScale(float scaleX, float scaleY)
 void BackgroundManager::UpdateScrollFromCharacterMovement(const Vector2& movementDirection, float deltaTime)
 {
     // Invert the direction for proper parallax effect
-    float directionX = -movementDirection.x; //*m_backScrollSpeed * deltaTime;
-    std::cout << directionX << std::endl;
-    gameLevel->changePos(directionX, 0);
+    float directionX = -movementDirection.x;
+
     // This ensures consistent scrolling regardless of framerate
-   // m_backScrollX += directionX * m_backScrollSpeed * deltaTime;
-  //  m_middleScrollX += directionX * m_middleScrollSpeed * deltaTime;
-    //m_tilesScrollX += directionX * m_tilesScrollSpeed * deltaTime;
+    m_backScrollX += directionX * m_backScrollSpeed * deltaTime;
+    m_middleScrollX += directionX * m_middleScrollSpeed * deltaTime;
+    m_tilesScrollX += directionX * m_tilesScrollSpeed * deltaTime;
 }
