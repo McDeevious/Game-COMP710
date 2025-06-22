@@ -11,7 +11,7 @@ class Renderer;
 class InputSystem;
 class Hitbox;
 class Orc;
-
+class SceneGame;
 class Character {
 public:
     Character();
@@ -19,9 +19,9 @@ public:
 
     // Core interface
     virtual bool Initialise(Renderer& renderer) = 0;
-    virtual void Process(float deltaTime) = 0;
+    virtual void Process(float deltaTime, SceneGame& game) = 0;
     virtual void Draw(Renderer& renderer) = 0;
-    virtual void ProcessInput(InputSystem& inputSystem) = 0;
+    virtual void ProcessInput(InputSystem& inputSystem, SceneGame& game) = 0;
 
     // State and logic
     virtual void SetBoundaries(float left, float right, float top, float bottom) = 0;
@@ -42,6 +42,18 @@ public:
     virtual Hitbox GetAttackHitbox(const Orc& orc) const = 0;
 
     CharacterType characterType;
+
+    float setAreanapos;
+    float getArenaPos();
+    void getAreaArray(SceneGame& game);
+    int areaArray[120][40];//wide, height
+    int* tilearray(int row);
+    bool collision(int type,SceneGame& game);
+    void setBounds(SceneGame& game);
+    Vector2 upperBounds;
+    Vector2 lowerBounds;
+    float character_size;
 };
+
 
 #endif // CHARACTER_H

@@ -69,7 +69,14 @@ public:
     
     // Restart the game and reset all game elements
     void RestartGame();
-
+    void getAreaArray();
+    int areaArray[120][40];//wide, height
+    int* tilearray(int row);
+    float getOffsetX();
+    float getSize();
+    float getWide();
+    float getHeight();
+    float getWH();
 protected:
     // Game components
     BackgroundManager* m_pBackgroundManager;

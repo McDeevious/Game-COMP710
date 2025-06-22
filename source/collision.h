@@ -18,7 +18,7 @@ public:
 
 	static bool CheckCollision(const Hitbox& a, const Hitbox& b); 
 
-	static bool PointHitbox(const Vector2& point, const Hitbox& b);
+	static bool PointHitbox(const Hitbox& a, const Hitbox& b);
 };
 
 #endif //COLLISION_H

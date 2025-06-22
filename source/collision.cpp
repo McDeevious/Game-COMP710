@@ -15,9 +15,10 @@ bool Collision::CheckCollision(const Hitbox& a, const Hitbox& b) {
         a.y > b.y + b.height);
 }
 
-bool Collision::PointHitbox(const Vector2& point, const Hitbox& b) {
-    return (point.x >= b.x &&
-        point.x <= b.x + b.width && 
-        point.y >= b.y &&
-        point.y <= b.y + b.height); 
+bool Collision::PointHitbox(const Hitbox& a, const Hitbox& b) {
+    if (a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y)
+    {
+        return 1;
+    }
+    return 0;
 }

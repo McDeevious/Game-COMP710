@@ -205,7 +205,7 @@ bool Archer::Initialise(Renderer& renderer)
     return true;
 }
 
-void Archer::Process(float deltaTime) {
+void Archer::Process(float deltaTime, SceneGame& game) {
     
     //Process hurt animation
     if (m_isHurt)
@@ -469,7 +469,7 @@ void Archer::Draw(Renderer& renderer) {
     }
 }
 
-void Archer::ProcessInput(InputSystem& inputSystem) {
+void Archer::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
     bool isWalking = false;
     m_archerPosition.x = 150.0f;
     Vector2 direction;

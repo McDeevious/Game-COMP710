@@ -26,10 +26,10 @@ public:
 	~Wizard();
 
 	bool Initialise(Renderer& renderer);
-	void Process(float deltaTime);
+	void Process(float deltaTime, SceneGame& game);
 	void Draw(Renderer& renderer);
 
-	void ProcessInput(InputSystem& inputSystem);
+	void ProcessInput(InputSystem& inputSystem, SceneGame& game);
 
 	// Sets boundaries for knight movement
 	void SetBoundaries(float left, float right, float top, float bottom);
@@ -110,6 +110,10 @@ private:
 	FMOD::Sound* m_deathSound;
 	FMOD::Sound* m_jumpSound;
 	float m_sfxVolume;
+
+	int wasTouchingGround;
+	int wasTouchingRoof;
+	Vector2 arenaXY;
 };
 
 #endif // WIZARD_H

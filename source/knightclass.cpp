@@ -203,7 +203,7 @@ bool KnightClass::Initialise(Renderer& renderer)
     return true;
 }
 
-void KnightClass::Process(float deltaTime) {
+void KnightClass::Process(float deltaTime, SceneGame& game) {
 
     //Process hurt animation
     if (m_isHurt)
@@ -439,7 +439,7 @@ void KnightClass::Draw(Renderer& renderer) {
     }
 }
 
-void KnightClass::ProcessInput(InputSystem& inputSystem) {
+void KnightClass::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
     bool isWalking = false;
     //m_knightPosition.x = 150.0f;  
     Vector2 direction;

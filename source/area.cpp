@@ -18,7 +18,7 @@ area::area()
 	, scale(0)
 	, sscene(0)
 	, stage(0)
-	
+	, wh(144)
 {
 
 
@@ -35,7 +35,7 @@ bool area::Initialise(Renderer& renderer)
 	//std::string check = "level" + std::to_string(selectlevel);
 	//sizey = (float)renderer.GetHeight() / (float)height;
 	size = (float)renderer.GetHeight() / (float)height;
-	scale = (size / 20);//17 old maybe switch back
+	scale = (size / wh);//17 old maybe switch back
 	//sizex = sizey;// ((float)renderer.GetWidth() - (float)renderer.GetHeight()) / 2;
 
 	//std::ifstream fileread("assets\\levelselect.txt");
@@ -47,9 +47,9 @@ bool area::Initialise(Renderer& renderer)
 			{
 				tilemap[s][x+y*wide] = -1;
 				tile[s][x + y * wide] = new AnimatedSprite();
-				tile[s][x + y * wide] = renderer.CreateAnimatedSprite("../game/assets/Sprites/tiles.png");
+				tile[s][x + y * wide] = renderer.CreateAnimatedSprite("../game/assets/Sprites/new_tiles.png");
 				tile[s][x + y * wide]->setType();
-				tile[s][x + y * wide]->SetupFrames(20, 20);
+				tile[s][x + y * wide]->SetupFrames(144, 144);
 			}
 		}
 	}
@@ -58,20 +58,17 @@ bool area::Initialise(Renderer& renderer)
 }
 void area::changePos(float x, float y)
 {
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < wide; x++)
-		{
-			tile[stage][x + y * wide]->SetX(/*tile[stage][x + y * wide]->GetX() */ +x);
-			tile[stage][x + y * wide]->SetY(tile[stage][x + y * wide]->GetY() + y);
-		}
-	}
+	m_position.x += x;
+	m_position.y += y;
+}
+float area::getOffsetX() {
+	return m_position.x;
 }
 void area::setScene(int scene)
 {
 	int array[4];
-	sscene = scene;
-	if (scene == 0)
+	
+	/*if (scene == 0)
 	{
 		array[0] = 12;//void
 		array[1] = 8;
@@ -95,7 +92,7 @@ void area::setScene(int scene)
 		array[3] = 6;
 		//	array[4] = 7;
 	}
-
+	**/
 	for (int y = 0; y < height; y++)
 	{
 		for (int x = 0; x < wide; x++)
@@ -105,50 +102,50 @@ void area::setScene(int scene)
 			{
 			case -1://void
 				if (x % 2 == 1 && scene == 1) {
-					tile[stage][x + y * wide]->SetCurrentFrame(array[0] + 1);
-					tile[stage][x + y * wide]->setLastFrame(array[0] + 1);
+					tile[stage][x + y * wide]->SetCurrentFrame(7);
+					tile[stage][x + y * wide]->setLastFrame(7);
 				}
 				else
 				{
-					tile[stage][x + y * wide]->SetCurrentFrame(array[0]);
-					tile[stage][x + y * wide]->setLastFrame(array[0]);
+					tile[stage][x + y * wide]->SetCurrentFrame(7);
+					tile[stage][x + y * wide]->setLastFrame(7);
 
 				}
 				break;
 
 			case 1://dirt
 				if (x % 2 == 1) {
-					tile[stage][x + y * wide]->SetCurrentFrame(array[1]);
-					tile[stage][x + y * wide]->setLastFrame(array[1]);
+					tile[stage][x + y * wide]->SetCurrentFrame(3);
+					tile[stage][x + y * wide]->setLastFrame(3);
 				}
 				else
 				{
-					tile[stage][x + y * wide]->SetCurrentFrame(array[1] + 1);
-					tile[stage][x + y * wide]->setLastFrame(array[1] + 1);
+					tile[stage][x + y * wide]->SetCurrentFrame(4);
+					tile[stage][x + y * wide]->setLastFrame(4);
 				}
 				break;
 			case 2://grass
 				if (x % 2 == 1) {
-					tile[stage][x + y * wide]->SetCurrentFrame(array[2]);
-					tile[stage][x + y * wide]->setLastFrame(array[2]);
+					tile[stage][x + y * wide]->SetCurrentFrame(1);
+					tile[stage][x + y * wide]->setLastFrame(1);
 				}
 				else
 				{
-					tile[stage][x + y * wide]->SetCurrentFrame(array[2] + 1);
-					tile[stage][x + y * wide]->setLastFrame(array[2] + 1);
+					tile[stage][x + y * wide]->SetCurrentFrame(1);
+					tile[stage][x + y * wide]->setLastFrame(1);
 				}
 				break;
 			case 3://stone
 
 			case 4://barrier
 				if (x % 2 == 1) {
-					tile[stage][x + y * wide]->SetCurrentFrame(array[3]);
-					tile[stage][x + y * wide]->setLastFrame(array[3]);
+					tile[stage][x + y * wide]->SetCurrentFrame(5);
+					tile[stage][x + y * wide]->setLastFrame(5);
 				}
 				else
 				{
-					tile[stage][x + y * wide]->SetCurrentFrame(array[3] + 1);
-					tile[stage][x + y * wide]->setLastFrame(array[3] + 1);
+					tile[stage][x + y * wide]->SetCurrentFrame(5);
+					tile[stage][x + y * wide]->setLastFrame(5);
 
 				}
 				break;
@@ -157,16 +154,9 @@ void area::setScene(int scene)
 			tile[stage][x + y * wide]->SetLooping(1);
 			tile[stage][x + y * wide]->Animate();
 			tile[stage][x + y * wide]->SetScale(1, 1);
-			tile[stage][x + y * wide]->SetAngle(1);
-			tile[stage][x + y * wide]->SetY(y * size + ((((y + 1) * size) - (y * size)) / 2));
-			if (x > 0)
-			{
-				tile[stage][x + y * wide]->SetX(tile[stage][x-1+y*wide]->GetX() + size);
-			}
-			else
-			{
-				tile[stage][x + y * wide]->SetX(0+size/2);
-			}
+			tile[stage][x + y * wide]->SetAngle(180);
+			tile[stage][x + y * wide]->SetY(size*y+size/2);
+			tile[stage][x + y * wide]->SetX(size*x+size/2);
 			tile[stage][x + y * wide]->SetScale(scale,scale);
 		}
 	}
@@ -179,7 +169,7 @@ void area::setLevel(Renderer& renderer, int level)
 	selectlevel = 1;
 	std::string check = "level" + std::to_string(selectlevel);
 	size = (float)renderer.GetHeight() / (float)height;
-	scale = (size / 20);//17 old maybe switch back
+	scale = (size / wh);//17 old maybe switch back
 	//sizex = ((float)renderer.GetWidth() - (float)renderer.GetHeight()) / 2;
 	int tempStage = 1;
 	int tempPart = 1;
@@ -278,13 +268,21 @@ void area::setLevel(Renderer& renderer, int level)
 
 
 
-float area::getSizeX()
+float area::getSize()
 {
-	return sizex;
+	return size;
 }
-float area::getSizeY()
+float area::getWide()
 {
-	return sizey;
+	return wide;
+}
+float area::getHeight()
+{
+	return height;
+}
+float area::getWH()
+{
+	return wh;
 }
 int* area::tilearray(int row)
 {
@@ -315,6 +313,8 @@ void area::Process(float deltaTime)
 	{
 		for (int x = 0; x < wide; x++)
 		{
+			tile[stage][x + y * wide]->SetY(size * y + size / 2 + m_position.y);
+			tile[stage][x + y * wide]->SetX(size * x + size / 2 + m_position.x);
 			tile[stage][y * wide + x]->Process(deltaTime);
 		}
 	}

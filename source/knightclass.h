@@ -27,10 +27,10 @@ public:
 	~KnightClass();
 
 	bool Initialise(Renderer& renderer);
-	void Process(float deltaTime);
+	void Process(float deltaTime, SceneGame& game);
 	void Draw(Renderer& renderer);
 
-	void ProcessInput(InputSystem& inputSystem);
+	void ProcessInput(InputSystem& inputSystem, SceneGame& game);
 	
 	// Sets boundaries for knight movement
 	void SetBoundaries(float left, float right, float top, float bottom);

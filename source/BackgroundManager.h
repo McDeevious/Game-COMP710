@@ -15,7 +15,13 @@ class BackgroundManager
 public:
     BackgroundManager();
     ~BackgroundManager();
-
+    int* tilearray(int row);
+    int areaArray[120][40];//wide, height
+   // float getOffsetX();
+    float getSize();
+    float getWide();
+    float getHeight();
+    float getWH();
     bool Initialise(Renderer& renderer);
     void Process(float deltaTime);
     void Draw(Renderer& renderer);
@@ -34,10 +40,10 @@ public:
     void SetBackLayerScale(float scaleX, float scaleY);
     void SetMiddleLayerScale(float scaleX, float scaleY);
     void SetTilesLayerScale(float scaleX, float scaleY);
-   
-    
+    void changePos(float x, float y);
+    float getOffsetX();
     void getAreaArray();
-
+   // float getOffsetX();
 private:
     // Background layers
     Sprite* m_pBackgroundBack;
@@ -54,9 +60,9 @@ private:
     float m_middleScrollSpeed;
     float m_tilesScrollSpeed;
    
-    int areaArray[120][40];//wide, height
     area* gameLevel;
 
+    Vector2 m_position;
 };
 
 #endif // BACKGROUNDMANAGER_H

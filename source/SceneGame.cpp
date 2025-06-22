@@ -18,6 +18,7 @@
 #include "armoredOrc.h"
 #include "eliteOrc.h"
 #include "riderOrc.h"
+#include <iostream>
 
 SceneGame::SceneGame()
     : m_pBackgroundManager(nullptr)
@@ -154,13 +155,68 @@ bool SceneGame::Initialise(Renderer& renderer)
     if (m_pKnightHUD) {
         m_pKnightHUD->InitialiseScore(renderer);
     }
-
+    getAreaArray();
+    m_pKnightClass->getAreaArray(*this);
     return true;
 }
 
+void SceneGame::getAreaArray()
+{
+    for (int y = 0; y < 40; y++)
+    {
+        int* temp = m_pBackgroundManager->tilearray(y);
+        for (int x = 0; x < 120; x++)
+        {
+            areaArray[x][y] = temp[x];
+        }
+        delete[] temp;
+    }
+}
+int* SceneGame::tilearray(int row)
+{
+    int* array = new int[120];
+    for (int i = 0; i < 120; i++)
+    {
+        if (areaArray[i][row] != NULL)
+        {
+            array[i] = areaArray[i][row];
+        }
+        else
+        {
+            array[i] = -1;
+        }
+    }
+    return array;
+}
+float SceneGame::getSize()
+{
+    return m_pBackgroundManager->getSize();
+}
+float SceneGame::getWide()
+{
+    return m_pBackgroundManager->getWide();
+}
+float SceneGame::getHeight()
+{
+    return m_pBackgroundManager->getHeight();
+}
+float SceneGame::getWH()
+{
+    return m_pBackgroundManager->getWH();
+}
+float SceneGame::getOffsetX() {
+    return m_pBackgroundManager->getOffsetX();
+}
 void SceneGame::Process(float deltaTime)
 {
-    m_pKnightClass->Process(deltaTime);
+    m_pKnightClass->setBounds(*this);
+    if (m_pKnightClass->collision(3, *this))
+    {
+        std::cout << "rarrr" << std::endl;
+    }
+    
+    m_pBackgroundManager->changePos(m_pKnightClass->getArenaPos(), 0);
+    m_pKnightClass->Process(deltaTime, *this);
     m_pBackgroundManager->Process(deltaTime);
 
     if (m_pKnightHUD && m_pKnightClass) {
@@ -287,7 +343,7 @@ void SceneGame::ProcessInput(InputSystem& inputSystem)
 {
     //Process input during gameplay
     if (m_gameState == GAME_STATE_PLAYING) {
-        m_pKnightClass->ProcessInput(inputSystem);
+        m_pKnightClass->ProcessInput(inputSystem, *this);
     }
 
     XboxController* controller = inputSystem.GetController(0);

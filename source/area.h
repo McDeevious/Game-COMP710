@@ -30,9 +30,15 @@ public:
 	float getSizeX();
 	float getSizeY();
 	float getScale();
+	float getOffsetX();
+	float getSize();
+	float getWide();
+	float getHeight();
+	float getWH();
 	//int getLevelStage();
 	//void setStage();
 	int* tilearray(int row);
+	int wh;
 	int sscene;
 	int stage;
 	float scale;
@@ -46,7 +52,7 @@ public:
 	float size;
 	float sizex;
 	float sizey;
-
+	Vector2 m_position;
 private:
 };
 #endif // AREA_H_

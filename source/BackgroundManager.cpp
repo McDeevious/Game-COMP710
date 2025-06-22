@@ -108,7 +108,7 @@ bool BackgroundManager::Initialise(Renderer& renderer)
         m_pBackgroundTileMoss->SetX(0);
         m_pBackgroundTileMoss->SetY(screenH - (tilesH * scale) / 2 + 50.0f);
     }
-
+    getAreaArray();
     return true;
 }
 
@@ -125,8 +125,38 @@ void BackgroundManager::getAreaArray()
         delete[] temp;
     }
 }
-
-
+int* BackgroundManager::tilearray(int row)
+{
+    int* array = new int[120];
+    for (int i = 0; i < 120; i++)
+    {
+        if (areaArray[i][row] != NULL)
+        {
+            array[i] = areaArray[i][row];
+        }
+        else
+        {
+            array[i] = -1;
+        }
+    }
+    return array;
+}
+float BackgroundManager::getSize()
+{
+    return gameLevel->getSize();
+}
+float BackgroundManager::getWide()
+{
+    return gameLevel->getWide();
+}
+float BackgroundManager::getHeight()
+{
+    return gameLevel->getHeight();
+}
+float BackgroundManager::getWH()
+{
+    return gameLevel->getWH();
+}
 void BackgroundManager::Process(float deltaTime)
 {
       gameLevel->Process(deltaTime);
@@ -151,7 +181,17 @@ void BackgroundManager::Draw(Renderer& renderer)
     }
     gameLevel->Draw(renderer);
 }
+void BackgroundManager::changePos(float x, float y)
+{
+    gameLevel->changePos(x, y);
+    m_position.x += x;
+    m_position.y += y;
+}
 
+float BackgroundManager::getOffsetX()
+{
+    return gameLevel->getOffsetX();
+}
 void BackgroundManager::DrawLayer(Renderer& renderer, Sprite* layer, float scrollX)
 {
     if (!layer) return;
