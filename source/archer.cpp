@@ -22,6 +22,7 @@ Archer::Archer()
     , m_archerLeft(false)
     , m_isMoving(false)
     , m_isHurt(false)
+    , m_damageReduction(0)
     , m_isDead(false)
     , m_archerhealth(1250)
     //boundaries

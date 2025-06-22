@@ -22,6 +22,7 @@ Wizard::Wizard()
     , m_wizardLeft(false)
     , m_isMoving(false)
     , m_isHurt(false)
+    , m_damageReduction(0)
     , m_isDead(false)
     , m_wizardhealth(125)
     //boundaries

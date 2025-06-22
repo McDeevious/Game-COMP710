@@ -77,6 +77,7 @@ private:
 	bool m_isMoving;
 	bool m_isDead;
 	bool m_isHurt; 
+	int m_damageReduction;
 	int m_knighthealth;
 
 	//Player attacks
