@@ -49,10 +49,10 @@ int* Character::tilearray(int row)
 void Character::setBounds(SceneGame& game)
 {
    Hitbox temp = GetHitbox();
-   upperBounds.x = ((temp.width + temp.x + 5 * game.getSize()) - game.getSize() / 2 - game.getOffsetX() )/ game.getSize();
-   lowerBounds.x = ( (temp.x - 5 * game.getSize()) - game.getSize() / 2 - game.getOffsetX()) / game.getSize();
-   upperBounds.y = ((temp.height + temp.y + 5 * game.getSize()) - game.getSize() / 2)/ game.getSize();
-   lowerBounds.y = ( (temp.y - 5 * game.getSize()) - game.getSize() / 2) / game.getSize();
+   upperBounds.x = ((temp.width + temp.x + 3 * game.getSize()) - game.getSize() / 2 - game.getOffsetX() )/ game.getSize();
+   lowerBounds.x = ( (temp.x - 3 * game.getSize()) - game.getSize() / 2 - game.getOffsetX()) / game.getSize();
+   upperBounds.y = ((temp.height + temp.y + 3 * game.getSize()) - game.getSize() / 2)/ game.getSize();
+   lowerBounds.y = ( (temp.y - 3 * game.getSize()) - game.getSize() / 2) / game.getSize();
    if (upperBounds.x < 10)
    {
        upperBounds.x = 10;
