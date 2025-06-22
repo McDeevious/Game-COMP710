@@ -79,8 +79,8 @@ bool BossDemon::Initialise(Renderer& renderer) {
     //Load idle sprite
     m_demonIdle = renderer.CreateAnimatedSprite("../game/assets/Sprites/Boss/boss_demon_slime_FULL_v1.0/demon_idle_1.png");
     if (m_demonIdle) {
-        m_demonIdle->SetupFrames(160, 160);
-        m_demonIdle->SetFrameDuration(0.2f);
+        m_demonIdle->SetupFrames(101, 101);
+        m_demonIdle->SetFrameDuration(0.1f);
         m_demonIdle->SetLooping(true);
         m_demonIdle->Animate();
         m_demonIdle->SetScale(7.5f, -7.5f);
@@ -89,7 +89,7 @@ bool BossDemon::Initialise(Renderer& renderer) {
     //Load walking sprite
     m_demonWalk = renderer.CreateAnimatedSprite("../game/assets/Sprites/Boss/boss_demon_slime_FULL_v1.0/demon_walk_1.png");
     if (m_demonWalk) {
-        m_demonWalk->SetupFrames(160, 160);
+        m_demonWalk->SetupFrames(128, 128);
         m_demonWalk->SetFrameDuration(0.1f);
         m_demonWalk->SetLooping(true);
         m_demonWalk->Animate();
@@ -99,7 +99,7 @@ bool BossDemon::Initialise(Renderer& renderer) {
     //Load hurt sprite
     m_demonHurt = renderer.CreateAnimatedSprite("../game/assets/Sprites/Boss/boss_demon_slime_FULL_v1.0/demon_take_hit_1.png");
     if (m_demonHurt) {
-        m_demonHurt->SetupFrames(160, 160);
+        m_demonHurt->SetupFrames(128, 128);
         m_demonHurt->SetFrameDuration(0.1f);
         m_demonHurt->SetLooping(false);
         m_demonHurt->Animate();
@@ -109,7 +109,7 @@ bool BossDemon::Initialise(Renderer& renderer) {
     //Load death sprite
     m_demonDeath = renderer.CreateAnimatedSprite("../game/assets/Sprites/Boss/boss_demon_slime_FULL_v1.0/demon_death_1.png");
     if (m_demonDeath) {
-        m_demonDeath->SetupFrames(160, 160);
+        m_demonDeath->SetupFrames(128, 128);
         m_demonDeath->SetFrameDuration(0.1f);
         m_demonDeath->SetLooping(false);
         m_demonDeath->Animate();
@@ -119,7 +119,7 @@ bool BossDemon::Initialise(Renderer& renderer) {
     //Load attack1 sprite
     m_demonCleave = renderer.CreateAnimatedSprite("../game/assets/Sprites/Boss/boss_demon_slime_FULL_v1.0/demon_cleave_1.png");
     if (m_demonCleave) {
-        m_demonCleave->SetupFrames(160, 160);
+        m_demonCleave->SetupFrames(180, 140);
         m_demonCleave->SetFrameDuration(0.1f);
         m_demonCleave->SetLooping(false);
         m_demonCleave->SetScale(7.5f, -7.5f);

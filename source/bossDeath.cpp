@@ -65,16 +65,6 @@ BossDeath::~BossDeath() {
 bool BossDeath::Initialise(Renderer& renderer) {
     FMOD::System* fmod = Game::GetInstance().GetFMODSystem();
 
-    m_flipSprites = {
-    m_deathIdle,
-    m_deathWalk,
-    m_deathAttack,
-    m_deathCast,
-    m_deathSpell, 
-    m_deathHurt,
-    m_deathDeath
-    };
-
     //Load audio
     fmod->createSound("../game/assets/Audio/Skeleton-Audio/skeleton_attack.mp3", FMOD_DEFAULT, 0, &m_attackSound);
     fmod->createSound("../game/assets/Audio/Skeleton-Audio/skeleton_hurt.wav", FMOD_DEFAULT, 0, &m_hurtSound);

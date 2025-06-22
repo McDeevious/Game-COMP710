@@ -8,6 +8,9 @@
 #include "skeleton.h"
 #include "werebear.h"
 #include "werewolf.h"
+#include "bossDeath.h"
+#include "bossDemon.h"
+
 #include "enemy.h"
 #include <vector>
 #include <string>

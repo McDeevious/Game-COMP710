@@ -748,7 +748,7 @@ void SceneGame::SpawnEnemies(Renderer& renderer)
         //{ 4400.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
        // { 5100.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT },
         //{ 5800.0f, groundY, PATROL, 300.0f, WEREWOLF },
-        { 1000.0f, groundY, AGGRESSIVE, 0.0f, DEATH_BOSS } 
+        { 1000.0f, groundY, IDLE, 0.0f, DEMON_BOSS }
     };
 
     const int waveCount = sizeof(wave1) / sizeof(wave1[0]);
@@ -951,6 +951,16 @@ void SceneGame::RestartGame()
         delete werebear; 
     }
     m_werebear.clear(); 
+
+    for (BossDeath* boss : m_bossDeaths) {
+        delete boss;
+    }
+    m_bossDeaths.clear();
+
+    for (BossDemon* boss : m_bossDemons) {
+        delete boss;
+    }
+    m_bossDemons.clear();
 
     // Reset game state variables
     m_scrollDistance = 0.0f;

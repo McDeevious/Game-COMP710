@@ -64,15 +64,6 @@ Orc::~Orc() {
 bool Orc::Initialise(Renderer& renderer) {
     FMOD::System* fmod = Game::GetInstance().GetFMODSystem();
 
-    m_flipSprites = {
-    m_orcIdle,
-    m_orcWalk,
-    m_orcAttack1,
-    m_orcAttack2,
-    m_orcHurt,
-    m_orcDeath
-    };
-
     //Load orc's audio
     fmod->createSound("../game/assets/Audio/Orc-Audio/orc_attack.mp3", FMOD_DEFAULT, 0, &m_attackSound); 
     fmod->createSound("../game/assets/Audio/Orc-Audio/orc_hurt.wav", FMOD_DEFAULT, 0, &m_hurtSound); 
