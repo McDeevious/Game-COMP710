@@ -19,6 +19,7 @@ KnightClass::KnightClass()
     , m_knightLeft(false)
     , m_isMoving(false)
     , m_isHurt(false)
+    , m_damageReduction(0)
     , m_isDead(false)
     , m_knighthealth(125)
     //boundaries
