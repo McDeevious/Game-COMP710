@@ -70,6 +70,15 @@ SceneGame::~SceneGame()
     delete m_pKnightClass;
     m_pKnightClass = nullptr;
 
+    delete m_pWizard;
+    m_pWizard = nullptr;
+
+    delete m_pArcher;
+    m_pArcher = nullptr;
+
+    delete m_pSwordsman;
+    m_pSwordsman = nullptr;
+
     delete m_pKnightHUD;
     m_pKnightHUD = nullptr; 
 
@@ -99,10 +108,22 @@ int SceneGame::getData(int type)
 
 void SceneGame::setData(int type, float data)
 {
-    if (type == 0)
+    if (data == 0)
     {
-        //character = data, add code here,data wil be from 0-2
+        m_pKnightClass = m_pWizard;
+        m_pKnightClass->characterType = WIZARD;
     }
+    else if (data == 1)
+    {
+        m_pKnightClass = m_pArcher;
+        m_pKnightClass->characterType = ARCHER;
+    }
+    else if (data == 2)
+    {
+        m_pKnightClass = m_pSwordsman;
+        m_pKnightClass->characterType = SWORDSMAN;
+    }
+
 }
 
 bool SceneGame::Initialise(Renderer& renderer)
@@ -121,8 +142,17 @@ bool SceneGame::Initialise(Renderer& renderer)
     if (!m_pBuffMenu->Initialise(renderer)) 
         return false;
 
-    m_pKnightClass = new Archer();
-    if (!m_pKnightClass->Initialise(renderer))
+    // Character classes
+    m_pSwordsman = new KnightClass();
+    if (!m_pSwordsman->Initialise(renderer))
+        return false;
+
+    m_pArcher = new Archer();
+    if (!m_pArcher->Initialise(renderer))
+        return false;
+
+    m_pWizard = new Wizard();
+    if (!m_pWizard->Initialise(renderer))
         return false;
 
     m_pGameOverMenu = new GameOverMenu();
@@ -136,6 +166,9 @@ bool SceneGame::Initialise(Renderer& renderer)
     m_pSceneGuide = new SceneGuide();
     if (!m_pSceneGuide->Initialise(renderer))
         return false;
+
+    // Placeholder needed before selection
+    m_pKnightClass = m_pWizard;
 
     m_pKnightClass->SetBoundaries(50, renderer.GetWidth() - 50, 50, renderer.GetHeight() - 50);
 
