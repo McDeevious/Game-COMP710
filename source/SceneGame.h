@@ -64,7 +64,6 @@ public:
     // Spawn orcs 
     void SpawnEnemies(Renderer& renderer);
     void SpawnEnemyWave(const EnemyPlacement* placements, int count, float offset, Renderer& renderer);
-    void CleanUpDeadEnemies();
 
     // Helper method to determine damage based on orc type
     int GetOrcAttackDamage(Orc* orc) const;
@@ -96,6 +95,8 @@ protected:
     std::vector<Skeleton*> m_skeletons;
     std::vector<Werewolf*> m_werewolf;
     std::vector<Werebear*> m_werebear; 
+    std::vector<BossDeath*> m_bossDeaths; 
+    std::vector<BossDemon*> m_bossDemons;  
     
     // Game state
     float m_scrollDistance;

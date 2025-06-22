@@ -25,6 +25,9 @@
 #include "greatskeleton.h" 
 #include "werewolf.h"
 #include "werebear.h"
+//boss
+#include "bossDemon.h"
+#include "bossDeath.h" 
 
 SceneGame::SceneGame()
     : m_pBackgroundManager(nullptr)
@@ -270,6 +273,25 @@ void SceneGame::Process(float deltaTime)
             }
         }
 
+        for (BossDeath* deathBoss : m_bossDeaths) { 
+            if (deathBoss && deathBoss->IsAlive()) { 
+                deathBoss->UpdateAI(worldKnightPos, deltaTime);
+            }
+            if (deathBoss) { 
+                deathBoss->Process(deltaTime); 
+            }
+        }
+
+        for (BossDemon* demonBoss : m_bossDemons) {
+            if (demonBoss && demonBoss->IsAlive()) {
+                demonBoss->UpdateAI(worldKnightPos, deltaTime);
+            }
+            if (demonBoss) {
+                demonBoss->Process(deltaTime);
+            }
+        }
+
+        //Scores
         for (Orc* orc : m_orcs) {
             if (!orc || orc->IsAlive() || orc->WasScored())
                 continue;
@@ -317,6 +339,31 @@ void SceneGame::Process(float deltaTime)
                 m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
             }
         }
+
+        for (BossDeath* deathBoss : m_bossDeaths) {
+            if (!deathBoss || deathBoss->IsAlive() || deathBoss->WasScored())
+                continue;
+
+            m_score += deathBoss->GetScore();
+            deathBoss->MarkScored();
+
+            if (m_pKnightHUD) {
+                m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
+            }
+        }
+
+        for (BossDemon* demonBoss : m_bossDemons) {
+            if (!demonBoss || demonBoss->IsAlive() || demonBoss->WasScored())
+                continue;
+
+            m_score += demonBoss->GetScore(); 
+            demonBoss->MarkScored(); 
+
+            if (m_pKnightHUD) {
+                m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
+            }
+        }
+
 
         // Section to handle the attacking case of the character class
         if (m_pKnightClass && (m_pKnightClass->isAttacking() || m_pKnightClass->isProjectilesActive())) {
@@ -370,6 +417,30 @@ void SceneGame::Process(float deltaTime)
                     bear->TakeDamage(m_pKnightClass->AttackDamage());
                 }
             }
+
+            for (BossDeath* deathBoss : m_bossDeaths)
+            {
+                if (!deathBoss || !deathBoss->IsAlive()) continue;
+
+                attackHitbox = m_pKnightClass->GetAttackHitbox(*deathBoss);
+                attackHitbox.x += m_scrollDistance;
+
+                if (Collision::CheckCollision(attackHitbox, deathBoss->GetHitbox())) {
+                    deathBoss->TakeDamage(m_pKnightClass->AttackDamage());
+                }
+            }
+
+            for (BossDemon* demonBoss : m_bossDemons)
+            {
+                if (!demonBoss || !demonBoss->IsAlive()) continue;
+
+                attackHitbox = m_pKnightClass->GetAttackHitbox(*demonBoss);
+                attackHitbox.x += m_scrollDistance;
+
+                if (Collision::CheckCollision(attackHitbox, demonBoss->GetHitbox())) {
+                    demonBoss->TakeDamage(m_pKnightClass->AttackDamage());
+                }
+            }
         }
 
         Hitbox knightHitbox = m_pKnightClass->GetHitbox();
@@ -418,8 +489,30 @@ void SceneGame::Process(float deltaTime)
                 }
             }
         }
-        // Update score and trigger BuffMenu if Werebear is the final enemy
 
+        for (BossDeath* deathBoss : m_bossDeaths) {
+            if (deathBoss && deathBoss->IsAlive() && deathBoss->IsAttacking()) {
+                Hitbox attackBox = deathBoss->GetAttackHitbox();
+                attackBox.x -= m_scrollDistance;
+
+                if (Collision::CheckCollision(attackBox, knightHitbox)) {
+                    m_pKnightClass->TakeDamage(20);
+                }
+            }
+        }
+
+        for (BossDemon* demonBoss : m_bossDemons) {
+            if (demonBoss && demonBoss->IsAlive() && demonBoss->IsAttacking()) {
+                Hitbox attackBox = demonBoss->GetAttackHitbox();
+                attackBox.x -= m_scrollDistance;
+
+                if (Collision::CheckCollision(attackBox, knightHitbox)) {
+                    m_pKnightClass->TakeDamage(20);
+                }
+            }
+        }
+
+        // Update score and trigger BuffMenu if Werebear is the final enemy
         for (Orc* orc : m_orcs) {
             if (!orc || orc->IsAlive() || orc->WasScored())
                 continue;
@@ -462,6 +555,38 @@ void SceneGame::Process(float deltaTime)
 
             m_score += bear->GetScore();
             bear->MarkScored();
+
+            if (m_pKnightHUD) {
+                m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
+            }
+        }
+
+        for (BossDeath* deathBoss : m_bossDeaths) {
+            if (!deathBoss || deathBoss->IsAlive() || deathBoss->WasScored())
+                continue;
+
+            m_score += deathBoss->GetScore();
+            deathBoss->MarkScored();
+
+            if (m_pKnightHUD) {
+                m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
+            }
+
+            if (m_triggerBuffMenuNext && !m_showBuffMenu) {
+                SDL_ShowCursor(SDL_ENABLE);
+                m_showBuffMenu = true;
+                m_triggerBuffMenuNext = false;
+                m_pBuffMenu->Reset();
+                return; // pause game logic until buff is selected
+            }
+        }
+
+        for (BossDemon* demonBoss : m_bossDemons) {
+            if (!demonBoss || demonBoss->IsAlive() || demonBoss->WasScored())
+                continue;
+
+            m_score += demonBoss->GetScore();
+            demonBoss->MarkScored();
 
             if (m_pKnightHUD) {
                 m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
@@ -509,6 +634,18 @@ void SceneGame::Draw(Renderer& renderer)
     for (Werebear* bear : m_werebear) {
         if (bear) {
             bear->Draw(renderer, m_scrollDistance);
+        }
+    }
+
+    for (BossDeath* deathBoss : m_bossDeaths) {
+        if (deathBoss) { 
+            deathBoss->Draw(renderer, m_scrollDistance); 
+        }
+    }
+
+    for (BossDemon* boss : m_bossDemons) {
+        if (boss) {
+            boss->Draw(renderer, m_scrollDistance);
         }
     }
 
@@ -611,7 +748,7 @@ void SceneGame::SpawnEnemies(Renderer& renderer)
         //{ 4400.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
        // { 5100.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT },
         //{ 5800.0f, groundY, PATROL, 300.0f, WEREWOLF },
-        { 1000.0f, groundY, AGGRESSIVE, 0.0f, WEREBEAR }
+        { 1000.0f, groundY, AGGRESSIVE, 0.0f, DEATH_BOSS } 
     };
 
     const int waveCount = sizeof(wave1) / sizeof(wave1[0]);
@@ -635,6 +772,8 @@ void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offs
         Skeleton* skeleton = nullptr;
         Werebear* werebear = nullptr;
         Werewolf* werewolf = nullptr;
+        BossDeath* deathBoss = nullptr;
+        BossDemon* deathDemon = nullptr;
 
         float spawnX = wave[i].posX + offset; 
         float spawnY = wave[i].posY; 
@@ -669,6 +808,12 @@ void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offs
             break;
         case WEREBEAR:
             werebear = new Werebear();
+            break;
+        case DEATH_BOSS:
+            deathBoss = new BossDeath(); 
+            break;
+        case DEMON_BOSS:
+            deathDemon = new BossDemon();
             break;
         default:
             return;
@@ -724,6 +869,32 @@ void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offs
         }
         else {
             delete werebear;
+        }
+
+        // Spawn BossDeath
+        if (deathBoss && deathBoss->Initialise(renderer)) {
+            deathBoss->SetPosition(spawnX, spawnY);
+            deathBoss->SetBehavior(behavior);
+            if (behavior != IDLE) {
+                deathBoss->SetPatrolRange(spawnX - patrolRange, spawnX + patrolRange);
+            }
+            m_bossDeaths.push_back(deathBoss);
+        }
+        else {
+            delete deathBoss;
+        }
+
+        // Spawn BossDemon
+        if (deathDemon && deathDemon->Initialise(renderer)) {
+            deathDemon->SetPosition(spawnX, spawnY);
+            deathDemon->SetBehavior(behavior);
+            if (behavior != IDLE) {
+                deathDemon->SetPatrolRange(spawnX - patrolRange, spawnX + patrolRange);
+            }
+            m_bossDemons.push_back(deathDemon);
+        }
+        else {
+            delete deathDemon;
         }
     }
 

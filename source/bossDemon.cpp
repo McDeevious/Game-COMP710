@@ -15,7 +15,7 @@ BossDemon::BossDemon()
     , m_demonCleave(nullptr)
     , m_demonSmash(nullptr)
 {
-    m_type = SKELETON;
+    m_type = DEMON_BOSS; 
     m_health = 50;
     m_speed = 1.0f;
     m_direction = 1;
@@ -139,6 +139,7 @@ bool BossDemon::Initialise(Renderer& renderer) {
         LogManager::GetInstance().Log("Failed to load Demon sprites!");
         return false;
     }
+
     // Set initial direction scale for all sprites
     UpdateSpriteScales();
 
@@ -465,14 +466,8 @@ int BossDemon::GetScore() const {
 
     switch (m_type)
     {
-    case SKELETON:
-        score = 100;
-        break;
-    case SKELETON_ARMORED:
-        score = 150;
-        break;
-    case SKELETON_GREAT:
-        score = 150;
+    case DEMON_BOSS:  
+        score = 350;
         break;
     default:
         score = 0;
@@ -513,7 +508,3 @@ void  BossDemon::UpdateSpriteScales() {
     }
 }
 
-bool BossDemon::IsAnimatingDeath() const
-{
-    return !m_isAlive && m_demonDeath && m_demonDeath->IsAnimating();  // check it's not null first
-}

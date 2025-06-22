@@ -15,7 +15,11 @@ enum EnemyType {
     SKELETON_GREAT,
 
     WEREWOLF,
-    WEREBEAR
+    WEREBEAR,
+
+    DEMON_BOSS,
+    DEATH_BOSS,
+    WORM_BOSS
 };
 
 // Type of attack the enemy is performing

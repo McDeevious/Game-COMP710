@@ -1,6 +1,6 @@
 // Orc.h
-#ifndef SKELETON_H
-#define SKELETON_H
+#ifndef BOSSDEMON_H
+#define BOSSDEMON_H
 
 #include "enemy.h"   
 
@@ -13,19 +13,17 @@ public:
     void Process(float deltaTime) override;
     void Draw(Renderer& renderer, float scrollX) override;
 
-    void SetPosition(float x, float y);
-    Vector2 GetPosition() const;
+    void SetPosition(float x, float y) override;
+    Vector2 GetPosition() const override;
 
-    void SetBehavior(EnemyBehavior behavior);
-    void SetPatrolRange(float left, float right);
+    void SetBehavior(EnemyBehavior behavior) override;
+    void SetPatrolRange(float left, float right) override;
     //virtual void UpdateAI(const Vector2& playerPosition, float deltaTime);
 
     void TakeDamage(int amount);
     bool IsAlive() const;
     bool IsAttacking() const;
     EnemyAttackType GetAttackState() const;
-
-    bool IsAnimatingDeath() const;
 
     Hitbox GetHitbox() const override;
     Hitbox GetAttackHitbox() const override;
@@ -47,4 +45,4 @@ protected:
 
 };
 
-#endif // SKELETON_H
+#endif // BOSSDEMON_H
