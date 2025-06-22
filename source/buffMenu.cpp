@@ -52,6 +52,13 @@ bool BuffMenu::Initialise(Renderer& renderer) {
 	FMOD::System* fmod = Game::GetInstance().GetFMODSystem();
 	fmod->createSound("../game/assets/Audio/Menu-Audio/button.wav", FMOD_DEFAULT, 0, &m_hoverSound);
 
+	// Randomize buff types
+	m_buffTypes[0] = static_cast<BuffType>(rand() % BUFF_COUNT); 
+
+	do {
+		m_buffTypes[1] = static_cast<BuffType>(rand() % BUFF_COUNT); 
+	} while (m_buffTypes[1] == m_buffTypes[0]); // Ensure unique buffs 
+
 	std::string paths[BUFF_COUNT] = { 
 		"../game/assets/Sprites/Items/DEFUP.png",
 		"../game/assets/Sprites/Items/DMGUP.png",
@@ -82,12 +89,12 @@ bool BuffMenu::Initialise(Renderer& renderer) {
 		int playW = m_buffLeft->GetWidth();
 		int playH = m_buffLeft->GetHeight();
 
-		float scaleX = (screenW / playW) * 0.2f;
-		float scaleY = (screenH / playH) * 0.2f;
+		float scaleY = screenH * 0.5f; 
+		float scaleX = scaleY / static_cast<float>(playH); 
 
 		m_buffLeft->SetScale(scaleX, -scaleY);
-		m_buffLeft->SetX(screenW / 1.96f);
-		m_buffLeft->SetY(screenH / 2.6);
+		m_buffLeft->SetX(screenW / 2);
+		m_buffLeft->SetY(screenH / 2.5f);
 		m_buffLeft->SetAlpha(1.0f); 
 	}
 
@@ -96,8 +103,8 @@ bool BuffMenu::Initialise(Renderer& renderer) {
 		int playW = m_buffRight->GetWidth();
 		int playH = m_buffRight->GetHeight();
 
-		float scaleX = (screenW / playW) * 0.2f;
-		float scaleY = (screenH / playH) * 0.2f;
+		float scaleY = screenH * 0.5f;
+		float scaleX = scaleY / static_cast<float>(playH); 
 
 		m_buffRight->SetScale(scaleX, -scaleY);
 		m_buffRight->SetX(screenW / 2);
@@ -221,10 +228,10 @@ void BuffMenu::Draw(Renderer& renderer) {
 	//Draw the play button
 	if (m_buffLeft) {
 		if (hoverBuff1) {
-			m_buffLeft->SetScale(1.1f, -1.1f);
+			m_buffLeft->SetScale(2.1f, -2.1f);
 		}
 		else {
-			m_buffLeft->SetScale(1.0f, -1.0f);
+			m_buffLeft->SetScale(2.0f, -2.0f);
 		}
 		m_buffLeft->Draw(renderer);
 	}
@@ -232,10 +239,10 @@ void BuffMenu::Draw(Renderer& renderer) {
 	//Draw the Retry button
 	if (m_buffRight) {
 		if (hoverBuff2) {
-			m_buffRight->SetScale(1.1f, -1.1f);
+			m_buffRight->SetScale(2.1f, -2.1f);
 		}
 		else {
-			m_buffRight->SetScale(1.0f, -1.0f);
+			m_buffRight->SetScale(2.0f, -2.0f);
 		}
 		m_buffRight->Draw(renderer);
 	}

@@ -191,7 +191,6 @@ void SceneGame::Process(float deltaTime)
         if (m_pBuffMenu->GetState() == BUFF_DONE)
         {
             m_showBuffMenu = false;
-            SDL_ShowCursor(SDL_DISABLE);
             // TODO: apply buffs later
         }
         else
@@ -603,15 +602,15 @@ void SceneGame::SpawnEnemies(Renderer& renderer)
     float groundY = renderer.GetHeight() * 0.8f;
 
     const EnemyPlacement wave1[] = {
-        { 1000.0f, groundY, PATROL, 300.0f, ORC },
-        { 1600.0f, groundY, IDLE, 0.0f, ORC_ARMORED },
-        { 2300.0f, groundY, PATROL, 300.0f, ORC_ELITE },
-        { 3000.0f, groundY, IDLE, 0.0f, ORC_RIDER },
-        { 3700.0f, groundY, PATROL, 300.0f, SKELETON },
-        { 4400.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
-        { 5100.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT },
-        { 5800.0f, groundY, PATROL, 300.0f, WEREWOLF },
-        { 6500.0f, groundY, AGGRESSIVE, 0.0f, WEREBEAR }
+        //{ 1000.0f, groundY, PATROL, 300.0f, ORC },
+        //{ 1600.0f, groundY, IDLE, 0.0f, ORC_ARMORED },
+        //{ 2300.0f, groundY, PATROL, 300.0f, ORC_ELITE },
+        //{ 3000.0f, groundY, IDLE, 0.0f, ORC_RIDER },
+        //{ 3700.0f, groundY, PATROL, 300.0f, SKELETON },
+        //{ 4400.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
+       // { 5100.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT },
+        //{ 5800.0f, groundY, PATROL, 300.0f, WEREWOLF },
+        { 1000.0f, groundY, AGGRESSIVE, 0.0f, WEREBEAR }
     };
 
     const int waveCount = sizeof(wave1) / sizeof(wave1[0]);
