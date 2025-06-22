@@ -83,7 +83,7 @@ bool BossDemon::Initialise(Renderer& renderer) {
         m_demonIdle->SetFrameDuration(0.1f);
         m_demonIdle->SetLooping(true);
         m_demonIdle->Animate();
-        m_demonIdle->SetScale(7.5f, -7.5f);
+        //m_demonIdle->SetScale(7.5f, -7.5f);
     }
 
     //Load walking sprite
@@ -93,7 +93,7 @@ bool BossDemon::Initialise(Renderer& renderer) {
         m_demonWalk->SetFrameDuration(0.1f);
         m_demonWalk->SetLooping(true);
         m_demonWalk->Animate();
-        m_demonWalk->SetScale(7.5f, -7.5f);
+       //m_demonWalk->SetScale(7.5f, -7.5f);
     }
 
     //Load hurt sprite
@@ -103,7 +103,7 @@ bool BossDemon::Initialise(Renderer& renderer) {
         m_demonHurt->SetFrameDuration(0.1f);
         m_demonHurt->SetLooping(false);
         m_demonHurt->Animate();
-        m_demonHurt->SetScale(7.5f, -7.5f);
+        //m_demonHurt->SetScale(7.5f, -7.5f);
     }
 
     //Load death sprite
@@ -113,7 +113,7 @@ bool BossDemon::Initialise(Renderer& renderer) {
         m_demonDeath->SetFrameDuration(0.1f);
         m_demonDeath->SetLooping(false);
         m_demonDeath->Animate();
-        m_demonDeath->SetScale(7.5f, -7.5f);
+        //m_demonDeath->SetScale(7.5f, -7.5f);
     }
 
     //Load attack1 sprite
@@ -122,7 +122,7 @@ bool BossDemon::Initialise(Renderer& renderer) {
         m_demonCleave->SetupFrames(180, 140);
         m_demonCleave->SetFrameDuration(0.1f);
         m_demonCleave->SetLooping(false);
-        m_demonCleave->SetScale(7.5f, -7.5f);
+        //m_demonCleave->SetScale(7.5f, -7.5f);
     }
 
     //Load attack2 sprite
@@ -131,7 +131,7 @@ bool BossDemon::Initialise(Renderer& renderer) {
         m_demonSmash->SetupFrames(160, 160);
         m_demonSmash->SetFrameDuration(0.1f);
         m_demonSmash->SetLooping(false);
-        m_demonSmash->SetScale(7.5f, -7.5f);
+        //m_demonSmash->SetScale(7.5f, -7.5f);
     }
 
     if (!m_demonIdle || !m_demonWalk || !m_demonHurt || !m_demonDeath || !m_demonCleave || !m_demonSmash)
