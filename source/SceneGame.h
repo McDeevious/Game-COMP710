@@ -21,6 +21,7 @@ class Orc;
 class Renderer;
 class BackgroundManager;
 class PauseMenu; 
+class BuffMenu;
 class GameOverMenu;
 class AnimatedSprite; 
 class ArmoredOrc;
@@ -63,6 +64,7 @@ public:
     // Spawn orcs 
     void SpawnEnemies(Renderer& renderer);
     void SpawnEnemyWave(const EnemyPlacement* placements, int count, float offset, Renderer& renderer);
+    void CleanUpDeadEnemies();
 
     // Helper method to determine damage based on orc type
     int GetOrcAttackDamage(Orc* orc) const;
@@ -78,6 +80,7 @@ protected:
     BackgroundManager* m_pBackgroundManager;
     PauseMenu* m_pPauseMenu;
     GameOverMenu* m_pGameOverMenu;
+    BuffMenu* m_pBuffMenu;
 
     Character* m_pKnightClass;
     Wizard* m_pWizard;
@@ -107,7 +110,13 @@ protected:
     float m_gameVolume;
     bool m_gameStartPlayed;
 
+
+    int m_waveCount;
     float m_nextWaveOffset;
+
+    bool m_showBuffMenu;
+    bool m_triggerBuffMenuNext; 
+    bool m_allEnemiesCleared; 
 
 };
 

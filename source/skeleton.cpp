@@ -488,3 +488,31 @@ bool Skeleton::WasScored() const {
 void Skeleton::MarkScored() {
     m_wasScored = true;
 }
+
+void  Skeleton::UpdateSpriteScales() {
+    float scaleX = (m_direction > 0) ? 7.5f : -7.5f;
+
+    if (m_skeletonIdle && m_skeletonIdle->GetScaleX() != scaleX) {
+        m_skeletonIdle->SetScale(scaleX, -7.5f);
+    }
+    if (m_skeletonWalk && m_skeletonWalk->GetScaleX() != scaleX) {
+        m_skeletonWalk->SetScale(scaleX, -7.5f);
+    }
+    if (m_skeletonAttack1 && m_skeletonAttack1->GetScaleX() != scaleX) {
+        m_skeletonAttack1->SetScale(scaleX, -7.5f);
+    }
+    if (m_skeletonAttack2 && m_skeletonAttack2->GetScaleX() != scaleX) {
+        m_skeletonAttack2->SetScale(scaleX, -7.5f);
+    }
+    if (m_skeletonHurt && m_skeletonHurt->GetScaleX() != scaleX) {
+        m_skeletonHurt->SetScale(scaleX, -7.5f);
+    }
+    if (m_skeletonDeath && m_skeletonDeath->GetScaleX() != scaleX) {
+        m_skeletonDeath->SetScale(scaleX, -7.5f);
+    }
+}
+
+bool Skeleton::IsAnimatingDeath() const
+{
+    return !m_isAlive && m_skeletonDeath && m_skeletonDeath->IsAnimating();  // check it's not null first
+}

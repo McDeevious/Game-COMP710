@@ -150,13 +150,13 @@ bool Orc::Initialise(Renderer& renderer) {
 
 void Orc::Process(float deltaTime) {
     // Process death animation
-    if (!m_isAlive) {
-        if (m_orcDeath) {
-            m_orcDeath->Process(deltaTime);
+    if (!m_isAlive) { 
+        if (m_orcDeath) { 
+            m_orcDeath->Process(deltaTime); 
 
             // Stop at last frame of death sprtie
-            if (m_orcDeath->GetCurrentFrame() <= 3) { 
-                m_orcDeath->StopAnimating();   
+            if (m_orcDeath->GetCurrentFrame() <= 3) {  
+                m_orcDeath->StopAnimating();    
                 m_orcDeath->SetCurrentFrame(3); 
             }
         }
@@ -489,4 +489,32 @@ bool Orc::WasScored() const {
 
 void Orc::MarkScored() {
     m_wasScored = true;
+}
+
+void Orc::UpdateSpriteScales() {
+    float scaleX = (m_direction > 0) ? 7.5f : -7.5f;
+
+    if (m_orcIdle && m_orcIdle->GetScaleX() != scaleX) {
+        m_orcIdle->SetScale(scaleX, -7.5f);
+    }
+    if (m_orcWalk && m_orcWalk->GetScaleX() != scaleX) {
+        m_orcWalk->SetScale(scaleX, -7.5f);
+    }
+    if (m_orcAttack1 && m_orcAttack1->GetScaleX() != scaleX) {
+        m_orcAttack1->SetScale(scaleX, -7.5f);
+    }
+    if (m_orcAttack2 && m_orcAttack2->GetScaleX() != scaleX) {
+        m_orcAttack2->SetScale(scaleX, -7.5f);
+    }
+    if (m_orcHurt && m_orcHurt->GetScaleX() != scaleX) {
+        m_orcHurt->SetScale(scaleX, -7.5f);
+    }
+    if (m_orcDeath && m_orcDeath->GetScaleX() != scaleX) {
+        m_orcDeath->SetScale(scaleX, -7.5f);
+    }
+}
+
+bool Orc::IsAnimatingDeath() const
+{
+    return !m_isAlive && m_orcDeath && m_orcDeath->IsAnimating();
 }

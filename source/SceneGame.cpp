@@ -6,6 +6,7 @@
 #include "wizard.h"
 #include "BackgroundManager.h"
 #include "PauseMenu.h"
+#include "buffmenu.h"
 #include "GameOverMenu.h"
 #include "SceneGuide.h"
 #include "logmanager.h"
@@ -28,11 +29,15 @@
 SceneGame::SceneGame()
     : m_pBackgroundManager(nullptr)
     , m_pKnightClass(nullptr)
+    , m_pArcher(nullptr)
+    , m_pWizard(nullptr)
+    , m_pSwordsman(nullptr)
     , m_pPauseMenu(nullptr)
     , m_pGameOverMenu(nullptr)
     , m_pRenderer(nullptr)
     , m_pKnightHUD(nullptr)
-    ,m_pSceneGuide(nullptr)
+    , m_pSceneGuide(nullptr)
+    , m_pBuffMenu(nullptr)
     , m_scrollDistance(0.0f)
     , m_gameState(GAME_STATE_PLAYING)
     , m_score(0)
@@ -41,6 +46,10 @@ SceneGame::SceneGame()
     , m_gameVolume(0.2f)
     , m_gameStartPlayed(false)
     , m_nextWaveOffset(0.0f)
+    , m_showBuffMenu(false)
+    , m_allEnemiesCleared(false)
+    , m_triggerBuffMenuNext(false)
+    , m_waveCount(0)
 {
 }
 
@@ -54,6 +63,9 @@ SceneGame::~SceneGame()
 
     delete m_pGameOverMenu; 
     m_pGameOverMenu = nullptr;
+
+    delete m_pBuffMenu; 
+    m_pBuffMenu = nullptr; 
 
     delete m_pKnightClass;
     m_pKnightClass = nullptr;
@@ -105,6 +117,10 @@ bool SceneGame::Initialise(Renderer& renderer)
     if (!m_pPauseMenu->Initialise(renderer))
         return false;
 
+    m_pBuffMenu = new BuffMenu(); 
+    if (!m_pBuffMenu->Initialise(renderer)) 
+        return false;
+
     m_pKnightClass = new Archer();
     if (!m_pKnightClass->Initialise(renderer))
         return false;
@@ -135,6 +151,22 @@ bool SceneGame::Initialise(Renderer& renderer)
 
 void SceneGame::Process(float deltaTime)
 {
+    if (m_showBuffMenu && m_pBuffMenu)
+    {
+        InputSystem& inputSystem = Game::GetInstance().GetInputSystem();
+
+        if (m_pBuffMenu->GetState() == BUFF_DONE)
+        {
+            m_showBuffMenu = false;
+            SDL_ShowCursor(SDL_DISABLE);
+            // TODO: apply buffs later
+        }
+        else
+        {
+            m_pBuffMenu->ProcessInput(inputSystem);
+            return; // pause the rest of the game logic
+        }
+    }
     m_pKnightClass->Process(deltaTime);
     m_pBackgroundManager->Process(deltaTime);
 
@@ -353,6 +385,64 @@ void SceneGame::Process(float deltaTime)
                 }
             }
         }
+        // Update score and trigger BuffMenu if Werebear is the final enemy
+
+        for (Orc* orc : m_orcs) {
+            if (!orc || orc->IsAlive() || orc->WasScored())
+                continue;
+
+            m_score += orc->GetScore();
+            orc->MarkScored();
+
+            if (m_pKnightHUD) {
+                m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
+            }
+        }
+
+        for (Skeleton* skeleton : m_skeletons) {
+            if (!skeleton || skeleton->IsAlive() || skeleton->WasScored())
+                continue;
+
+            m_score += skeleton->GetScore();
+            skeleton->MarkScored();
+
+            if (m_pKnightHUD) {
+                m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
+            }
+        }
+
+        for (Werewolf* wolf : m_werewolf) {
+            if (!wolf || wolf->IsAlive() || wolf->WasScored())
+                continue;
+
+            m_score += wolf->GetScore();
+            wolf->MarkScored();
+
+            if (m_pKnightHUD) {
+                m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
+            }
+        }
+
+        for (Werebear* bear : m_werebear) {
+            if (!bear || bear->IsAlive() || bear->WasScored())
+                continue;
+
+            m_score += bear->GetScore();
+            bear->MarkScored();
+
+            if (m_pKnightHUD) {
+                m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
+            }
+
+            if (m_triggerBuffMenuNext && !m_showBuffMenu) {
+                SDL_ShowCursor(SDL_ENABLE);
+                m_showBuffMenu = true;
+                m_triggerBuffMenuNext = false;
+                m_pBuffMenu->Reset();
+                return; // pause game logic until buff is selected
+            }
+        }
+
     }
     else if (m_gameState == GAME_STATE_RESTART)
     {
@@ -397,6 +487,12 @@ void SceneGame::Draw(Renderer& renderer)
 
     if (m_pKnightHUD) {
         m_pKnightHUD->Draw(renderer);
+    }
+
+    if (m_showBuffMenu && m_pBuffMenu) 
+    {
+        m_pBuffMenu->Draw(renderer);
+        return; // Only draw BuffMenu
     }
 
     if (m_gameState == GAME_STATE_PAUSED)
@@ -469,6 +565,8 @@ void SceneGame::ProcessInput(InputSystem& inputSystem)
 
 void SceneGame::SpawnEnemies(Renderer& renderer)
 {
+    if (m_waveCount > 0) return; // Only spawn once
+
     float groundY = renderer.GetHeight() * 0.8f;
 
     const EnemyPlacement wave1[] = {
@@ -484,13 +582,12 @@ void SceneGame::SpawnEnemies(Renderer& renderer)
     };
 
     const int waveCount = sizeof(wave1) / sizeof(wave1[0]);
-    float worldX = m_scrollDistance + m_pKnightClass->GetPosition().x;
-    float screenW = static_cast<float>(m_pRenderer->GetWidth());
 
-    if (worldX + screenW > m_nextWaveOffset) {
-        SpawnEnemyWave(wave1, waveCount, m_nextWaveOffset, renderer);
-        m_nextWaveOffset += 7000.0f;  // Increase spacing if needed
-    }
+    SpawnEnemyWave(wave1, waveCount, 0.0f, renderer);  // offset = 0
+    m_waveCount = 1;
+    m_triggerBuffMenuNext = true;
+
+    LogManager::GetInstance().Log("One-time wave spawned. Buff menu will appear after defeat.");
 }
 
 void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offset, Renderer& renderer)
@@ -499,19 +596,19 @@ void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offs
     sprintf_s(buffer, "Spawning Enemy Wave with offset: %.2f", offset);
     LogManager::GetInstance().Log(buffer);
 
-    for (int i = 0; i < count; i++)
-    {
+   for (int i = 0; i < count; i++)
+   {
         Orc* orc = nullptr;
         Skeleton* skeleton = nullptr;
         Werebear* werebear = nullptr;
         Werewolf* werewolf = nullptr;
 
-        float spawnX = wave[i].posX + offset;
-        float spawnY = wave[i].posY;
-        EnemyBehavior behavior = wave[i].behavior;
-        float patrolRange = wave[i].patrolRange;
+        float spawnX = wave[i].posX + offset; 
+        float spawnY = wave[i].posY; 
+        EnemyBehavior behavior = wave[i].behavior; 
+        float patrolRange = wave[i].patrolRange; 
 
-        switch (wave[i].type)
+        switch (wave[i].type) 
         {
         case ORC:
             orc = new Orc();
@@ -541,7 +638,7 @@ void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offs
             werebear = new Werebear();
             break;
         default:
-            continue;
+            return;
         }
 
         // Spawn orc

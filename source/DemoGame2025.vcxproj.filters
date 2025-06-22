@@ -43,6 +43,12 @@
     <Filter Include="Source Files\Enemies">
       <UniqueIdentifier>{bbe3ace8-182c-4827-aa4f-90de73f3cef0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Buffs">
+      <UniqueIdentifier>{bdcffab6-50aa-4c35-be0b-0fd211701c40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Buffs">
+      <UniqueIdentifier>{83522897-c845-47e9-b1ab-54da2af11d4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -192,6 +198,9 @@
     <ClCompile Include="enemy.cpp">
       <Filter>Source Files\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="buffMenu.cpp">
+      <Filter>Source Files\Buffs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -337,6 +346,12 @@
     </ClInclude>
     <ClInclude Include="enemytype.h">
       <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="buffMenu.h">
+      <Filter>Header Files\Buffs</Filter>
+    </ClInclude>
+    <ClInclude Include="bufftype.h">
+      <Filter>Header Files\Buffs</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -25,6 +25,8 @@ public:
     virtual bool IsAttacking() const;
     virtual EnemyAttackType GetAttackState() const;
 
+    bool IsAnimatingDeath() const; 
+
     Hitbox GetHitbox() const override;
     Hitbox GetAttackHitbox() const override;
 
@@ -41,7 +43,7 @@ protected:
     AnimatedSprite* m_orcAttack1;
     AnimatedSprite* m_orcAttack2;
 
-    //void UpdateSpriteScales(); // Optional: scale flipping based on direction
+    void UpdateSpriteScales(); 
 };
 
 #endif // ORC_H

@@ -483,3 +483,31 @@ bool Werewolf::WasScored() const {
 void Werewolf::MarkScored() {
     m_wasScored = true;
 }
+
+void Werewolf::UpdateSpriteScales() {
+    float scaleX = (m_direction > 0) ? 7.5f : -7.5f;
+
+    if (m_werewolfIdle && m_werewolfIdle->GetScaleX() != scaleX) {
+        m_werewolfIdle->SetScale(scaleX, -7.5f);
+    }
+    if (m_werewolfWalk && m_werewolfWalk->GetScaleX() != scaleX) {
+        m_werewolfWalk->SetScale(scaleX, -7.5f);
+    }
+    if (m_werewolfAttack1 && m_werewolfAttack1->GetScaleX() != scaleX) {
+        m_werewolfAttack1->SetScale(scaleX, -7.5f);
+    }
+    if (m_werewolfAttack2 && m_werewolfAttack2->GetScaleX() != scaleX) {
+        m_werewolfAttack2->SetScale(scaleX, -7.5f);
+    }
+    if (m_werewolfHurt && m_werewolfHurt->GetScaleX() != scaleX) {
+        m_werewolfHurt->SetScale(scaleX, -7.5f);
+    }
+    if (m_werewolfDeath && m_werewolfDeath->GetScaleX() != scaleX) {
+        m_werewolfDeath->SetScale(scaleX, -7.5f);
+    }
+}
+
+bool Werewolf::IsAnimatingDeath() const
+{
+    return !m_isAlive && m_werewolfDeath && m_werewolfDeath->IsAnimating();  // check it's not null first 
+}

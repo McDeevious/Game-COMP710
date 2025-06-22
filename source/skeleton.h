@@ -25,6 +25,8 @@ public:
     virtual bool IsAttacking() const;
     virtual EnemyAttackType GetAttackState() const;
 
+    bool IsAnimatingDeath() const; 
+
     Hitbox GetHitbox() const override;
     Hitbox GetAttackHitbox() const override;
 
@@ -41,7 +43,7 @@ protected:
     AnimatedSprite* m_skeletonAttack1;
     AnimatedSprite* m_skeletonAttack2;
 
-    //void UpdateSpriteScales();
+    void UpdateSpriteScales();
     
 };
 

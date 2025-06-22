@@ -151,6 +151,7 @@
     <ClCompile Include="armoredOrcs.cpp" />
     <ClCompile Include="armoredSkeleton.cpp" />
     <ClCompile Include="BackgroundManager.cpp" />
+    <ClCompile Include="buffMenu.cpp" />
     <ClCompile Include="character.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="eliteOrc.cpp" />
@@ -202,6 +203,8 @@
     <ClInclude Include="armoredOrc.h" />
     <ClInclude Include="armoredSkeleton.h" />
     <ClInclude Include="BackgroundManager.h" />
+    <ClInclude Include="buffMenu.h" />
+    <ClInclude Include="bufftype.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="enemy.h" />
