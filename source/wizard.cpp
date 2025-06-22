@@ -12,7 +12,7 @@
 #include <string>  
 #include "sharedenums.h"
 #include <vector>
-#include <iostream>
+#include "bufftype.h"
 
 Wizard::Wizard()
     : m_wizardIdle(nullptr)
@@ -23,8 +23,14 @@ Wizard::Wizard()
     , m_wizardLeft(false)
     , m_isMoving(false)
     , m_isHurt(false)
+    , m_damageReduction(0)
     , m_isDead(false)
     , m_wizardhealth(125)
+    , m_maxHealth(m_wizardhealth)
+    , m_regen(0)
+    , m_regenTimeAcculmated(0.0f)
+    , m_isRegenApplied(false)
+    , m_attackModifier(0)
     //boundaries
     , m_leftBoundary(0.0f)
     , m_rightBoundary(1024.0f)
@@ -34,13 +40,13 @@ Wizard::Wizard()
     , m_isJumping(false)
     , m_jumpVelocity(0.0f)
     , m_gravity(981.0f)
-    , m_jumpStrength(-650.0f / 10*9.2)
+    , m_jumpStrength(-650.0f)
     , m_groundY(0)
     //atacking
     , m_wizardAttack1(0)
     , m_wizardSpecial(0)
     , m_isAttacking(false)
-    , m_attackState(ATTACK_NONE)
+    , m_attackState(CLASS_ATTACK_NONE)
     , m_attackDuration(0.0f)
     , m_attackSound(nullptr)
     , m_hurtSound(nullptr)
@@ -48,12 +54,9 @@ Wizard::Wizard()
     , m_jumpSound(nullptr)
     , m_sfxVolume(0.4f)
     , m_iActiveFire(0)
-    
 {
-    character_size = 5;
     m_wizardPosition.Set(100, 618);
     m_lastMovementDirection.Set(0.0f, 0.0f);
-    
 }
 
 Wizard::~Wizard() {
@@ -125,7 +128,7 @@ bool Wizard::Initialise(Renderer& renderer)
         m_wizardIdle->SetLooping(true);
         m_wizardIdle->SetX(m_wizardPosition.x);
         m_wizardIdle->SetY(m_wizardPosition.y);
-        m_wizardIdle->SetScale(character_size, -character_size);
+        m_wizardIdle->SetScale(7.5f, -7.5f);
         m_wizardIdle->Animate();
     }
 
@@ -138,7 +141,7 @@ bool Wizard::Initialise(Renderer& renderer)
         m_wizardWalk->SetLooping(true);
         m_wizardWalk->SetX(m_wizardPosition.x);
         m_wizardWalk->SetY(m_wizardPosition.y);
-        m_wizardWalk->SetScale(character_size, -character_size);
+        m_wizardWalk->SetScale(7.5f, -7.5f);
         m_wizardWalk->Animate();
         SetBoundaries(0, renderer.GetWidth(), 0, renderer.GetHeight());
     }
@@ -152,7 +155,7 @@ bool Wizard::Initialise(Renderer& renderer)
         m_wizardHurt->SetLooping(false);
         m_wizardHurt->SetX(m_wizardPosition.x);
         m_wizardHurt->SetY(m_wizardPosition.y);
-        m_wizardHurt->SetScale(character_size, -character_size);
+        m_wizardHurt->SetScale(7.5f, -7.5f);
     }
 
     //Load knight's death sprite
@@ -164,7 +167,7 @@ bool Wizard::Initialise(Renderer& renderer)
         m_wizardDeath->SetLooping(false);
         m_wizardDeath->SetX(m_wizardPosition.x);
         m_wizardDeath->SetY(m_wizardPosition.y);
-        m_wizardDeath->SetScale(character_size, -character_size);
+        m_wizardDeath->SetScale(7.5f, -7.5f);
     }
 
     //Load Attack 1
@@ -176,7 +179,7 @@ bool Wizard::Initialise(Renderer& renderer)
         m_wizardAttack1->SetLooping(false);
         m_wizardAttack1->SetX(m_wizardPosition.x);
         m_wizardAttack1->SetY(m_wizardPosition.y);
-        m_wizardAttack1->SetScale(character_size, -character_size);
+        m_wizardAttack1->SetScale(7.5f, -7.5f);
     }
 
     //Load Special Attack
@@ -188,7 +191,7 @@ bool Wizard::Initialise(Renderer& renderer)
         m_wizardSpecial->SetLooping(false);
         m_wizardSpecial->SetX(m_wizardPosition.x);
         m_wizardSpecial->SetY(m_wizardPosition.y);
-        m_wizardSpecial->SetScale(character_size, -character_size);
+        m_wizardSpecial->SetScale(7.5f, -7.5f);
     }
 
     for (int i = 0; i < 5; i++)
@@ -209,9 +212,17 @@ bool Wizard::Initialise(Renderer& renderer)
     return true;
 }
 
-void Wizard::Process(float deltaTime, SceneGame& game) {
-    //  wasTouchingGround = 0;
-      //Process hurt animation
+void Wizard::Process(float deltaTime) {
+
+    // Process regen (regen every second - regen is 0 unless chosen in upgrades)
+    m_regenTimeAcculmated += deltaTime;
+    if (m_regenTimeAcculmated >= 1.0f && m_isRegenApplied)
+    {
+        m_wizardhealth += m_regen;
+        m_regenTimeAcculmated = 0.0f;
+    }
+    
+    //Process hurt animation
     if (m_isHurt)
     {
         if (m_wizardHurt) {
@@ -257,11 +268,11 @@ void Wizard::Process(float deltaTime, SceneGame& game) {
 
         switch (m_attackState)
         {
-        case ATTACK_1:
+        case CLASS_ATTACK_1:
             activeAttack = m_wizardAttack1;
             timeoutDuration = 1.2f;
             break;
-        case SP_ATTACK:
+        case CLASS_SP_ATTACK:
             activeAttack = m_wizardSpecial;
             timeoutDuration = 1.2f;
             break;
@@ -279,9 +290,9 @@ void Wizard::Process(float deltaTime, SceneGame& game) {
             activeAttack->SetX(m_wizardPosition.x);
             activeAttack->SetY(m_wizardPosition.y);
 
-            float scaleX = (m_wizardWalk) ? m_wizardWalk->GetScaleX() : character_size;
-            float direction = (scaleX < 0) ? -character_size : character_size;
-            activeAttack->SetScale(direction, -character_size);
+            float scaleX = (m_wizardWalk) ? m_wizardWalk->GetScaleX() : 7.5f;
+            float direction = (scaleX < 0) ? -7.5f : 7.5f;
+            activeAttack->SetScale(direction, -7.5f);
 
             if ((!activeAttack->IsAnimating() && m_attackState != BLOCK) || m_attackDuration > timeoutDuration)
             {
@@ -299,71 +310,40 @@ void Wizard::Process(float deltaTime, SceneGame& game) {
                     }
                 }
                 m_isAttacking = false;
-                m_attackState = ATTACK_NONE;
+                m_attackState = CLASS_ATTACK_NONE;
                 m_attackDuration = 0.0f;
             }
         }
         else
         {
             m_isAttacking = false;
-            m_attackState = ATTACK_NONE;
+            m_attackState = CLASS_ATTACK_NONE;
             m_attackDuration = 0.0f;
         }
     }
 
     // Process jump physics
+    if (m_isJumping) {
+        m_jumpVelocity += m_gravity * deltaTime;
 
-     // Process jump physics
-     wasTouchingGround = 0;
- wasTouchingRoof = 0;
- if (m_jumpVelocity > 0)
- {
-     //is going down
-     m_jumpVelocity += m_gravity * deltaTime;
-     m_wizardPosition.y += m_jumpVelocity * deltaTime;
-     setBounds(game);
-    if ( collision(1,game))
-   //  if (wasTouchingGround)
-     {
-         //   m_jumpVelocity += m_gravity * deltaTime;
-         m_wizardPosition.y -= m_jumpVelocity * deltaTime;
-         m_isJumping = false;
-         m_jumpVelocity = 0;
-         if (m_isMoving && m_wizardWalk) {
-             m_wizardWalk->Animate();
-         }
-         else if (m_wizardIdle) {
-             m_wizardIdle->Animate();
-         }
-     }
- }
- else if (m_jumpVelocity < 0)
- {
+        m_wizardPosition.y += m_jumpVelocity * deltaTime;
 
-     m_jumpVelocity += m_gravity * deltaTime;
-     m_wizardPosition.y += m_jumpVelocity * deltaTime;
-     setBounds(game);
-     if (collision(2, game))
-    // if (wasTouchingRoof)
-     {
-         //  m_jumpVelocity += m_gravity * deltaTime;
-         m_wizardPosition.y -= m_jumpVelocity * deltaTime;
+        // Check for landing
+        if (m_wizardPosition.y >= m_groundY) {
+            m_wizardPosition.y = m_groundY;
+            m_isJumping = false;
+            m_jumpVelocity = 0.0f;
 
-     }
-     //going up
- }
- else
- {
-     //idle
-     m_wizardPosition.y += m_gravity * deltaTime;
-     setBounds(game);
-     if (collision(1, game))
-    // if (wasTouchingGround)
-     {
-         m_wizardPosition.y -= m_gravity * deltaTime;
-     }
- }
- std::cout << m_wizardPosition.x << " y = " << m_wizardPosition.y << std::endl;
+            // Resume animations after landing
+            if (m_isMoving && m_wizardWalk) {
+                m_wizardWalk->Animate();
+            }
+            else if (m_wizardIdle) {
+                m_wizardIdle->Animate();
+            }
+        }
+    }
+
     // Process Arrows
     for (int i = 0; i < m_pFire.size(); i++)
     {
@@ -387,8 +367,8 @@ void Wizard::Process(float deltaTime, SceneGame& game) {
                 m_wizardWalk->SetX(m_wizardPosition.x);
                 m_wizardWalk->SetY(m_wizardPosition.y);
 
-                float direction = m_wizardLeft ? -character_size : character_size;
-                m_wizardWalk->SetScale(direction, -character_size);
+                float direction = m_wizardLeft ? -7.5f : 7.5f;
+                m_wizardWalk->SetScale(direction, -7.5f);
             }
         }
         //Handle normal movement animations
@@ -404,8 +384,8 @@ void Wizard::Process(float deltaTime, SceneGame& game) {
                 m_wizardWalk->SetX(m_wizardPosition.x);
                 m_wizardWalk->SetY(m_wizardPosition.y);
 
-                float direction = m_wizardLeft ? -character_size : character_size;
-                m_wizardWalk->SetScale(direction, -character_size);
+                float direction = m_wizardLeft ? -7.5 : 7.5;
+                m_wizardWalk->SetScale(direction, -7.5);
             }
         }
         else {
@@ -420,8 +400,8 @@ void Wizard::Process(float deltaTime, SceneGame& game) {
                 m_wizardIdle->SetX(m_wizardPosition.x);
                 m_wizardIdle->SetY(m_wizardPosition.y);
 
-                float direction = m_wizardLeft ? -character_size : character_size;
-                m_wizardIdle->SetScale(direction, -character_size);
+                float direction = m_wizardLeft ? -7.5 : 7.5;
+                m_wizardIdle->SetScale(direction, -7.5);
             }
 
         }
@@ -478,12 +458,12 @@ void Wizard::Draw(Renderer& renderer) {
     else {
         // Draw appropriate attack animation 
         switch (m_attackState) {
-        case ATTACK_1:
+        case CLASS_ATTACK_1:
             if (m_wizardAttack1) {
                 m_wizardAttack1->Draw(renderer);
             }
             break;
-        case SP_ATTACK:
+        case CLASS_SP_ATTACK:
             if (m_wizardSpecial) {
                 m_wizardSpecial->Draw(renderer);
             }
@@ -504,15 +484,11 @@ void Wizard::Draw(Renderer& renderer) {
     }
 }
 
-void Wizard::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
-    wasTouchingGround = 0;
-    wasTouchingRoof = 0;
+void Wizard::ProcessInput(InputSystem& inputSystem) {
     bool isWalking = false;
-    // m_wizardPosition.x = 150.0f;
+    m_wizardPosition.x = 150.0f;
     Vector2 direction;
-    Vector2 direction2;
     direction.Set(0, 0);
-    arenaXY.Set(0, 0);
 
     // Get controller if connected
     XboxController* controller = inputSystem.GetController(0);
@@ -534,90 +510,45 @@ void Wizard::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
             }
         }
         m_isJumping = true;
-        //  if (wasTouchingRoof)
-        //  {
         m_jumpVelocity = m_jumpStrength;
-        //  }
     }
 
     if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_LEFT) == BS_HELD || (controller && (stick.x < -threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_LEFT) == BS_HELD))) {
-        if (m_wizardPosition.x < 200)
-        {
-            direction.x = -1.0f;
-            arenaXY.x = -2.5f;
-            if (collision(3,game))
-            {
-                arenaXY.x = 2.5f;
-
-            }
-        }
-        else {
-            m_wizardPosition.x -= 2.5f;
-            if (collision(3,game))
-            {
-                m_wizardPosition.x += 2.5f;
-            }
-        }
-        //   direction.x = -1.0f; 
+        direction.x = -1.0f;
         m_wizardLeft = true; // Left 
         isWalking = true;
     }
-
     else if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_RIGHT) == BS_HELD || (controller && (stick.x > threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_RIGHT) == BS_HELD))) {
-        // direction.x = 1.0f; 
-        if (m_wizardPosition.x > 1000)
-        {
-            direction.x = 1.0f;
-            arenaXY.x = 2.5f;
-            if (collision(5,game))
-            {
-                arenaXY.x = -2.5f;
-            }
-        }
-        else {
-            m_wizardPosition.x += 2.5;
-            if (collision(4,game))
-            {
-                m_wizardPosition.x -= 2.5f;
-            }
-        }
+        direction.x = 1.0f;
         m_wizardLeft = false; // Right 
         isWalking = true;
-    }
-    else
-    {
-        m_wizardLeft = 0;
-      //  direction.x = 0;
-        arenaXY.x = 0;
-        isWalking = 0;
     }
 
     // Process attacking inputs
     if (!m_isAttacking && !m_isHurt && !m_isDead) {
         // LCTRL for basic attack
         if (inputSystem.GetKeyState(SDL_SCANCODE_LCTRL) == BS_PRESSED || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_X) == BS_PRESSED)) {
-            StartAttack(ATTACK_1);
+            StartAttack(CLASS_ATTACK_1);
         }
         // V for special attack
         else if (inputSystem.GetKeyState(SDL_SCANCODE_Q) == BS_PRESSED || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_Y) == BS_PRESSED)) {
-            StartAttack(SP_ATTACK);
+            StartAttack(CLASS_SP_ATTACK);
         }
     }
 
     // Check if we need to end blocking when button is released
     if (m_isAttacking && m_attackState == BLOCK && inputSystem.GetKeyState(SDL_SCANCODE_W) == BS_RELEASED || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_B) == BS_RELEASED)) {
         m_isAttacking = false;
-        m_attackState = ATTACK_NONE;
+        m_attackState = CLASS_ATTACK_NONE;
         m_attackDuration = 0.0f;
     }
 
     // Store the movement direction for background scrolling
-    setAreanapos = -arenaXY.x;
     m_lastMovementDirection = direction;
     // Update player horizontal position
     if (isWalking) {
-        // Vector2 movement = direction * m_knightSpeed * 0.016f; 
-       ///  m_knightPosition.x += movement.x; 
+        Vector2 movement = direction * m_wizardSpeed * 0.016f;
+        m_wizardPosition.x += movement.x;
 
         ClampPositionToBoundaries();
         m_isMoving = true;
@@ -625,7 +556,6 @@ void Wizard::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
     else {
         m_isMoving = false;
     }
-    collision(3,game);
 }
 
 void Wizard::StartAttack(AttackType attackType) {
@@ -636,10 +566,10 @@ void Wizard::StartAttack(AttackType attackType) {
     float frameDuration = 0.2f; // Default frame duration
 
     switch (attackType) {
-    case ATTACK_1:
+    case CLASS_ATTACK_1:
         attackSprite = m_wizardAttack1;
         break;
-    case SP_ATTACK:
+    case CLASS_SP_ATTACK:
         attackSprite = m_wizardSpecial;
         break;
     default:
@@ -658,7 +588,7 @@ void Wizard::StartAttack(AttackType attackType) {
     }
     else {
         m_isAttacking = false;
-        m_attackState = ATTACK_NONE;
+        m_attackState = CLASS_ATTACK_NONE;
     }
 
     if (m_attackState != BLOCK && m_attackSound) {
@@ -674,11 +604,11 @@ void Wizard::StartAttack(AttackType attackType) {
 
 int Wizard::AttackDamage() const {
     switch (m_attackState) {
-    case ATTACK_1:
-        return 1000;
+    case CLASS_ATTACK_1:
+        return (10 + m_attackModifier);
         break;
-    case SP_ATTACK:
-        return 2500;
+    case CLASS_SP_ATTACK:
+        return (25 + m_attackModifier);
         break;
     case BLOCK:
         return 0;
@@ -696,7 +626,7 @@ bool Wizard::isBlocking() const {
 
 bool Wizard::isAttacking() const {
 
-    return m_isAttacking && m_attackState != ATTACK_NONE;
+    return m_isAttacking && m_attackState != CLASS_ATTACK_NONE;
 }
 
 bool Wizard::isProjectilesActive() const {
@@ -713,19 +643,14 @@ bool Wizard::isProjectilesActive() const {
 
 void Wizard::SetBoundaries(float left, float right, float top, float bottom)
 {
-    left = 0;
-    top = 0;
-    bottom = 2999;
-    right = 4000;
     // Calculate effective sprite size for boundary padding
     float effectiveWidth = 100.0f * 2.0f * 0.5f;
     float effectiveHeight = 100.0f * 2.0f * 0.5f;
 
     // Set left boundary to knight's initial X position 
-  //  m_leftBoundary = 100.0f;
+    m_leftBoundary = 100.0f;
 
     // Set other boundaries with appropriate padding
-    m_leftBoundary = left - effectiveWidth;
     m_rightBoundary = right - effectiveWidth;
     m_topBoundary = top + effectiveHeight;
     m_bottomBoundary = bottom - effectiveHeight;
@@ -771,16 +696,16 @@ const Vector2& Wizard::GetPosition() const
 
 Hitbox Wizard::GetHitbox() const {
 
-    float halfWidth = (8.0f * character_size) / 2.0f;
-    float halfHeight = (16.0f * character_size) / 2.0f;
+    float halfWidth = (100.0f * 7.5f) / 2.0f;
+    float halfHeight = (100.0f * 7.5f) / 2.0f;
 
     if (m_isJumping) {
-        //  halfHeight *= 0.75f; // 25% smaller in air
+        halfHeight *= 0.75f; // 25% smaller in air
     }
 
     return {
         m_wizardPosition.x - halfWidth,
-        m_wizardPosition.y - halfHeight,
+        m_wizardPosition.y - 100.0f * 7.5f,
         halfWidth * 2.0f,
         halfHeight * 2.0f
     };
@@ -789,14 +714,14 @@ Hitbox Wizard::GetHitbox() const {
 }
 
 // Need to change it so that it will only calculate it for the closest arrow projectile
-Hitbox Wizard::GetAttackHitbox(const Orc& orc) const {
+Hitbox Wizard::GetAttackHitbox(const Enemy& enemy) const {
     if (m_pFire.empty())
     {
         return { 0, 0, 0, 0 };
     }
 
     // Get orc x pos and set closest current distance value to high val
-    float orcX = orc.GetPosition().x;
+    float enemyX = enemy.GetPosition().x;
     float closestDist = FLT_MAX;
     Projectile* closestProj = nullptr;
 
@@ -805,7 +730,7 @@ Hitbox Wizard::GetAttackHitbox(const Orc& orc) const {
         if (proj && proj->m_bActive)
         {
             // absolute value of difference between orcX and projectile X
-            float dist = fabs(proj->GetPosition().x - orcX);
+            float dist = fabs(proj->GetPosition().x - enemyX);
             if (dist < closestDist)
             {
                 closestDist = dist;
@@ -832,7 +757,7 @@ void Wizard::TakeDamage(int amount) {
 
     // Cancel any current attack
     m_isAttacking = false;
-    m_attackState = ATTACK_NONE;
+    m_attackState = CLASS_ATTACK_NONE;
     m_attackDuration = 0.0f;
 
     if (m_wizardhealth <= 0) {
@@ -884,4 +809,37 @@ void Wizard::TakeDamage(int amount) {
 bool Wizard::IsDead() const
 {
     return m_isDead;
+}
+
+void Wizard::buffCharacter(BuffType buff)
+{
+    if (buff == BUFF_DEFUP)
+    {
+        m_damageReduction += 10;
+    }
+    else if (buff == BUFF_SPEED)
+    {
+        m_wizardSpeed *= 2;
+    }
+    else if (buff == BUFF_HEALTH)
+    {
+        m_wizardhealth += 100;
+        if (m_wizardhealth > m_maxHealth)
+        {
+            m_wizardhealth = m_maxHealth;
+        }
+    }
+    else if (buff == BUFF_REGEN)
+    {
+        m_regen = 10;
+        m_isRegenApplied = true;
+    }
+    else if (buff == BUFF_DMGUP)
+    {
+        m_attackModifier += 5;
+    }
+    else if (buff == BUFF_JUMP)
+    {
+        // Do nothing for now as jump mechanics are changing
+    }
 }

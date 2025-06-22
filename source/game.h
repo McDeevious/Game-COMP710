@@ -23,6 +23,7 @@ public:
 	void Quit();
 	void ToggleDebugWindow();
 	FMOD::System* GetFMODSystem() const { return m_fmodSystem; }
+	InputSystem& GetInputSystem() const { return *m_pInputSystem; } 
 protected:
 	void Process(float deltaTime);
 	void Draw(Renderer& renderer);

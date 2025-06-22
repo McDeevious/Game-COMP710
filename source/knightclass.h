@@ -11,7 +11,7 @@ class AnimatedSprite;
 class Hitbox; 
 class Renderer;
 class InputSystem;
-class Orc;
+class Enemy;
 
 //enum AttackType {
 //	ATTACK_NONE,
@@ -50,12 +50,15 @@ public:
 	bool isAttacking() const;
 	bool isProjectilesActive() const;
 
+	// Buff Character
+	void buffCharacter(BuffType buff);
+
 	// State checking
 	bool IsDead() const;
 
 	//Collisions 
 	Hitbox GetHitbox() const;  
-	Hitbox GetAttackHitbox(const Orc& orc) const;
+	Hitbox GetAttackHitbox(const Enemy& enemy) const;
 
 private:
 	//Clamp knight to boundaries
@@ -77,7 +80,14 @@ private:
 	bool m_isMoving;
 	bool m_isDead;
 	bool m_isHurt; 
+	int m_damageReduction;
 	int m_knighthealth;
+	int m_maxHealth;
+
+	// Regen
+	int m_regen;
+	float m_regenTimeAcculmated;
+	bool m_isRegenApplied;
 
 	//Player attacks
 	AttackType m_attackState;
@@ -88,6 +98,8 @@ private:
 	AnimatedSprite* m_knightSpecial;
 	AnimatedSprite* m_knightBlock;
 	float m_attackDuration;
+	int m_attackModifier;
+
 	
 	// Movement tracking for background scrolling
 	Vector2 m_lastMovementDirection;

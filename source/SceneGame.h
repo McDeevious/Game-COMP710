@@ -5,6 +5,10 @@
 #include "inputsystem.h"
 #include "vector2.h"
 #include "orc.h"
+#include "skeleton.h"
+#include "werebear.h"
+#include "werewolf.h"
+#include "enemy.h"
 #include <vector>
 #include <string>
 #include <fmod.hpp>
@@ -17,6 +21,7 @@ class Orc;
 class Renderer;
 class BackgroundManager;
 class PauseMenu; 
+class BuffMenu;
 class GameOverMenu;
 class AnimatedSprite; 
 class ArmoredOrc;
@@ -34,12 +39,12 @@ enum GameState {
 };
 
 // Define orc positions and behaviors for a more interesting level layout
-struct OrcPlacement {
+struct EnemyPlacement {
     float posX;
     float posY;
-    OrcBehavior behavior;
+    EnemyBehavior behavior; 
     float patrolRange;
-    OrcType type;
+    EnemyType type; 
 };
 
 class SceneGame : public Scene
@@ -57,8 +62,9 @@ public:
     void ProcessInput(InputSystem& inputSystem);
 
     // Spawn orcs 
-    void SpawnOrcs(Renderer& renderer);
-    void SpawnOrcWave(const OrcPlacement* placements, int count, float offset, Renderer& renderer);
+    void SpawnEnemies(Renderer& renderer);
+    void SpawnEnemyWave(const EnemyPlacement* placements, int count, float offset, Renderer& renderer);
+    void CleanUpDeadEnemies();
 
     // Helper method to determine damage based on orc type
     int GetOrcAttackDamage(Orc* orc) const;
@@ -66,7 +72,6 @@ public:
     // Helper to check if knight is dead and manage state transitions
     void CheckKnightState();
 
-    
     // Restart the game and reset all game elements
     void RestartGame();
     void getAreaArray();
@@ -82,6 +87,7 @@ protected:
     BackgroundManager* m_pBackgroundManager;
     PauseMenu* m_pPauseMenu;
     GameOverMenu* m_pGameOverMenu;
+    BuffMenu* m_pBuffMenu;
 
     Character* m_pKnightClass;
     Wizard* m_pWizard;
@@ -93,7 +99,10 @@ protected:
     SceneGuide* m_pSceneGuide; 
 
     // Enemy list
-    std::vector<Orc*> m_orcs;   
+    std::vector<Orc*> m_orcs;
+    std::vector<Skeleton*> m_skeletons;
+    std::vector<Werewolf*> m_werewolf;
+    std::vector<Werebear*> m_werebear; 
     
     // Game state
     float m_scrollDistance;
@@ -108,7 +117,13 @@ protected:
     float m_gameVolume;
     bool m_gameStartPlayed;
 
+
+    int m_waveCount;
     float m_nextWaveOffset;
+
+    bool m_showBuffMenu;
+    bool m_triggerBuffMenuNext; 
+    bool m_allEnemiesCleared; 
 
 };
 

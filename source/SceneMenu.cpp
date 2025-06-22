@@ -11,8 +11,6 @@ wizard = 0
 archer = 1
 swordsmen = 2
 
-
-
 **/
 #include <SDL.h>
 #include <cstdio>

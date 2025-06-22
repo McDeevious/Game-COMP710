@@ -25,12 +25,6 @@
     <Filter Include="Source Files\Framework">
       <UniqueIdentifier>{21b3a182-d9a1-47ee-b651-8ef1b9b18760}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Forest Enemies">
-      <UniqueIdentifier>{d3917158-4205-4322-8401-8132ee69a12b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Forest Monsters">
-      <UniqueIdentifier>{bbe3ace8-182c-4827-aa4f-90de73f3cef0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Scenes">
       <UniqueIdentifier>{d937a52f-4767-4efb-b014-a054982dab65}</UniqueIdentifier>
     </Filter>
@@ -42,6 +36,18 @@
     </Filter>
     <Filter Include="Source Files\Knight">
       <UniqueIdentifier>{621e063d-9af4-436e-8f13-bf8cb04733a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Enemies">
+      <UniqueIdentifier>{d3917158-4205-4322-8401-8132ee69a12b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Enemies">
+      <UniqueIdentifier>{bbe3ace8-182c-4827-aa4f-90de73f3cef0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Buffs">
+      <UniqueIdentifier>{bdcffab6-50aa-4c35-be0b-0fd211701c40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Buffs">
+      <UniqueIdentifier>{83522897-c845-47e9-b1ab-54da2af11d4f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -109,16 +115,16 @@
       <Filter>Source Files\Framework</Filter>
     </ClCompile>
     <ClCompile Include="armoredOrcs.cpp">
-      <Filter>Source Files\Forest Monsters</Filter>
+      <Filter>Source Files\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="eliteOrc.h">
-      <Filter>Header Files\Forest Enemies</Filter>
+      <Filter>Header Files\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="eliteOrc.cpp">
-      <Filter>Source Files\Forest Monsters</Filter>
+      <Filter>Source Files\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="riderOrc.cpp">
-      <Filter>Source Files\Forest Monsters</Filter>
+      <Filter>Source Files\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="SceneSplash.cpp">
       <Filter>Source Files\Scenes</Filter>
@@ -154,7 +160,7 @@
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="orc.cpp">
-      <Filter>Source Files\Forest Monsters</Filter>
+      <Filter>Source Files\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="SceneGuide.cpp">
       <Filter>Source Files\Scenes</Filter>
@@ -173,6 +179,27 @@
     </ClCompile>
     <ClCompile Include="projectile.cpp">
       <Filter>Source Files\Knight</Filter>
+    </ClCompile>
+    <ClCompile Include="werebear.cpp">
+      <Filter>Source Files\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="werewolf.cpp">
+      <Filter>Source Files\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="armoredSkeleton.cpp">
+      <Filter>Source Files\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="greatSkeleton.cpp">
+      <Filter>Source Files\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="skeleton.cpp">
+      <Filter>Source Files\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy.cpp">
+      <Filter>Source Files\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="buffMenu.cpp">
+      <Filter>Source Files\Buffs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -249,13 +276,13 @@
       <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="orc.h">
-      <Filter>Header Files\Forest Enemies</Filter>
+      <Filter>Header Files\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="armoredOrc.h">
-      <Filter>Header Files\Forest Enemies</Filter>
+      <Filter>Header Files\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="riderOrc.h">
-      <Filter>Header Files\Forest Enemies</Filter>
+      <Filter>Header Files\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="SceneSplash.h">
       <Filter>Header Files\Scenes</Filter>
@@ -299,8 +326,32 @@
     <ClInclude Include="projectile.h">
       <Filter>Header Files\Knight</Filter>
     </ClInclude>
-    <ClInclude Include="sharedenums.h">
-      <Filter>Header Files\Framework</Filter>
+    <ClInclude Include="werebear.h">
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="werewolf.h">
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="armoredSkeleton.h">
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="greatSkeleton.h">
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="skeleton.h">
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="enemytype.h">
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="buffMenu.h">
+      <Filter>Header Files\Buffs</Filter>
+    </ClInclude>
+    <ClInclude Include="bufftype.h">
+      <Filter>Header Files\Buffs</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
