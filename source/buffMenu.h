@@ -24,6 +24,7 @@ public:
 	BuffChoiceState GetState() const;
 	BuffType GetBuff1() const;
 	BuffType GetBuff2() const;
+	BuffType GetSelectedBuff() const;
 
 private:
 	Sprite* m_buffLeft;

@@ -50,6 +50,9 @@ public:
 	bool isAttacking() const;
 	bool isProjectilesActive() const;
 
+	// Buff Character
+	void buffCharacter(BuffType buff);
+
 	// State checking
 	bool IsDead() const;
 
@@ -79,6 +82,12 @@ private:
 	bool m_isHurt;
 	int m_damageReduction;
 	int m_wizardhealth;
+	int m_maxHealth;
+
+	// Regen
+	int m_regen;
+	float m_regenTimeAcculmated;
+	bool m_isRegenApplied;
 
 	//Player attacks
 	AttackType m_attackState;
@@ -86,6 +95,7 @@ private:
 	AnimatedSprite* m_wizardAttack1;
 	AnimatedSprite* m_wizardSpecial;
 	float m_attackDuration;
+	int m_attackModifier;
 
 	vector<Projectile*> m_pFire;
 	int m_iActiveFire;

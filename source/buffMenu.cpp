@@ -270,3 +270,15 @@ BuffType BuffMenu::GetBuff1() const {
 BuffType BuffMenu::GetBuff2() const {
 	return m_selectedBuffs[1];
 }
+
+BuffType BuffMenu::GetSelectedBuff() const
+{
+	if (m_selectionCount > 0) 
+	{
+		return m_selectedBuffs[0];
+	}
+	else 
+	{
+		return BUFF_COUNT;
+	}
+}

@@ -12,6 +12,7 @@
 #include <string>  
 #include "sharedenums.h"
 #include <vector>
+#include "bufftype.h"
 
 Archer::Archer()
     : m_archerIdle(nullptr)
@@ -25,6 +26,11 @@ Archer::Archer()
     , m_damageReduction(0)
     , m_isDead(false)
     , m_archerhealth(1250)
+    , m_maxHealth(m_archerhealth)
+    , m_regen(0)
+    , m_regenTimeAcculmated(0.0f)
+    , m_isRegenApplied(false)
+    , m_attackModifier(0)
     //boundaries
     , m_leftBoundary(0.0f)
     , m_rightBoundary(1024.0f)
@@ -107,6 +113,8 @@ bool Archer::Initialise(Renderer& renderer)
     m_groundY = renderer.GetHeight() * 0.8;
     m_archerPosition.y = m_groundY;
     FMOD::System* fmod = Game::GetInstance().GetFMODSystem();
+
+    m_damageReduction = 0;
 
     fmod->createSound("../game/assets/Audio/Knight-Audio/knight_attack.mp3", FMOD_DEFAULT, 0, &m_attackSound);
     fmod->createSound("../game/assets/Audio/Knight-Audio/knight_hurt.wav", FMOD_DEFAULT, 0, &m_hurtSound);
@@ -207,6 +215,14 @@ bool Archer::Initialise(Renderer& renderer)
 }
 
 void Archer::Process(float deltaTime) {
+    
+    // Process regen (regen every second - regen is 0 unless chosen in upgrades)
+    m_regenTimeAcculmated += deltaTime;
+    if (m_regenTimeAcculmated >= 1.0f && m_isRegenApplied)
+    {
+        m_archerhealth += m_regen;
+        m_regenTimeAcculmated = 0.0f;
+    }
     
     //Process hurt animation
     if (m_isHurt)
@@ -591,10 +607,10 @@ void Archer::StartAttack(AttackType attackType) {
 int Archer::AttackDamage() const {
     switch (m_attackState) {
     case CLASS_ATTACK_1:
-        return 10;
+        return (10 + m_attackModifier);
         break;
     case CLASS_SP_ATTACK:
-        return 25;
+        return (25 + m_attackModifier);
         break;
     case BLOCK:
         return 0;
@@ -796,4 +812,37 @@ void Archer::TakeDamage(int amount) {
 bool Archer::IsDead() const
 {
     return m_isDead;
+}
+
+void Archer::buffCharacter(BuffType buff)
+{
+    if (buff == BUFF_DEFUP)
+    {
+        m_damageReduction += 10;
+    }
+    else if (buff == BUFF_SPEED)
+    {
+        m_archerSpeed *= 2;
+    }
+    else if (buff == BUFF_HEALTH)
+    {
+        m_archerhealth += 100;
+        if (m_archerhealth > m_maxHealth)
+        {
+            m_archerhealth = m_maxHealth;
+        }
+    }
+    else if (buff == BUFF_REGEN)
+    {
+        m_regen = 10;
+        m_isRegenApplied = true;
+    }
+    else if (buff == BUFF_DMGUP)
+    {
+        m_attackModifier += 5;
+    }
+    else if (buff == BUFF_JUMP)
+    {
+        // Do nothing for now as jump mechanics are changing
+    }
 }

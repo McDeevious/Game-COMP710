@@ -12,6 +12,7 @@
 #include <string>  
 #include "sharedenums.h"
 #include <vector>
+#include "bufftype.h"
 
 Wizard::Wizard()
     : m_wizardIdle(nullptr)
@@ -25,6 +26,11 @@ Wizard::Wizard()
     , m_damageReduction(0)
     , m_isDead(false)
     , m_wizardhealth(125)
+    , m_maxHealth(m_wizardhealth)
+    , m_regen(0)
+    , m_regenTimeAcculmated(0.0f)
+    , m_isRegenApplied(false)
+    , m_attackModifier(0)
     //boundaries
     , m_leftBoundary(0.0f)
     , m_rightBoundary(1024.0f)
@@ -208,6 +214,14 @@ bool Wizard::Initialise(Renderer& renderer)
 
 void Wizard::Process(float deltaTime) {
 
+    // Process regen (regen every second - regen is 0 unless chosen in upgrades)
+    m_regenTimeAcculmated += deltaTime;
+    if (m_regenTimeAcculmated >= 1.0f && m_isRegenApplied)
+    {
+        m_wizardhealth += m_regen;
+        m_regenTimeAcculmated = 0.0f;
+    }
+    
     //Process hurt animation
     if (m_isHurt)
     {
@@ -591,10 +605,10 @@ void Wizard::StartAttack(AttackType attackType) {
 int Wizard::AttackDamage() const {
     switch (m_attackState) {
     case CLASS_ATTACK_1:
-        return 10;
+        return (10 + m_attackModifier);
         break;
     case CLASS_SP_ATTACK:
-        return 25;
+        return (25 + m_attackModifier);
         break;
     case BLOCK:
         return 0;
@@ -795,4 +809,37 @@ void Wizard::TakeDamage(int amount) {
 bool Wizard::IsDead() const
 {
     return m_isDead;
+}
+
+void Wizard::buffCharacter(BuffType buff)
+{
+    if (buff == BUFF_DEFUP)
+    {
+        m_damageReduction += 10;
+    }
+    else if (buff == BUFF_SPEED)
+    {
+        m_wizardSpeed *= 2;
+    }
+    else if (buff == BUFF_HEALTH)
+    {
+        m_wizardhealth += 100;
+        if (m_wizardhealth > m_maxHealth)
+        {
+            m_wizardhealth = m_maxHealth;
+        }
+    }
+    else if (buff == BUFF_REGEN)
+    {
+        m_regen = 10;
+        m_isRegenApplied = true;
+    }
+    else if (buff == BUFF_DMGUP)
+    {
+        m_attackModifier += 5;
+    }
+    else if (buff == BUFF_JUMP)
+    {
+        // Do nothing for now as jump mechanics are changing
+    }
 }

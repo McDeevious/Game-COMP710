@@ -191,7 +191,8 @@ void SceneGame::Process(float deltaTime)
         if (m_pBuffMenu->GetState() == BUFF_DONE)
         {
             m_showBuffMenu = false;
-            // TODO: apply buffs later
+            // Gets the selected buff from the buff menu after it is done
+            m_pKnightClass->buffCharacter(m_pBuffMenu->GetSelectedBuff());
         }
         else
         {

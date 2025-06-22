@@ -6,6 +6,7 @@
 #include <fmod.hpp>
 #include "sharedenums.h"
 #include "enemy.h"
+#include "bufftype.h"
 
 class Renderer;
 class InputSystem;
@@ -32,6 +33,7 @@ public:
     virtual int AttackDamage() const = 0;
     virtual bool isAttacking() const = 0;
     virtual bool isProjectilesActive() const = 0;
+    virtual void buffCharacter(BuffType buff) = 0;
     virtual bool IsDead() const = 0;
 
     // Optional

@@ -8,7 +8,8 @@
 #include "logmanager.h"
 #include "game.h"
 #include <cstdio>
-#include <string>  
+#include <string> 
+#include "bufftype.h"
 
 KnightClass::KnightClass()
     : m_knightIdle(nullptr)
@@ -22,6 +23,11 @@ KnightClass::KnightClass()
     , m_damageReduction(0)
     , m_isDead(false)
     , m_knighthealth(125)
+    , m_maxHealth(m_knighthealth)
+    , m_regen(0)
+    , m_regenTimeAcculmated(0.0f)
+    , m_isRegenApplied(false)
+    , m_attackModifier(0)
     //boundaries
     , m_leftBoundary(0.0f)
     , m_rightBoundary(1024.0f)
@@ -206,6 +212,14 @@ bool KnightClass::Initialise(Renderer& renderer)
 
 void KnightClass::Process(float deltaTime) {
 
+    // Process regen (regen every second - regen is 0 unless chosen in upgrades)
+    m_regenTimeAcculmated += deltaTime;
+    if (m_regenTimeAcculmated >= 1.0f && m_isRegenApplied)
+    {
+        m_knighthealth += m_regen;
+        m_regenTimeAcculmated = 0.0f;
+    }
+    
     //Process hurt animation
     if (m_isHurt)
     {
@@ -562,13 +576,13 @@ void KnightClass::StartAttack(AttackType attackType) {
 int KnightClass::AttackDamage() const {
     switch (m_attackState) {
     case CLASS_ATTACK_1:
-        return 10;
+        return (10 + m_attackModifier);
         break;
     case CLASS_ATTACK_2:
-        return 10;
+        return (10 + m_attackModifier);
         break;
     case CLASS_SP_ATTACK:
-        return 25;
+        return (25 + m_attackModifier);
         break;
     default:
         return 0;
@@ -741,5 +755,35 @@ bool KnightClass::IsDead() const
     return m_isDead;
 }
 
-
-
+void KnightClass::buffCharacter(BuffType buff)
+{
+    if (buff == BUFF_DEFUP)
+    {
+        m_damageReduction += 10;
+    }
+    else if (buff == BUFF_SPEED)
+    {
+        m_knightSpeed *= 2;
+    }
+    else if (buff == BUFF_HEALTH)
+    {
+        m_knighthealth += 100;
+        if (m_knighthealth > m_maxHealth)
+        {
+            m_knighthealth = m_maxHealth;
+        }
+    }
+    else if (buff == BUFF_REGEN)
+    {
+        m_regen = 10;
+        m_isRegenApplied = true;
+    }
+    else if (buff == BUFF_DMGUP)
+    {
+        m_attackModifier += 5;
+    }
+    else if (buff == BUFF_JUMP)
+    {
+        // Do nothing for now as jump mechanics are changing
+    }
+}
