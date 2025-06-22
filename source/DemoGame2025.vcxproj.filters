@@ -201,6 +201,15 @@
     <ClCompile Include="buffMenu.cpp">
       <Filter>Source Files\Buffs</Filter>
     </ClCompile>
+    <ClCompile Include="bossWorm.cpp">
+      <Filter>Source Files\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="bossDeath.cpp">
+      <Filter>Source Files\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="bossDemon.cpp">
+      <Filter>Source Files\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -352,6 +361,15 @@
     </ClInclude>
     <ClInclude Include="bufftype.h">
       <Filter>Header Files\Buffs</Filter>
+    </ClInclude>
+    <ClInclude Include="bossWorm.h">
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="bossDeath.h">
+      <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="bossDemon.h">
+      <Filter>Header Files\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
