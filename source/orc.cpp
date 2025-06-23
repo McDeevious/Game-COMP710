@@ -492,25 +492,25 @@ void Orc::MarkScored() {
 }
 
 void Orc::UpdateSpriteScales() {
-    float scaleX = (m_direction > 0) ? 7.5f : -7.5f;
+    float scaleX = (m_direction > 0) ? m_enemySize : -m_enemySize;
 
     if (m_orcIdle && m_orcIdle->GetScaleX() != scaleX) {
-        m_orcIdle->SetScale(scaleX, -7.5f);
+        m_orcIdle->SetScale(scaleX, -m_enemySize);
     }
     if (m_orcWalk && m_orcWalk->GetScaleX() != scaleX) {
-        m_orcWalk->SetScale(scaleX, -7.5f);
+        m_orcWalk->SetScale(scaleX, -m_enemySize);
     }
     if (m_orcAttack1 && m_orcAttack1->GetScaleX() != scaleX) {
-        m_orcAttack1->SetScale(scaleX, -7.5f);
+        m_orcAttack1->SetScale(scaleX, -m_enemySize);
     }
     if (m_orcAttack2 && m_orcAttack2->GetScaleX() != scaleX) {
-        m_orcAttack2->SetScale(scaleX, -7.5f);
+        m_orcAttack2->SetScale(scaleX, -m_enemySize);
     }
     if (m_orcHurt && m_orcHurt->GetScaleX() != scaleX) {
-        m_orcHurt->SetScale(scaleX, -7.5f);
+        m_orcHurt->SetScale(scaleX, -m_enemySize);
     }
     if (m_orcDeath && m_orcDeath->GetScaleX() != scaleX) {
-        m_orcDeath->SetScale(scaleX, -7.5f);
+        m_orcDeath->SetScale(scaleX, -m_enemySize);
     }
 }
 

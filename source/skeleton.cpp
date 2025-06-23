@@ -83,7 +83,7 @@ bool Skeleton::Initialise(Renderer& renderer) {
         m_skeletonIdle->SetFrameDuration(0.2f);
         m_skeletonIdle->SetLooping(true);
         m_skeletonIdle->Animate();
-        m_skeletonIdle->SetScale(7.5f, -7.5f);
+        m_skeletonIdle->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load walking sprite
@@ -93,7 +93,7 @@ bool Skeleton::Initialise(Renderer& renderer) {
         m_skeletonWalk->SetFrameDuration(0.1f);
         m_skeletonWalk->SetLooping(true);
         m_skeletonWalk->Animate();
-        m_skeletonWalk->SetScale(7.5f, -7.5f);
+        m_skeletonWalk->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load hurt sprite
@@ -103,7 +103,7 @@ bool Skeleton::Initialise(Renderer& renderer) {
         m_skeletonHurt->SetFrameDuration(0.1f);
         m_skeletonHurt->SetLooping(false);
         m_skeletonHurt->Animate();
-        m_skeletonHurt->SetScale(7.5f, -7.5f);
+        m_skeletonHurt->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load death sprite
@@ -113,7 +113,7 @@ bool Skeleton::Initialise(Renderer& renderer) {
         m_skeletonDeath->SetFrameDuration(0.1f);
         m_skeletonDeath->SetLooping(false);
         m_skeletonDeath->Animate();
-        m_skeletonDeath->SetScale(7.5f, -7.5f);
+        m_skeletonDeath->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load attack1 sprite
@@ -122,7 +122,7 @@ bool Skeleton::Initialise(Renderer& renderer) {
         m_skeletonAttack1->SetupFrames(100, 100);
         m_skeletonAttack1->SetFrameDuration(0.1f);
         m_skeletonAttack1->SetLooping(false);
-        m_skeletonAttack1->SetScale(7.5f, -7.5f);
+        m_skeletonAttack1->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load attack2 sprite
@@ -131,7 +131,7 @@ bool Skeleton::Initialise(Renderer& renderer) {
         m_skeletonAttack2->SetupFrames(100, 100);
         m_skeletonAttack2->SetFrameDuration(0.1f);
         m_skeletonAttack2->SetLooping(false);
-        m_skeletonAttack2->SetScale(7.5f, -7.5f);
+        m_skeletonAttack2->SetScale(m_enemySize, -m_enemySize);
     }
 
     if (!m_skeletonIdle || !m_skeletonWalk || !m_skeletonHurt || !m_skeletonDeath || !m_skeletonAttack1 || !m_skeletonAttack2)
@@ -490,25 +490,25 @@ void Skeleton::MarkScored() {
 }
 
 void  Skeleton::UpdateSpriteScales() {
-    float scaleX = (m_direction > 0) ? 7.5f : -7.5f;
+    float scaleX = (m_direction > 0) ? m_enemySize : -m_enemySize;
 
     if (m_skeletonIdle && m_skeletonIdle->GetScaleX() != scaleX) {
-        m_skeletonIdle->SetScale(scaleX, -7.5f);
+        m_skeletonIdle->SetScale(scaleX, -m_enemySize);
     }
     if (m_skeletonWalk && m_skeletonWalk->GetScaleX() != scaleX) {
-        m_skeletonWalk->SetScale(scaleX, -7.5f);
+        m_skeletonWalk->SetScale(scaleX, -m_enemySize);
     }
     if (m_skeletonAttack1 && m_skeletonAttack1->GetScaleX() != scaleX) {
-        m_skeletonAttack1->SetScale(scaleX, -7.5f);
+        m_skeletonAttack1->SetScale(scaleX, -m_enemySize);
     }
     if (m_skeletonAttack2 && m_skeletonAttack2->GetScaleX() != scaleX) {
-        m_skeletonAttack2->SetScale(scaleX, -7.5f);
+        m_skeletonAttack2->SetScale(scaleX, -m_enemySize);
     }
     if (m_skeletonHurt && m_skeletonHurt->GetScaleX() != scaleX) {
-        m_skeletonHurt->SetScale(scaleX, -7.5f);
+        m_skeletonHurt->SetScale(scaleX, -m_enemySize);
     }
     if (m_skeletonDeath && m_skeletonDeath->GetScaleX() != scaleX) {
-        m_skeletonDeath->SetScale(scaleX, -7.5f);
+        m_skeletonDeath->SetScale(scaleX, -m_enemySize);
     }
 }
 

@@ -84,7 +84,7 @@ bool Werewolf::Initialise(Renderer& renderer) {
         m_werewolfIdle->SetFrameDuration(0.2f);
         m_werewolfIdle->SetLooping(true);
         m_werewolfIdle->Animate();
-        m_werewolfIdle->SetScale(7.5f, -7.5f);
+        m_werewolfIdle->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load walking sprite
@@ -94,7 +94,7 @@ bool Werewolf::Initialise(Renderer& renderer) {
         m_werewolfWalk->SetFrameDuration(0.1f);
         m_werewolfWalk->SetLooping(true);
         m_werewolfWalk->Animate();
-        m_werewolfWalk->SetScale(7.5f, -7.5f);
+        m_werewolfWalk->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load hurt sprite
@@ -104,7 +104,7 @@ bool Werewolf::Initialise(Renderer& renderer) {
         m_werewolfHurt->SetFrameDuration(0.1f);
         m_werewolfHurt->SetLooping(false);
         m_werewolfHurt->Animate();
-        m_werewolfHurt->SetScale(7.5f, -7.5f);
+        m_werewolfHurt->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load death sprite
@@ -114,7 +114,7 @@ bool Werewolf::Initialise(Renderer& renderer) {
         m_werewolfDeath->SetFrameDuration(0.1f);
         m_werewolfDeath->SetLooping(false);
         m_werewolfDeath->Animate();
-        m_werewolfDeath->SetScale(7.5f, -7.5f);
+        m_werewolfDeath->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load attack1 sprite
@@ -123,7 +123,7 @@ bool Werewolf::Initialise(Renderer& renderer) {
         m_werewolfAttack1->SetupFrames(100, 100);
         m_werewolfAttack1->SetFrameDuration(0.1f);
         m_werewolfAttack1->SetLooping(false);
-        m_werewolfAttack1->SetScale(7.5f, -7.5f);
+        m_werewolfAttack1->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load attack2 sprite
@@ -132,7 +132,7 @@ bool Werewolf::Initialise(Renderer& renderer) {
         m_werewolfAttack2->SetupFrames(100, 100);
         m_werewolfAttack2->SetFrameDuration(0.1f);
         m_werewolfAttack2->SetLooping(false);
-        m_werewolfAttack2->SetScale(7.5f, -7.5f);
+        m_werewolfAttack2->SetScale(m_enemySize, -m_enemySize);
     }
 
     if (!m_werewolfIdle || !m_werewolfWalk || !m_werewolfHurt || !m_werewolfDeath || !m_werewolfAttack1 || !m_werewolfAttack2)
@@ -485,25 +485,25 @@ void Werewolf::MarkScored() {
 }
 
 void Werewolf::UpdateSpriteScales() {
-    float scaleX = (m_direction > 0) ? 7.5f : -7.5f;
+    float scaleX = (m_direction > 0) ? m_enemySize : -m_enemySize;
 
     if (m_werewolfIdle && m_werewolfIdle->GetScaleX() != scaleX) {
-        m_werewolfIdle->SetScale(scaleX, -7.5f);
+        m_werewolfIdle->SetScale(scaleX, -m_enemySize);
     }
     if (m_werewolfWalk && m_werewolfWalk->GetScaleX() != scaleX) {
-        m_werewolfWalk->SetScale(scaleX, -7.5f);
+        m_werewolfWalk->SetScale(scaleX, -m_enemySize);
     }
     if (m_werewolfAttack1 && m_werewolfAttack1->GetScaleX() != scaleX) {
-        m_werewolfAttack1->SetScale(scaleX, -7.5f);
+        m_werewolfAttack1->SetScale(scaleX, -m_enemySize);
     }
     if (m_werewolfAttack2 && m_werewolfAttack2->GetScaleX() != scaleX) {
-        m_werewolfAttack2->SetScale(scaleX, -7.5f);
+        m_werewolfAttack2->SetScale(scaleX, -m_enemySize);
     }
     if (m_werewolfHurt && m_werewolfHurt->GetScaleX() != scaleX) {
-        m_werewolfHurt->SetScale(scaleX, -7.5f);
+        m_werewolfHurt->SetScale(scaleX, -m_enemySize);
     }
     if (m_werewolfDeath && m_werewolfDeath->GetScaleX() != scaleX) {
-        m_werewolfDeath->SetScale(scaleX, -7.5f);
+        m_werewolfDeath->SetScale(scaleX, -m_enemySize);
     }
 }
 
