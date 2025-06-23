@@ -10,6 +10,7 @@
 #include "werewolf.h"
 #include "bossDeath.h"
 #include "bossDemon.h"
+#include "victorymenu.h"
 
 #include "enemy.h"
 #include <vector>
@@ -26,6 +27,7 @@ class BackgroundManager;
 class PauseMenu; 
 class BuffMenu;
 class GameOverMenu;
+class VictoryMenu; 
 class AnimatedSprite; 
 class ArmoredOrc;
 class EliteOrc;
@@ -38,6 +40,7 @@ enum GameState {
     GAME_STATE_PLAYING,
     GAME_STATE_PAUSED, 
     GAME_STATE_GAME_OVER,
+    GAME_STATE_VICTORY,
     GAME_STATE_RESTART
 };
 
@@ -83,6 +86,7 @@ protected:
     PauseMenu* m_pPauseMenu;
     GameOverMenu* m_pGameOverMenu;
     BuffMenu* m_pBuffMenu;
+    VictoryMenu* m_pVictoryMenu;
 
     Character* m_pKnightClass;
     Wizard* m_pWizard;

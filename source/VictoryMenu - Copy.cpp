@@ -58,8 +58,8 @@ bool VictoryMenu::Initialise(Renderer& renderer) {
 		float scaleY = (screenH / backH) * 0.75f;
 
 		m_victoryBack->SetScale(scaleX, -scaleY);
-		m_victoryBack->SetX(screenW / 2.1f);
-		m_victoryBack->SetY(screenH / 2.0f);
+		m_victoryBack->SetX(screenW / 1.75);
+		m_victoryBack->SetY(screenH / 2);
 		m_victoryBack->SetAlpha(1.0f);
 	}
 

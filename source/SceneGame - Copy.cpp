@@ -37,7 +37,6 @@ SceneGame::SceneGame()
     , m_pSwordsman(nullptr)
     , m_pPauseMenu(nullptr)
     , m_pGameOverMenu(nullptr)
-    , m_pVictoryMenu(nullptr) 
     , m_pRenderer(nullptr)
     , m_pKnightHUD(nullptr)
     , m_pSceneGuide(nullptr)
@@ -67,9 +66,6 @@ SceneGame::~SceneGame()
 
     delete m_pGameOverMenu; 
     m_pGameOverMenu = nullptr;
-
-    delete m_pVictoryMenu;
-    m_pVictoryMenu = nullptr;
 
     delete m_pBuffMenu; 
     m_pBuffMenu = nullptr; 
@@ -147,10 +143,6 @@ bool SceneGame::Initialise(Renderer& renderer)
 
     m_pBuffMenu = new BuffMenu(); 
     if (!m_pBuffMenu->Initialise(renderer)) 
-        return false;
-
-    m_pVictoryMenu = new VictoryMenu();
-    if (!m_pVictoryMenu->Initialise(renderer))
         return false;
 
     // Character classes
@@ -519,18 +511,13 @@ void SceneGame::Process(float deltaTime)
                 m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
             }
 
-            SDL_ShowCursor(SDL_ENABLE); 
-            m_gameState = GAME_STATE_VICTORY; 
-            m_pVictoryMenu->Reset(); 
-            return;
-
-            //if (m_triggerBuffMenuNext && !m_showBuffMenu) {
-            //    SDL_ShowCursor(SDL_ENABLE);
-            //    m_showBuffMenu = true;
-            //    m_triggerBuffMenuNext = false;
-            //    m_pBuffMenu->Reset();
-            //    return; // pause game logic until buff is selected
-            //}
+            if (m_triggerBuffMenuNext && !m_showBuffMenu) {
+                SDL_ShowCursor(SDL_ENABLE);
+                m_showBuffMenu = true;
+                m_triggerBuffMenuNext = false;
+                m_pBuffMenu->Reset();
+                return; // pause game logic until buff is selected
+            }
         }
     }
     else if (m_gameState == GAME_STATE_RESTART)
@@ -605,10 +592,6 @@ void SceneGame::Draw(Renderer& renderer)
     if (m_gameState == GAME_STATE_GAME_OVER) {
         m_pGameOverMenu->Draw(renderer); 
     }
-
-    if (m_gameState == GAME_STATE_VICTORY) {
-        m_pVictoryMenu->Draw(renderer);
-    }
 }
 
 void SceneGame::ProcessInput(InputSystem& inputSystem)
@@ -666,25 +649,6 @@ void SceneGame::ProcessInput(InputSystem& inputSystem)
             exit(0); 
         }
     }
-
-    if (m_gameState == GAME_STATE_VICTORY) { 
-        m_pVictoryMenu->ProcessInput(inputSystem);
-
-        VictoryState state = m_pVictoryMenu->GetState();
-
-        if (state == VICTORY_RETRY) {
-            RestartGame();
-            m_gameState = GAME_STATE_RESTART;
-            m_pVictoryMenu->Reset();
-        }
-        else if (state == VICTORY_EXIT) {
-            SDL_Quit();
-            exit(0);
-        }
-
-        return;
-    }
-
 }
 
 void SceneGame::SpawnEnemies(Renderer& renderer)
@@ -694,15 +658,15 @@ void SceneGame::SpawnEnemies(Renderer& renderer)
     float groundY = renderer.GetHeight() * 0.8f;
 
     const EnemyPlacement wave1[] = {
-        //{ 1000.0f, groundY, PATROL, 300.0f, ORC },
-        //{ 1600.0f, groundY, IDLE, 0.0f, ORC_ARMORED },
-        //{ 2300.0f, groundY, PATROL, 300.0f, ORC_ELITE },
-        //{ 3000.0f, groundY, IDLE, 0.0f, ORC_RIDER }, // Boss 1
-        //{ 3700.0f, groundY, PATROL, 300.0f, SKELETON },
-        //{ 4400.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
-        //{ 5100.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT }, // Boss 2
-        //{ 5800.0f, groundY, PATROL, 300.0f, WEREWOLF },
-        { 1000.0f, groundY, AGGRESSIVE, 0.0f, WEREBEAR } // Boss 3
+        { 1000.0f, groundY, PATROL, 300.0f, ORC },
+        { 1600.0f, groundY, IDLE, 0.0f, ORC_ARMORED },
+        { 2300.0f, groundY, PATROL, 300.0f, ORC_ELITE },
+        { 3000.0f, groundY, IDLE, 0.0f, ORC_RIDER }, // Boss 1
+        { 3700.0f, groundY, PATROL, 300.0f, SKELETON },
+        { 4400.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
+        { 5100.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT }, // Boss 2
+        { 5800.0f, groundY, PATROL, 300.0f, WEREWOLF },
+        { 6500.0f, groundY, AGGRESSIVE, 0.0f, WEREBEAR } // Boss 3
     };
 
     const int waveCount = sizeof(wave1) / sizeof(wave1[0]);
