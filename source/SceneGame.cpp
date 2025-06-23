@@ -340,31 +340,6 @@ void SceneGame::Process(float deltaTime)
             }
         }
 
-        for (BossDeath* deathBoss : m_bossDeaths) {
-            if (!deathBoss || deathBoss->IsAlive() || deathBoss->WasScored())
-                continue;
-
-            m_score += deathBoss->GetScore();
-            deathBoss->MarkScored();
-
-            if (m_pKnightHUD) {
-                m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
-            }
-        }
-
-        for (BossDemon* demonBoss : m_bossDemons) {
-            if (!demonBoss || demonBoss->IsAlive() || demonBoss->WasScored())
-                continue;
-
-            m_score += demonBoss->GetScore(); 
-            demonBoss->MarkScored(); 
-
-            if (m_pKnightHUD) {
-                m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
-            }
-        }
-
-
         // Section to handle the attacking case of the character class
         if (m_pKnightClass && (m_pKnightClass->isAttacking() || m_pKnightClass->isProjectilesActive())) {
             
@@ -415,30 +390,6 @@ void SceneGame::Process(float deltaTime)
 
                 if (Collision::CheckCollision(attackHitbox, bear->GetHitbox())) {
                     bear->TakeDamage(m_pKnightClass->AttackDamage());
-                }
-            }
-
-            for (BossDeath* deathBoss : m_bossDeaths)
-            {
-                if (!deathBoss || !deathBoss->IsAlive()) continue;
-
-                attackHitbox = m_pKnightClass->GetAttackHitbox(*deathBoss);
-                attackHitbox.x += m_scrollDistance;
-
-                if (Collision::CheckCollision(attackHitbox, deathBoss->GetHitbox())) {
-                    deathBoss->TakeDamage(m_pKnightClass->AttackDamage());
-                }
-            }
-
-            for (BossDemon* demonBoss : m_bossDemons)
-            {
-                if (!demonBoss || !demonBoss->IsAlive()) continue;
-
-                attackHitbox = m_pKnightClass->GetAttackHitbox(*demonBoss);
-                attackHitbox.x += m_scrollDistance;
-
-                if (Collision::CheckCollision(attackHitbox, demonBoss->GetHitbox())) {
-                    demonBoss->TakeDamage(m_pKnightClass->AttackDamage());
                 }
             }
         }
@@ -559,18 +510,6 @@ void SceneGame::Process(float deltaTime)
             if (m_pKnightHUD) {
                 m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
             }
-        }
-
-        for (BossDeath* deathBoss : m_bossDeaths) {
-            if (!deathBoss || deathBoss->IsAlive() || deathBoss->WasScored())
-                continue;
-
-            m_score += deathBoss->GetScore();
-            deathBoss->MarkScored();
-
-            if (m_pKnightHUD) {
-                m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
-            }
 
             if (m_triggerBuffMenuNext && !m_showBuffMenu) {
                 SDL_ShowCursor(SDL_ENABLE);
@@ -580,27 +519,6 @@ void SceneGame::Process(float deltaTime)
                 return; // pause game logic until buff is selected
             }
         }
-
-        for (BossDemon* demonBoss : m_bossDemons) {
-            if (!demonBoss || demonBoss->IsAlive() || demonBoss->WasScored())
-                continue;
-
-            m_score += demonBoss->GetScore();
-            demonBoss->MarkScored();
-
-            if (m_pKnightHUD) {
-                m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
-            }
-
-            if (m_triggerBuffMenuNext && !m_showBuffMenu) {
-                SDL_ShowCursor(SDL_ENABLE);
-                m_showBuffMenu = true;
-                m_triggerBuffMenuNext = false;
-                m_pBuffMenu->Reset();
-                return; // pause game logic until buff is selected
-            }
-        }
-
     }
     else if (m_gameState == GAME_STATE_RESTART)
     {
@@ -740,15 +658,15 @@ void SceneGame::SpawnEnemies(Renderer& renderer)
     float groundY = renderer.GetHeight() * 0.8f;
 
     const EnemyPlacement wave1[] = {
-        //{ 1000.0f, groundY, PATROL, 300.0f, ORC },
-        //{ 1600.0f, groundY, IDLE, 0.0f, ORC_ARMORED },
-        //{ 2300.0f, groundY, PATROL, 300.0f, ORC_ELITE },
-        //{ 3000.0f, groundY, IDLE, 0.0f, ORC_RIDER },
-        //{ 3700.0f, groundY, PATROL, 300.0f, SKELETON },
-        //{ 4400.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
-       // { 5100.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT },
-        //{ 5800.0f, groundY, PATROL, 300.0f, WEREWOLF },
-        { 1000.0f, groundY, IDLE, 0.0f, DEMON_BOSS }
+        { 1000.0f, groundY, PATROL, 300.0f, ORC },
+        { 1600.0f, groundY, IDLE, 0.0f, ORC_ARMORED },
+        { 2300.0f, groundY, PATROL, 300.0f, ORC_ELITE },
+        { 3000.0f, groundY, IDLE, 0.0f, ORC_RIDER }, // Boss 1
+        { 3700.0f, groundY, PATROL, 300.0f, SKELETON },
+        { 4400.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
+        { 5100.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT }, // Boss 2
+        { 5800.0f, groundY, PATROL, 300.0f, WEREWOLF },
+        { 6500.0f, groundY, AGGRESSIVE, 0.0f, WEREBEAR } // Boss 3
     };
 
     const int waveCount = sizeof(wave1) / sizeof(wave1[0]);
@@ -870,32 +788,6 @@ void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offs
         else {
             delete werebear;
         }
-
-        // Spawn BossDeath
-        if (deathBoss && deathBoss->Initialise(renderer)) {
-            deathBoss->SetPosition(spawnX, spawnY);
-            deathBoss->SetBehavior(behavior);
-            if (behavior != IDLE) {
-                deathBoss->SetPatrolRange(spawnX - patrolRange, spawnX + patrolRange);
-            }
-            m_bossDeaths.push_back(deathBoss);
-        }
-        else {
-            delete deathBoss;
-        }
-
-        // Spawn BossDemon
-        if (deathDemon && deathDemon->Initialise(renderer)) {
-            deathDemon->SetPosition(spawnX, spawnY);
-            deathDemon->SetBehavior(behavior);
-            if (behavior != IDLE) {
-                deathDemon->SetPatrolRange(spawnX - patrolRange, spawnX + patrolRange);
-            }
-            m_bossDemons.push_back(deathDemon);
-        }
-        else {
-            delete deathDemon;
-        }
     }
 
     sprintf_s(buffer, "Wave spawn complete. Orcs: %zu | Skeletons: %zu | Werewolves: %zu | Werebears: %zu",
@@ -951,16 +843,6 @@ void SceneGame::RestartGame()
         delete werebear; 
     }
     m_werebear.clear(); 
-
-    for (BossDeath* boss : m_bossDeaths) {
-        delete boss;
-    }
-    m_bossDeaths.clear();
-
-    for (BossDemon* boss : m_bossDemons) {
-        delete boss;
-    }
-    m_bossDemons.clear();
 
     // Reset game state variables
     m_scrollDistance = 0.0f;
