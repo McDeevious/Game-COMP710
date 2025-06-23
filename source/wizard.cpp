@@ -13,13 +13,16 @@
 #include "sharedenums.h"
 #include <vector>
 #include "bufftype.h"
+#include "SceneGame.h"
+#include <iostream>
+
 
 Wizard::Wizard()
     : m_wizardIdle(nullptr)
     , m_wizardWalk(nullptr)
     , m_wizardHurt(nullptr)
     , m_wizardDeath(nullptr)
-    , m_wizardSpeed(0.5f)
+    , m_wizardSpeed(1.0f)
     , m_wizardLeft(false)
     , m_isMoving(false)
     , m_isHurt(false)
@@ -35,12 +38,12 @@ Wizard::Wizard()
     , m_leftBoundary(0.0f)
     , m_rightBoundary(1024.0f)
     , m_topBoundary(0.0f)
-    , m_bottomBoundary(768.0f)
+    , m_bottomBoundary(1000.f)
     //jumping 
     , m_isJumping(false)
     , m_jumpVelocity(0.0f)
     , m_gravity(981.0f)
-    , m_jumpStrength(-650.0f)
+    , m_jumpStrength(-650.0f/10*9.2)
     , m_groundY(0)
     //atacking
     , m_wizardAttack1(0)
@@ -55,6 +58,7 @@ Wizard::Wizard()
     , m_sfxVolume(0.4f)
     , m_iActiveFire(0)
 {
+    character_size = 5;
     m_wizardPosition.Set(100, 618);
     m_lastMovementDirection.Set(0.0f, 0.0f);
 }
@@ -128,7 +132,7 @@ bool Wizard::Initialise(Renderer& renderer)
         m_wizardIdle->SetLooping(true);
         m_wizardIdle->SetX(m_wizardPosition.x);
         m_wizardIdle->SetY(m_wizardPosition.y);
-        m_wizardIdle->SetScale(7.5f, -7.5f);
+        m_wizardIdle->SetScale(character_size, -character_size);
         m_wizardIdle->Animate();
     }
 
@@ -141,7 +145,7 @@ bool Wizard::Initialise(Renderer& renderer)
         m_wizardWalk->SetLooping(true);
         m_wizardWalk->SetX(m_wizardPosition.x);
         m_wizardWalk->SetY(m_wizardPosition.y);
-        m_wizardWalk->SetScale(7.5f, -7.5f);
+        m_wizardWalk->SetScale(character_size, -character_size);
         m_wizardWalk->Animate();
         SetBoundaries(0, renderer.GetWidth(), 0, renderer.GetHeight());
     }
@@ -155,7 +159,7 @@ bool Wizard::Initialise(Renderer& renderer)
         m_wizardHurt->SetLooping(false);
         m_wizardHurt->SetX(m_wizardPosition.x);
         m_wizardHurt->SetY(m_wizardPosition.y);
-        m_wizardHurt->SetScale(7.5f, -7.5f);
+        m_wizardHurt->SetScale(character_size, -character_size);
     }
 
     //Load knight's death sprite
@@ -167,7 +171,7 @@ bool Wizard::Initialise(Renderer& renderer)
         m_wizardDeath->SetLooping(false);
         m_wizardDeath->SetX(m_wizardPosition.x);
         m_wizardDeath->SetY(m_wizardPosition.y);
-        m_wizardDeath->SetScale(7.5f, -7.5f);
+        m_wizardDeath->SetScale(character_size, -character_size);
     }
 
     //Load Attack 1
@@ -179,7 +183,7 @@ bool Wizard::Initialise(Renderer& renderer)
         m_wizardAttack1->SetLooping(false);
         m_wizardAttack1->SetX(m_wizardPosition.x);
         m_wizardAttack1->SetY(m_wizardPosition.y);
-        m_wizardAttack1->SetScale(7.5f, -7.5f);
+        m_wizardAttack1->SetScale(character_size, -character_size);
     }
 
     //Load Special Attack
@@ -191,7 +195,7 @@ bool Wizard::Initialise(Renderer& renderer)
         m_wizardSpecial->SetLooping(false);
         m_wizardSpecial->SetX(m_wizardPosition.x);
         m_wizardSpecial->SetY(m_wizardPosition.y);
-        m_wizardSpecial->SetScale(7.5f, -7.5f);
+        m_wizardSpecial->SetScale(character_size, -character_size);
     }
 
     for (int i = 0; i < 5; i++)
@@ -208,11 +212,12 @@ bool Wizard::Initialise(Renderer& renderer)
         LogManager::GetInstance().Log("Failed to load Knight sprites!");
         return false;
     }
-
+  //  getAreaArray();
+   
     return true;
 }
 
-void Wizard::Process(float deltaTime) {
+void Wizard::Process(float deltaTime, SceneGame& game) {
 
     // Process regen (regen every second - regen is 0 unless chosen in upgrades)
     m_regenTimeAcculmated += deltaTime;
@@ -290,9 +295,9 @@ void Wizard::Process(float deltaTime) {
             activeAttack->SetX(m_wizardPosition.x);
             activeAttack->SetY(m_wizardPosition.y);
 
-            float scaleX = (m_wizardWalk) ? m_wizardWalk->GetScaleX() : 7.5f;
-            float direction = (scaleX < 0) ? -7.5f : 7.5f;
-            activeAttack->SetScale(direction, -7.5f);
+            float scaleX = (m_wizardWalk) ? m_wizardWalk->GetScaleX() : character_size;
+            float direction = (scaleX < 0) ? -character_size : character_size;
+            activeAttack->SetScale(direction, -character_size);
 
             if ((!activeAttack->IsAnimating() && m_attackState != BLOCK) || m_attackDuration > timeoutDuration)
             {
@@ -323,18 +328,24 @@ void Wizard::Process(float deltaTime) {
     }
 
     // Process jump physics
-    if (m_isJumping) {
+
+   // Process jump physics
+    //m_wizardPosition.y = 200;
+    wasTouchingGround = 0;
+    wasTouchingRoof = 0;
+    if (m_jumpVelocity > 0)
+    {
+        //is going down
         m_jumpVelocity += m_gravity * deltaTime;
-
         m_wizardPosition.y += m_jumpVelocity * deltaTime;
-
-        // Check for landing
-        if (m_wizardPosition.y >= m_groundY) {
-            m_wizardPosition.y = m_groundY;
+        setBounds(game);
+        if (collision(1, game))
+            //  if (wasTouchingGround)
+        {
+            //   m_jumpVelocity += m_gravity * deltaTime;
+            m_wizardPosition.y -= m_jumpVelocity * deltaTime;
             m_isJumping = false;
-            m_jumpVelocity = 0.0f;
-
-            // Resume animations after landing
+            m_jumpVelocity = 0;
             if (m_isMoving && m_wizardWalk) {
                 m_wizardWalk->Animate();
             }
@@ -343,6 +354,36 @@ void Wizard::Process(float deltaTime) {
             }
         }
     }
+    else if (m_jumpVelocity < 0)
+    {
+
+        m_jumpVelocity += m_gravity * deltaTime;
+        m_wizardPosition.y += m_jumpVelocity * deltaTime;
+        setBounds(game);
+        if (collision(2, game))
+            // if (wasTouchingRoof)
+        {
+            //  m_jumpVelocity += m_gravity * deltaTime;
+            m_wizardPosition.y -= m_jumpVelocity * deltaTime;
+
+        }
+        //going up
+    }
+    else
+    {
+        //idle
+        m_wizardPosition.y += m_gravity * deltaTime;
+        setBounds(game);
+        if (collision(1, game))
+            // if (wasTouchingGround)
+        {
+            m_wizardPosition.y -= m_gravity * deltaTime;
+        }
+    }
+     
+
+ 
+ 
 
     // Process Arrows
     for (int i = 0; i < m_pFire.size(); i++)
@@ -367,8 +408,8 @@ void Wizard::Process(float deltaTime) {
                 m_wizardWalk->SetX(m_wizardPosition.x);
                 m_wizardWalk->SetY(m_wizardPosition.y);
 
-                float direction = m_wizardLeft ? -7.5f : 7.5f;
-                m_wizardWalk->SetScale(direction, -7.5f);
+                float direction = m_wizardLeft ? -character_size : character_size;
+                m_wizardWalk->SetScale(direction, -character_size);
             }
         }
         //Handle normal movement animations
@@ -384,8 +425,8 @@ void Wizard::Process(float deltaTime) {
                 m_wizardWalk->SetX(m_wizardPosition.x);
                 m_wizardWalk->SetY(m_wizardPosition.y);
 
-                float direction = m_wizardLeft ? -7.5 : 7.5;
-                m_wizardWalk->SetScale(direction, -7.5);
+                float direction = m_wizardLeft ? -character_size : character_size;
+                m_wizardWalk->SetScale(direction, -character_size);
             }
         }
         else {
@@ -400,8 +441,8 @@ void Wizard::Process(float deltaTime) {
                 m_wizardIdle->SetX(m_wizardPosition.x);
                 m_wizardIdle->SetY(m_wizardPosition.y);
 
-                float direction = m_wizardLeft ? -7.5 : 7.5;
-                m_wizardIdle->SetScale(direction, -7.5);
+                float direction = m_wizardLeft ? -character_size : character_size;
+                m_wizardIdle->SetScale(direction, -character_size);
             }
 
         }
@@ -484,11 +525,15 @@ void Wizard::Draw(Renderer& renderer) {
     }
 }
 
-void Wizard::ProcessInput(InputSystem& inputSystem) {
+void Wizard::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
+    wasTouchingGround = 0;
+    wasTouchingRoof = 0;
     bool isWalking = false;
-    m_wizardPosition.x = 150.0f;
+    // m_wizardPosition.x = 150.0f;
     Vector2 direction;
+    Vector2 direction2;
     direction.Set(0, 0);
+    arenaXY.Set(0, 0);
 
     // Get controller if connected
     XboxController* controller = inputSystem.GetController(0);
@@ -514,14 +559,56 @@ void Wizard::ProcessInput(InputSystem& inputSystem) {
     }
 
     if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_LEFT) == BS_HELD || (controller && (stick.x < -threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_LEFT) == BS_HELD))) {
-        direction.x = -1.0f;
+    
+        if (m_wizardPosition.x < 200)
+        {
+            direction.x = -1.0f;
+            arenaXY.x = -3.f * m_wizardSpeed;
+            if (collision(3, game))
+            {
+                arenaXY.x = 3.f * m_wizardSpeed;
+
+            }
+        }
+        else {
+            m_wizardPosition.x -= 3.f * m_wizardSpeed;
+            if (collision(3, game))
+            {
+               m_wizardPosition.x += 3.f * m_wizardSpeed;
+            }
+        }
+        //   direction.x = -1.0f; 
         m_wizardLeft = true; // Left 
         isWalking = true;
     }
     else if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_RIGHT) == BS_HELD || (controller && (stick.x > threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_RIGHT) == BS_HELD))) {
-        direction.x = 1.0f;
+        // direction.x = 1.0f; 
+        if (m_wizardPosition.x > 1000)
+        {
+            direction.x = 1.0f;
+            arenaXY.x = 3.f * m_wizardSpeed;
+            if (collision(5, game))
+            {
+                arenaXY.x = -3.f * m_wizardSpeed;
+            }
+        }
+        else {
+         //   exit(0);
+            m_wizardPosition.x += 3.f * m_wizardSpeed;
+            if (collision(4, game))
+            {
+                m_wizardPosition.x -= 3.f * m_wizardSpeed;
+            }
+        }
         m_wizardLeft = false; // Right 
         isWalking = true;
+    }
+    else
+    {
+        m_wizardLeft = 0;
+        //  direction.x = 0;
+        arenaXY.x = 0;
+        isWalking = 0;
     }
 
     // Process attacking inputs
@@ -544,11 +631,14 @@ void Wizard::ProcessInput(InputSystem& inputSystem) {
     }
 
     // Store the movement direction for background scrolling
+  //  m_lastMovementDirection = direction;
+    // Store the movement direction for background scrolling
+    setAreanapos = -arenaXY.x;
     m_lastMovementDirection = direction;
     // Update player horizontal position
     if (isWalking) {
-        Vector2 movement = direction * m_wizardSpeed * 0.016f;
-        m_wizardPosition.x += movement.x;
+        // Vector2 movement = direction * m_knightSpeed * 0.016f; 
+       ///  m_knightPosition.x += movement.x; 
 
         ClampPositionToBoundaries();
         m_isMoving = true;
@@ -556,6 +646,8 @@ void Wizard::ProcessInput(InputSystem& inputSystem) {
     else {
         m_isMoving = false;
     }
+    collision(3, game);
+
 }
 
 void Wizard::StartAttack(AttackType attackType) {
@@ -696,16 +788,16 @@ const Vector2& Wizard::GetPosition() const
 
 Hitbox Wizard::GetHitbox() const {
 
-    float halfWidth = (100.0f * 7.5f) / 2.0f;
-    float halfHeight = (100.0f * 7.5f) / 2.0f;
+    float halfWidth = (8.0f * character_size) / 2.0f;
+    float halfHeight = (16.0f * character_size) / 2.0f;
 
-    if (m_isJumping) {
-        halfHeight *= 0.75f; // 25% smaller in air
-    }
+    //if (m_isJumping) {
+      //  halfHeight *= 0.75f; // 25% smaller in air
+   // }
 
     return {
         m_wizardPosition.x - halfWidth,
-        m_wizardPosition.y - 100.0f * 7.5f,
+        m_wizardPosition.y -  halfHeight,
         halfWidth * 2.0f,
         halfHeight * 2.0f
     };

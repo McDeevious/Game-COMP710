@@ -13,6 +13,7 @@
 #include "sharedenums.h"
 #include <vector>
 #include "bufftype.h"
+#include "SceneGame.h"
 
 Archer::Archer()
     : m_archerIdle(nullptr)

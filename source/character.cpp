@@ -49,10 +49,10 @@ int* Character::tilearray(int row)
 void Character::setBounds(SceneGame& game)
 {
    Hitbox temp = GetHitbox();
-   upperBounds.x = ((temp.width + temp.x + 3 * game.getSize()) - game.getSize() / 2 - game.getOffsetX() )/ game.getSize();
-   lowerBounds.x = ( (temp.x - 3 * game.getSize()) - game.getSize() / 2 - game.getOffsetX()) / game.getSize();
-   upperBounds.y = ((temp.height + temp.y + 3 * game.getSize()) - game.getSize() / 2)/ game.getSize();
-   lowerBounds.y = ( (temp.y - 3 * game.getSize()) - game.getSize() / 2) / game.getSize();
+   upperBounds.x = ((temp.width + temp.x + 5 * game.getSize()) - game.getSize() / 2 - game.getOffsetX() )/ game.getSize();
+   lowerBounds.x = ( (temp.x -5* game.getSize()) - game.getSize() / 2 - game.getOffsetX()) / game.getSize();
+   upperBounds.y = ((temp.height + temp.y + 5 * game.getSize()) - game.getSize() / 2)/ game.getSize();
+   lowerBounds.y = ( (temp.y - 5 * game.getSize()) - game.getSize() / 2) / game.getSize();
    if (upperBounds.x < 10)
    {
        upperBounds.x = 10;
@@ -141,6 +141,7 @@ bool Character::collision(int type, SceneGame& game)
         {
             if (areaArray[x][y] != -1)
             {
+                std::cout << areaArray[x][y];
                 Hitbox arena;
                 arena.height = (game.getSize() * (y+1) + game.getSize() / 2) - (game.getSize() * y + game.getSize() / 2);
                 arena.width = (game.getSize() * (x+1) + game.getSize() / 2 + game.getOffsetX()) -(game.getSize() * x + game.getSize() / 2 + game.getOffsetX());
