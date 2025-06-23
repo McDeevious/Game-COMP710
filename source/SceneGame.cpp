@@ -483,6 +483,17 @@ void SceneGame::Process(float deltaTime)
             if (m_pKnightHUD) {
                 m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
             }
+
+            if (orc->m_type == ORC_RIDER)
+            {
+                if (m_triggerBuffMenuNext && !m_showBuffMenu) {
+                    SDL_ShowCursor(SDL_ENABLE);
+                    m_showBuffMenu = true;
+                    m_triggerBuffMenuNext = false;
+                    m_pBuffMenu->Reset();
+                    return; // pause game logic until buff is selected
+                }
+            }
         }
 
         for (Skeleton* skeleton : m_skeletons) {
@@ -494,6 +505,17 @@ void SceneGame::Process(float deltaTime)
 
             if (m_pKnightHUD) {
                 m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
+            }
+
+            if (skeleton->m_type == SKELETON_GREAT)
+            {
+                if (m_triggerBuffMenuNext && !m_showBuffMenu) {
+                    SDL_ShowCursor(SDL_ENABLE);
+                    m_showBuffMenu = true;
+                    m_triggerBuffMenuNext = false;
+                    m_pBuffMenu->Reset();
+                    return; // pause game logic until buff is selected
+                }
             }
         }
 
@@ -656,15 +678,15 @@ void SceneGame::SpawnEnemies(Renderer& renderer)
     float groundY = renderer.GetHeight() * 0.8f;
 
     const EnemyPlacement wave1[] = {
-        //{ 1000.0f, groundY, PATROL, 300.0f, ORC },
-        //{ 1600.0f, groundY, IDLE, 0.0f, ORC_ARMORED },
-        //{ 2300.0f, groundY, PATROL, 300.0f, ORC_ELITE },
-        //{ 3000.0f, groundY, IDLE, 0.0f, ORC_RIDER },
-        //{ 3700.0f, groundY, PATROL, 300.0f, SKELETON },
-        //{ 4400.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
-       // { 5100.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT },
-        //{ 5800.0f, groundY, PATROL, 300.0f, WEREWOLF },
-        { 1000.0f, groundY, AGGRESSIVE, 0.0f, WEREBEAR }
+        { 500.0f, groundY, PATROL, 300.0f, ORC },
+        { 800.0f, groundY, IDLE, 0.0f, ORC_ARMORED },
+        { 1100.0f, groundY, PATROL, 300.0f, ORC_ELITE },
+        { 1400.0f, groundY, IDLE, 0.0f, ORC_RIDER },
+        { 1700.0f, groundY, PATROL, 300.0f, SKELETON },
+        { 2000.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
+        { 2300.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT },
+        { 2600.0f, groundY, PATROL, 300.0f, WEREWOLF },
+        { 2900.0f, groundY, AGGRESSIVE, 0.0f, WEREBEAR }
     };
 
     const int waveCount = sizeof(wave1) / sizeof(wave1[0]);

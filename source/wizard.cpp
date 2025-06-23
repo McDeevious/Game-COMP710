@@ -58,7 +58,7 @@ Wizard::Wizard()
     , m_sfxVolume(0.4f)
     , m_iActiveFire(0)
 {
-    character_size = 5;
+    character_size = 3;
     m_wizardPosition.Set(100, 618);
     m_lastMovementDirection.Set(0.0f, 0.0f);
 }

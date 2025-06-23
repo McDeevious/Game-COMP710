@@ -39,12 +39,16 @@ public:
     virtual bool WasScored() const;
     virtual void MarkScored();
 
+    EnemyType m_type;
+
 protected:
     Vector2 m_position;
     float m_speed;
     int m_direction;
     bool m_isMoving;
     bool m_isHurt;
+
+    float m_enemySize;
 
     bool m_isAlive;
     int m_health;
@@ -55,7 +59,6 @@ protected:
     bool m_isAttacking;
     float m_attackDuration;
 
-    EnemyType m_type;
     EnemyBehavior m_behavior;
     float m_patrolRangeLeft;
     float m_patrolRangeRight;

@@ -85,7 +85,7 @@ bool Orc::Initialise(Renderer& renderer) {
         m_orcIdle->SetFrameDuration(0.2f);
         m_orcIdle->SetLooping(true);
         m_orcIdle->Animate();
-        m_orcIdle->SetScale(7.5f, -7.5f);
+        m_orcIdle->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load orc's walking sprite
@@ -95,7 +95,7 @@ bool Orc::Initialise(Renderer& renderer) {
         m_orcWalk->SetFrameDuration(0.1f);
         m_orcWalk->SetLooping(true);
         m_orcWalk->Animate();
-        m_orcWalk->SetScale(7.5f, -7.5f);
+        m_orcWalk->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load orc's hurt sprite
@@ -105,7 +105,7 @@ bool Orc::Initialise(Renderer& renderer) {
         m_orcHurt->SetFrameDuration(0.1f);
         m_orcHurt->SetLooping(false);
         m_orcHurt->Animate();
-        m_orcHurt->SetScale(7.5f, -7.5f);
+        m_orcHurt->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load orc's death sprite
@@ -115,7 +115,7 @@ bool Orc::Initialise(Renderer& renderer) {
         m_orcDeath->SetFrameDuration(0.1f);
         m_orcDeath->SetLooping(false);
         m_orcDeath->Animate(); 
-        m_orcDeath->SetScale(7.5f, -7.5f);
+        m_orcDeath->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load orc's attack1 sprite
@@ -124,7 +124,7 @@ bool Orc::Initialise(Renderer& renderer) {
         m_orcAttack1->SetupFrames(100, 100);
         m_orcAttack1->SetFrameDuration(0.1f);
         m_orcAttack1->SetLooping(false);
-        m_orcAttack1->SetScale(7.5f, -7.5f);
+        m_orcAttack1->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load orc's attack2 sprite
@@ -133,7 +133,7 @@ bool Orc::Initialise(Renderer& renderer) {
         m_orcAttack2->SetupFrames(100, 100);
         m_orcAttack2->SetFrameDuration(0.1f);
         m_orcAttack2->SetLooping(false);
-        m_orcAttack2->SetScale(7.5f, -7.5f);
+        m_orcAttack2->SetScale(m_enemySize, -m_enemySize);
     }
     
     if (!m_orcIdle || !m_orcWalk || !m_orcHurt || !m_orcDeath || !m_orcAttack1 || !m_orcAttack2) 
