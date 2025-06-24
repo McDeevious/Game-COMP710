@@ -82,6 +82,8 @@ public:
     float getWide();
     float getHeight();
     float getWH();
+
+    void LoadNextLevel();
 protected:
     // Game components
     BackgroundManager* m_pBackgroundManager;
@@ -125,6 +127,7 @@ protected:
     bool m_triggerBuffMenuNext; 
     bool m_allEnemiesCleared; 
 
+    bool m_isLevel1Complete;
 };
 
 #endif // __SCENEGAME_H_

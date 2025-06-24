@@ -3,6 +3,7 @@
 
 #include "vector2.h"
 #include "animatedsprite.h"
+#include "sharedenums.h"
 
 // Forward declarations
 class Sprite;
@@ -26,7 +27,6 @@ public:
     void Process(float deltaTime);
     void Draw(Renderer& renderer);
     void DrawLayer(Renderer& renderer, Sprite* layer, float scrollX);
-    void DrawGround(Renderer& renderer, float scrollX);
 
     // Method to update scroll position based on character movement
     void UpdateScrollFromCharacterMovement(const Vector2& movementDirection, float deltaTime);
@@ -34,23 +34,31 @@ public:
     // Adjust background layers positions
     void AdjustBackLayerPosition(int offsetX, int offsetY);
     void AdjustMiddleLayerPosition(int offsetX, int offsetY);
-    void AdjustTilesLayerPosition(int offsetX, int offsetY);
 
     // Adjust background layers scales
     void SetBackLayerScale(float scaleX, float scaleY);
     void SetMiddleLayerScale(float scaleX, float scaleY);
-    void SetTilesLayerScale(float scaleX, float scaleY);
     void changePos(float x, float y);
     float getOffsetX();
     void getAreaArray();
    // float getOffsetX();
+
+    // Method to change background to mushroom
+    void ChangeBackgrounds(BackgroundType backgroundType);
+
 private:
     // Background layers
     Sprite* m_pBackgroundBack;
     Sprite* m_pBackgroundMiddle;
-    Sprite* m_pBackgroundTileRock;
- //   Sprite* m_pBackgroundTileMoss;
-    Sprite* m_pBackgroundTileMoss;
+
+    // Forest back (lvl 1)
+    Sprite* m_pForestBack;
+    Sprite* m_pForestMiddle;
+
+    // Mushroom forest back (lvl 2)
+    Sprite* m_pMushroomBack;
+    Sprite* m_pMushroomMiddle;
+
     float m_backScrollX;
     float m_middleScrollX;
     float m_tilesScrollX;

@@ -201,6 +201,9 @@
     <ClCompile Include="buffMenu.cpp">
       <Filter>Source Files\Buffs</Filter>
     </ClCompile>
+    <ClCompile Include="VictoryMenu.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -352,6 +355,9 @@
     </ClInclude>
     <ClInclude Include="bufftype.h">
       <Filter>Header Files\Buffs</Filter>
+    </ClInclude>
+    <ClInclude Include="VictoryMenu.h">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

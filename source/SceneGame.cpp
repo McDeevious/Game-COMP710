@@ -50,6 +50,7 @@ SceneGame::SceneGame()
     , m_allEnemiesCleared(false)
     , m_triggerBuffMenuNext(false)
     , m_waveCount(0)
+    , m_isLevel1Complete(false)
 {
 }
 
@@ -692,39 +693,48 @@ void SceneGame::ProcessInput(InputSystem& inputSystem)
     }
 }
 
+void SceneGame::LoadNextLevel()
+{
+    // Update player position to start position
+    // Update the backgrounds to a difference sprite (change background manager to have multiple sprites)
+    // Set level compelte bool value to true
+}
+
 void SceneGame::SpawnEnemies(Renderer& renderer)
 {
-    if (m_waveCount > 0) return; // Only spawn once
-    float sizeTemp = m_pBackgroundManager->getSize();
-    float groundY = (40-5)*sizeTemp+ sizeTemp/2;//- m_pBackgroundManager->getHeight() / m_pBackgroundManager->getSize();
-    //float groundY = renderer.GetHeight() * 0.8f;
-    float patrolRangeGround = sizeTemp * (29) + sizeTemp / 2;
-    const EnemyPlacement wave1[] = {
-        { sizeTemp * (17) + sizeTemp / 2, groundY, PATROL, 10* sizeTemp + sizeTemp/2, ORC },
-        { sizeTemp * (30) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, ORC_ARMORED },
-        { sizeTemp * (40) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, ORC_ELITE },
-        { sizeTemp * (8), sizeTemp*18 -sizeTemp/2, PATROL,sizeTemp*9 , ORC},//maybe be orc rider
-        { sizeTemp * (10), sizeTemp * 18 - sizeTemp / 2, PATROL,sizeTemp * 9 , ORC },
-        { sizeTemp * (12), sizeTemp * 18 - sizeTemp / 2, PATROL,sizeTemp * 9 , ORC },
-        { sizeTemp * (50), sizeTemp * 12 + sizeTemp / 2, PATROL,sizeTemp * 8 , ORC_ELITE },
-        { sizeTemp * (54), sizeTemp * 12 + sizeTemp / 2, PATROL,sizeTemp * 8 , ORC_ELITE },
-        { sizeTemp * (58), sizeTemp * 12 + sizeTemp / 2, PATROL,sizeTemp * 8 , ORC_ELITE },
-        { sizeTemp * (90), sizeTemp * 4 + sizeTemp / 2, PATROL,sizeTemp * 1 , ORC_ARMORED },
-        { sizeTemp * (10), sizeTemp * 14 - sizeTemp / 2, PATROL,sizeTemp * 9 , ORC },
-        { sizeTemp * (85) +sizeTemp/2,sizeTemp * (40-5) +sizeTemp / 2, PATROL, sizeTemp*15.0f+sizeTemp/2, ORC_RIDER },
-        { 2000.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
-        { 2300.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT },
-        { 2600.0f, groundY, PATROL, 300.0f, WEREWOLF },
-        { 2900.0f, groundY, AGGRESSIVE, 0.0f, WEREBEAR }
-    };
+    if (m_waveCount == 0)
+    {
+        float sizeTemp = m_pBackgroundManager->getSize();
+        float groundY = (40 - 5) * sizeTemp + sizeTemp / 2;//- m_pBackgroundManager->getHeight() / m_pBackgroundManager->getSize();
+        //float groundY = renderer.GetHeight() * 0.8f;
+        float patrolRangeGround = sizeTemp * (29) + sizeTemp / 2;
+        const EnemyPlacement wave1[] = {
+            { sizeTemp * (17) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, ORC },
+            { sizeTemp * (30) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, ORC_ARMORED },
+            { sizeTemp * (40) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, ORC_ELITE },
+            { sizeTemp * (8), sizeTemp * 18 - sizeTemp / 2, PATROL,sizeTemp * 9 , ORC},//maybe be orc rider
+            { sizeTemp * (10), sizeTemp * 18 - sizeTemp / 2, PATROL,sizeTemp * 9 , ORC },
+            { sizeTemp * (12), sizeTemp * 18 - sizeTemp / 2, PATROL,sizeTemp * 9 , ORC },
+            { sizeTemp * (50), sizeTemp * 12 + sizeTemp / 2, PATROL,sizeTemp * 8 , ORC_ELITE },
+            { sizeTemp * (54), sizeTemp * 12 + sizeTemp / 2, PATROL,sizeTemp * 8 , ORC_ELITE },
+            { sizeTemp * (58), sizeTemp * 12 + sizeTemp / 2, PATROL,sizeTemp * 8 , ORC_ELITE },
+            { sizeTemp * (90), sizeTemp * 4 + sizeTemp / 2, PATROL,sizeTemp * 1 , ORC_ARMORED },
+            { sizeTemp * (10), sizeTemp * 14 - sizeTemp / 2, PATROL,sizeTemp * 9 , ORC },
+            { sizeTemp * (85) + sizeTemp / 2,sizeTemp * (40 - 5) + sizeTemp / 2, PATROL, sizeTemp * 15.0f + sizeTemp / 2, ORC_RIDER },
+            { 2000.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
+            { 2300.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT },
+            { 2600.0f, groundY, PATROL, 300.0f, WEREWOLF },
+            { 2900.0f, groundY, AGGRESSIVE, 0.0f, WEREBEAR }
+        };
 
-    const int waveCount = sizeof(wave1) / sizeof(wave1[0]);
+        const int waveCount = sizeof(wave1) / sizeof(wave1[0]);
 
-    SpawnEnemyWave(wave1, waveCount, 0.0f, renderer);  // offset = 0
-    m_waveCount = 1;
-    m_triggerBuffMenuNext = true;
+        SpawnEnemyWave(wave1, waveCount, 0.0f, renderer);  // offset = 0
+        m_waveCount = 1;
+        m_triggerBuffMenuNext = true;
 
-    LogManager::GetInstance().Log("One-time wave spawned. Buff menu will appear after defeat.");
+        LogManager::GetInstance().Log("One-time wave spawned. Buff menu will appear after defeat.");
+    }
 }
 
 void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offset, Renderer& renderer)

@@ -17,3 +17,8 @@ enum CharacterType {
 	ARCHER,
 	WIZARD
 };
+
+enum BackgroundType {
+	FOREST,
+	MUSHROOM_FOREST
+};
