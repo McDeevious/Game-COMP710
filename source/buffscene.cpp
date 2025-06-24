@@ -3,8 +3,15 @@
 #include <ctime>
 #include "logmanager.h"
 
+#include "texture.h"
+#include "sprite.h"
+#include "renderer.h"
+
+#include <SDL.h>// 
+
 BuffScene::BuffScene()
-    : m_active(false)
+    : m_active(false),
+    m_selectedIndex(0)
 {
     std::srand(static_cast<unsigned int>(std::time(nullptr))); // Seed RNG
 }
@@ -35,12 +42,12 @@ void BuffScene::GenerateRandomBuffs(Renderer& renderer)
     float centerY = renderer.GetHeight() / 2.0f;
 
     const char* spritePaths[] = {
-        "../game/assets/Sprites/Item_Buff/buff_health.png", 
-        "../game/assets/Sprites/Item_Buff/buff_damage.png", 
-        "../game/assets/Sprites/Item_Buff/buff_defense.png", 
-        "../game/assets/Sprites/Item_Buff/buff_speed.png", 
-        "../game/assets/Sprites/Item_Buff/buff_jump.png", 
-        "../game/assets/Sprites/Item_Buff/buff_regen.png"
+        "../game/assets/Sprites/Items/DEFUP1.png", 
+        "../game/assets/Sprites/Items/DMGUP1.png", 
+        "../game/assets/Sprites/Items/JumpBoost1.png", 
+        "../game/assets/Sprites/Items/MoreHealth1.png", 
+        "../game/assets/Sprites/Items/Regen1.png", 
+        "../game/assets/Sprites/Items/Speed1.png"
     };
 
     BuffSprite* left = new BuffSprite();
@@ -70,10 +77,12 @@ void BuffScene::Draw(Renderer& renderer)
 {
     if (!m_active) return;
 
-    for (BuffSprite* bs : m_buffOptions)
+    for (size_t i = 0; i < m_buffOptions.size(); ++i)
     {
-        if (bs)
-            bs->Draw(renderer);
+        BuffSprite* bs = m_buffOptions[i];
+        // Highlight chosen buff
+        if (bs && bs->sprite)
+            bs->sprite->Draw(renderer);
     }
 }
 
@@ -81,15 +90,25 @@ void BuffScene::ProcessInput(InputSystem& inputSystem)
 {
     if (!m_active) return;
 
-    if (inputSystem.GetKeyState(SDL_SCANCODE_LEFT) == BS_PRESSED)
+    // Use number keys to select buff
+    if (inputSystem.GetKeyState(SDL_SCANCODE_1) == BS_PRESSED)
     {
-        m_chosenBuff = m_buffOptions[0]->data;
-        Hide();
+        m_selectedIndex = 0;
     }
-    else if (inputSystem.GetKeyState(SDL_SCANCODE_RIGHT) == BS_PRESSED)
+    else if (inputSystem.GetKeyState(SDL_SCANCODE_2) == BS_PRESSED)
     {
-        m_chosenBuff = m_buffOptions[1]->data;
-        Hide();
+        m_selectedIndex = 1;
+    }
+
+    // Confirm selection
+    if (inputSystem.GetKeyState(SDL_SCANCODE_RETURN) == BS_PRESSED ||
+        inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED)
+    {
+        if (m_selectedIndex >= 0 && m_selectedIndex < static_cast<int>(m_buffOptions.size()))
+        {
+            m_chosenBuff = m_buffOptions[m_selectedIndex]->data;
+            Hide();
+        }
     }
 }
 

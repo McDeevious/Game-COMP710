@@ -55,6 +55,7 @@ private:
     std::vector<BuffSprite*> m_buffOptions;
     bool m_active;
     Buff m_chosenBuff;
+    int m_selectedIndex;
 };
 
 #endif // __BUFFSCENE_H__

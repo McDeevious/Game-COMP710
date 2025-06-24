@@ -10,7 +10,7 @@
 #include <cstdio>
 #include <string>  
 
-KnightClass::KnightClass()
+KnightClass::KnightClass() 
     : m_knightIdle(nullptr)
     , m_knightWalk(nullptr)
     , m_knightHurt(nullptr)

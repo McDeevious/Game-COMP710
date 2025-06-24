@@ -7,6 +7,8 @@
 #include "logmanager.h"
 #include <cassert>
 
+#include <SDL.h>//
+
 Coin::Coin()
     : m_pSprite(nullptr)
     , m_X(0.0f)
@@ -24,7 +26,7 @@ Coin::~Coin()
 bool Coin::Initialise(Renderer& renderer, float x, float y)
 {
     // TEMP: Use known good image like the knight sprite
-    m_pSprite = renderer.CreateSprite("../game/assets/Sprites/AUTLogo.png");
+    m_pSprite = renderer.CreateSprite("../game/assets/Sprites/AUTCoin1.png");
    
     if (m_pSprite == nullptr)
     {

@@ -137,8 +137,10 @@ void SceneGame::Process(float deltaTime)
     if (m_pBuffScene && m_pBuffScene->IsActive()) {
         m_pBuffScene->ProcessInput(inputSystem);
 
+        // When buff scene has just been closed and we haven't applied the buff yet
         if (!m_buffApplied && !m_pBuffScene->IsActive()) {
-            m_pKnightClass->ApplyBuff(m_pBuffScene->GetChosenBuff());  // Create a full Buff object from BuffType // Apply the full buff to the knight
+            const Buff& selected = m_pBuffScene->GetChosenBuff();   // already a full Buff object
+            m_pKnightClass->ApplyBuff(selected);                    // apply to knight
             m_buffApplied = true;
         }
 
@@ -313,6 +315,12 @@ void SceneGame::Draw(Renderer& renderer)
 
 void SceneGame::ProcessInput(InputSystem& inputSystem)
 {
+    // ✅ Handle buff input FIRST if active
+    if (m_pBuffScene && m_pBuffScene->IsActive()) {
+        m_pBuffScene->ProcessInput(inputSystem);
+        return; // do nothing else while choosing buff
+    }
+
     //Process input during gameplay
     if (m_gameState == GAME_STATE_PLAYING) {
         m_pKnightClass->ProcessInput(inputSystem);
