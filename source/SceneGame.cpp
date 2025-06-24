@@ -708,6 +708,9 @@ void SceneGame::ProcessInput(InputSystem& inputSystem)
 void SceneGame::LoadNextLevel()
 {
     // Update player position to start position
+    m_pKnightClass->SetPosition(m_pKnightClass->startPos);
+    // Update the scroll position to go back to normal (not sure how to implement this)
+    m_scrollDistance = 0.0f;
     // Update the backgrounds to a difference sprite (change background manager to have multiple sprites)
     m_pBackgroundManager->ChangeBackgrounds(MUSHROOM_FOREST);
     m_loadNextWave = true;
@@ -747,6 +750,13 @@ void SceneGame::SpawnEnemies(Renderer& renderer)
         m_triggerBuffMenuNext = true;
 
         LogManager::GetInstance().Log("One-time wave spawned. Buff menu will appear after defeat.");
+    }
+    else if (m_waveCount == 1 && m_loadNextWave == true)
+    {
+        m_loadNextWave = false;
+        m_waveCount = 2;
+
+        // Spawn next set of enemies based on the code above
     }
 }
 

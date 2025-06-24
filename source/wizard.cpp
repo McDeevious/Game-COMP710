@@ -15,6 +15,7 @@
 #include "bufftype.h"
 #include "SceneGame.h"
 #include <iostream>
+#include "vector2.h"
 
 
 Wizard::Wizard()
@@ -220,6 +221,12 @@ bool Wizard::Initialise(Renderer& renderer)
   //  getAreaArray();
    
     return true;
+}
+
+void Wizard::SetPosition(Vector2 pos)
+{
+    m_wizardPosition.x = pos.x;
+    m_wizardPosition.y = pos.y;
 }
 
 void Wizard::Process(float deltaTime, SceneGame& game) {

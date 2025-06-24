@@ -53,6 +53,8 @@ public:
 	// Buff Character
 	void buffCharacter(BuffType buff);
 
+	void SetPosition(Vector2 pos);
+
 	// State checking
 	bool IsDead() const;
 

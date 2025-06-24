@@ -219,6 +219,12 @@ bool Archer::Initialise(Renderer& renderer)
     return true;
 }
 
+void Archer::SetPosition(Vector2 pos)
+{
+    m_archerPosition.x = pos.x;
+    m_archerPosition.y = pos.y;
+}
+
 void Archer::Process(float deltaTime, SceneGame& game) {
     
     // Process regen (regen every second - regen is 0 unless chosen in upgrades)

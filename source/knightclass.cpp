@@ -214,6 +214,12 @@ bool KnightClass::Initialise(Renderer& renderer)
     return true;
 }
 
+void KnightClass::SetPosition(Vector2 pos)
+{
+    m_knightPosition.x = pos.x;
+    m_knightPosition.y = pos.y;
+}
+
 void KnightClass::Process(float deltaTime, SceneGame& game) {
 
     // Process regen (regen every second - regen is 0 unless chosen in upgrades)

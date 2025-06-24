@@ -43,6 +43,8 @@ public:
     virtual Hitbox GetHitbox() const = 0;
     virtual Hitbox GetAttackHitbox(const Enemy& enemy) const = 0;
 
+    virtual void SetPosition(Vector2 pos) = 0;
+
     float setAreanapos;
     float getArenaPos();
     void getAreaArray(SceneGame& game);
