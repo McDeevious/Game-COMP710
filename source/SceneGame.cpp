@@ -14,6 +14,7 @@
 #include "knighthud.h"
 #include "game.h"
 #include "xboxcontroller.h"
+#include "sharedenums.h"
 //enemies
 #include "enemy.h" 
 #include "orc.h"
@@ -50,7 +51,8 @@ SceneGame::SceneGame()
     , m_allEnemiesCleared(false)
     , m_triggerBuffMenuNext(false)
     , m_waveCount(0)
-    , m_isLevel1Complete(false)
+    , m_isLevelComplete(false)
+    , m_loadNextWave(false)
 {
 }
 
@@ -238,6 +240,12 @@ float SceneGame::getOffsetX() {
 
 void SceneGame::Process(float deltaTime)
 {
+    // Process level change
+    if (m_isLevelComplete)
+    {
+        m_isLevelComplete = false;
+        LoadNextLevel();
+    }
     
     if (m_showBuffMenu && m_pBuffMenu)
     {
@@ -506,13 +514,17 @@ void SceneGame::Process(float deltaTime)
                 m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
             }
 
-            if (orc->m_type == ORC_RIDER)
+            if (orc->m_type == ORC_ARMORED)
             {
                 if (m_triggerBuffMenuNext && !m_showBuffMenu) {
                     SDL_ShowCursor(SDL_ENABLE);
                     m_showBuffMenu = true;
                     m_triggerBuffMenuNext = false;
                     m_pBuffMenu->Reset();
+
+                    // set level complete bool value to true to load next level
+                    m_isLevelComplete = true;
+
                     return; // pause game logic until buff is selected
                 }
             }
@@ -697,7 +709,8 @@ void SceneGame::LoadNextLevel()
 {
     // Update player position to start position
     // Update the backgrounds to a difference sprite (change background manager to have multiple sprites)
-    // Set level compelte bool value to true
+    m_pBackgroundManager->ChangeBackgrounds(MUSHROOM_FOREST);
+    m_loadNextWave = true;
 }
 
 void SceneGame::SpawnEnemies(Renderer& renderer)

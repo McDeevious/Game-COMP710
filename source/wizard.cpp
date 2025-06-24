@@ -213,6 +213,10 @@ bool Wizard::Initialise(Renderer& renderer)
         LogManager::GetInstance().Log("Failed to load Knight sprites!");
         return false;
     }
+
+    startPos.x = m_wizardPosition.x;
+    startPos.y = m_wizardPosition.y;
+
   //  getAreaArray();
    
     return true;

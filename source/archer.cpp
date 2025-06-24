@@ -213,6 +213,9 @@ bool Archer::Initialise(Renderer& renderer)
         return false;
     }
 
+    startPos.x = m_archerPosition.x;
+    startPos.y = m_archerPosition.y;
+
     return true;
 }
 

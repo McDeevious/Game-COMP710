@@ -208,6 +208,9 @@ bool KnightClass::Initialise(Renderer& renderer)
         return false;
     }
 
+    startPos.x = m_knightPosition.x;
+    startPos.y = m_knightPosition.y;
+
     return true;
 }
 

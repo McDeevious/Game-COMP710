@@ -54,6 +54,9 @@ public:
     Vector2 lowerBounds;
     float character_size;
     CharacterType characterType;
+
+    // Starting spawn position
+    Vector2 startPos;
 };
 
 #endif // CHARACTER_H

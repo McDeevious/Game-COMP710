@@ -127,7 +127,8 @@ protected:
     bool m_triggerBuffMenuNext; 
     bool m_allEnemiesCleared; 
 
-    bool m_isLevel1Complete;
+    bool m_isLevelComplete;
+    bool m_loadNextWave;
 };
 
 #endif // __SCENEGAME_H_
