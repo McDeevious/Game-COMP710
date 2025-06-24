@@ -29,7 +29,7 @@ bool KnightHUD::InitialiseHealth(Renderer& renderer) {
 	float screenH = renderer.GetHeight();
 
 	//Health HUD
-	m_healthHUD = renderer.CreateAnimatedSprite("../game/assets/Sprites/UI/Knight_HealthUI.png");
+	m_healthHUD = renderer.CreateAnimatedSprite("../game/assets/Sprites/UI/Knight_HealthUI2.png");
 	if (m_healthHUD) {
 
 		m_healthHUD->SetupFrames(320, 102);
