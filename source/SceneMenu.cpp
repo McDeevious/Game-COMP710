@@ -141,7 +141,7 @@ bool SceneMenu::Initialise(Renderer& renderer) {
 	}
 
 	//Initialise the Title
-	m_title = renderer.CreateSprite("../game/assets/Sprites/UI/Menu-Title.png");
+	m_title = renderer.CreateSprite("../game/assets/Sprites/UI/Lyrnveil.png");
 	if (m_title) {
 
 		int titleW = m_title->GetWidth();
