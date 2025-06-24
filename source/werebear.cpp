@@ -96,7 +96,7 @@ bool Werebear::Initialise(Renderer& renderer) {
     return true;
 }
 
-void Werebear::Process(float deltaTime) {
+void Werebear::Process(float deltaTime, SceneGame& game) {
     // Process death animation
     if (!m_isAlive) {
         if (m_werewolfDeath) {

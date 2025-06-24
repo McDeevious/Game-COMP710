@@ -26,7 +26,7 @@ public:
 	// Get the arrow's current position
 	const Vector2& GetPosition() const;
 	void SetPosition(Vector2 newPos);
-
+	void setDirection(bool left);
 	//Collisions 
 	Hitbox GetHitbox() const;
 
@@ -44,6 +44,7 @@ private:
 	float m_fAmplitude;
 	float m_fFrequency;
 
+	int m_direction;
 	float m_fHitBoxWidth;
 	float m_fHitBoxHeight;
 	float m_fSpeed;

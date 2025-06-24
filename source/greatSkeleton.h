@@ -2,7 +2,7 @@
 #define GREATSKELETON_H
 
 #include "skeleton.h"
-
+class SceneGame;
 class GreatSkeleton : public Skeleton
 {
 public:
@@ -10,7 +10,7 @@ public:
     virtual ~GreatSkeleton();
 
     bool Initialise(Renderer& renderer) override;
-    void Process(float deltaTime) override;
+    void Process(float deltaTime, SceneGame& game) override;
 
 };
 

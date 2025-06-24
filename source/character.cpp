@@ -88,13 +88,16 @@ void Character::setBounds(SceneGame& game)
    {
        lowerBounds.y = 30;
    }
-   std::cout << lowerBounds.y  << " yy  " << upperBounds.y << std::endl;
-   std::cout << lowerBounds.x  << " xx  " << upperBounds.x << std::endl;
 }
 bool Character::collision(int type, SceneGame& game)
 {
     Hitbox temp = GetHitbox();
-    std::cout << "x = " << temp.x << " y = " << temp.y << " w = " << temp.width << " h = " << temp.height << std::endl;
+   // Hitbox temp2 = GetHitbox();
+   // Hitbox temp;
+    //temp.height = temp2.height;
+    //temp.width = temp2.width;
+   // temp.x = temp2.x;
+    //temp.y = temp2.y;
     if (type==1)
     {
         //floor
@@ -141,7 +144,6 @@ bool Character::collision(int type, SceneGame& game)
         {
             if (areaArray[x][y] != -1)
             {
-                std::cout << areaArray[x][y];
                 Hitbox arena;
                 arena.height = (game.getSize() * (y+1) + game.getSize() / 2) - (game.getSize() * y + game.getSize() / 2);
                 arena.width = (game.getSize() * (x+1) + game.getSize() / 2 + game.getOffsetX()) -(game.getSize() * x + game.getSize() / 2 + game.getOffsetX());

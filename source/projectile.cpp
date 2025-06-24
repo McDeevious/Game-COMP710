@@ -19,6 +19,7 @@ Projectile::Projectile()
 	, m_fBaseY(0.0f)
 	, m_fAmplitude(2.5f)
 	, m_fFrequency(6.0f)
+	,m_direction(0)
 {
 
 }
@@ -31,7 +32,17 @@ Projectile::~Projectile()
 	delete m_pAnimatedProjectile;
 	m_pAnimatedProjectile = nullptr;
 }
-
+void Projectile::setDirection(bool left)
+{
+	if (left)
+	{
+		m_direction = -1;
+	}
+	else
+	{
+		m_direction = 1;
+	}
+}
 bool Projectile::Initialise(Renderer& renderer)
 {
 	if (m_projectileType == ProjectileType::ARROW)
@@ -89,7 +100,7 @@ void Projectile::Process(float deltaTime)
 {
 	m_fTimeElapsed += deltaTime;
 	
-	m_position.x += m_fSpeed * deltaTime;
+	m_position.x += m_fSpeed * deltaTime * m_direction;
 	if (m_projectileType == ARROW && m_pProjectile)
 	{
 		m_pProjectile->Process(deltaTime);

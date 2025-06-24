@@ -2,6 +2,7 @@
 #define ARMOREDSKELETON_H
 
 #include "skeleton.h"
+class SceneGame;
 
 class ArmoredSkeleton : public Skeleton
 {
@@ -10,7 +11,7 @@ public:
     virtual ~ArmoredSkeleton();
 
     bool Initialise(Renderer& renderer) override;
-    void Process(float deltaTime) override;
+    void Process(float deltaTime, SceneGame& game) override;
 
 };
 

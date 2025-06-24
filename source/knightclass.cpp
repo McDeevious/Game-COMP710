@@ -52,6 +52,7 @@ KnightClass::KnightClass()
     , m_jumpSound(nullptr)
     , m_sfxVolume(0.4f)
 {
+    character_size = 5;
     m_knightPosition.Set(100, 618);
     m_lastMovementDirection.Set(0.0f, 0.0f);
 }
@@ -123,7 +124,7 @@ bool KnightClass::Initialise(Renderer& renderer)
         m_knightIdle->SetLooping(true);
         m_knightIdle->SetX(m_knightPosition.x);
         m_knightIdle->SetY(m_knightPosition.y);
-        m_knightIdle->SetScale(7.5f, -7.5f);
+        m_knightIdle->SetScale(character_size, -character_size);
         m_knightIdle->Animate();
     }
 
@@ -136,7 +137,7 @@ bool KnightClass::Initialise(Renderer& renderer)
         m_knightWalk->SetLooping(true);
         m_knightWalk->SetX(m_knightPosition.x);
         m_knightWalk->SetY(m_knightPosition.y);
-        m_knightWalk->SetScale(7.5f, -7.5f);
+        m_knightWalk->SetScale(character_size, -character_size);
         m_knightWalk->Animate();
         SetBoundaries(0, renderer.GetWidth(), 0, renderer.GetHeight());
     }
@@ -150,7 +151,7 @@ bool KnightClass::Initialise(Renderer& renderer)
         m_knightHurt->SetLooping(false);
         m_knightHurt->SetX(m_knightPosition.x);
         m_knightHurt->SetY(m_knightPosition.y);
-        m_knightHurt->SetScale(7.5f, -7.5f);
+        m_knightHurt->SetScale(character_size, -character_size);
     }
 
     //Load knight's death sprite
@@ -162,7 +163,7 @@ bool KnightClass::Initialise(Renderer& renderer)
         m_knightDeath->SetLooping(false);
         m_knightDeath->SetX(m_knightPosition.x);
         m_knightDeath->SetY(m_knightPosition.y);
-        m_knightDeath->SetScale(7.5f, -7.5f);
+        m_knightDeath->SetScale(character_size, -character_size);
     }
 
     //Load Attack 1
@@ -174,7 +175,7 @@ bool KnightClass::Initialise(Renderer& renderer)
         m_knightAttack1->SetLooping(false);
         m_knightAttack1->SetX(m_knightPosition.x);
         m_knightAttack1->SetY(m_knightPosition.y);
-        m_knightAttack1->SetScale(7.5f, -7.5f);
+        m_knightAttack1->SetScale(character_size, -character_size);
     }
 
     //Load Attack 2
@@ -186,7 +187,7 @@ bool KnightClass::Initialise(Renderer& renderer)
         m_knightAttack2->SetLooping(false);
         m_knightAttack2->SetX(m_knightPosition.x);
         m_knightAttack2->SetY(m_knightPosition.y);
-        m_knightAttack2->SetScale(7.5f, -7.5f);
+        m_knightAttack2->SetScale(character_size, -character_size);
     }
 
     //Load Special Attack
@@ -198,7 +199,7 @@ bool KnightClass::Initialise(Renderer& renderer)
         m_knightSpecial->SetLooping(false);
         m_knightSpecial->SetX(m_knightPosition.x);
         m_knightSpecial->SetY(m_knightPosition.y);
-        m_knightSpecial->SetScale(7.5f, -7.5f);
+        m_knightSpecial->SetScale(character_size, -character_size);
     }
 
     if (!m_knightIdle || !m_knightWalk || !m_knightHurt || !m_knightDeath || !m_knightAttack1 || !m_knightAttack2 || !m_knightSpecial)
@@ -290,9 +291,9 @@ void KnightClass::Process(float deltaTime, SceneGame& game) {
             activeAttack->SetX(m_knightPosition.x);
             activeAttack->SetY(m_knightPosition.y);
 
-            float scaleX = (m_knightWalk) ? m_knightWalk->GetScaleX() : 7.5f;
-            float direction = (scaleX < 0) ? -7.5f : 7.5f;
-            activeAttack->SetScale(direction, -7.5f);
+            float scaleX = (m_knightWalk) ? m_knightWalk->GetScaleX() : character_size;
+            float direction = (scaleX < 0) ? -character_size : character_size;
+            activeAttack->SetScale(direction, -character_size);
 
             if ((!activeAttack->IsAnimating()) || m_attackDuration > timeoutDuration)
             {
@@ -310,24 +311,45 @@ void KnightClass::Process(float deltaTime, SceneGame& game) {
     }
 
     // Process jump physics
-    if (m_isJumping) {
+    if (m_jumpVelocity > 0)
+    {
+        //is going down
         m_jumpVelocity += m_gravity * deltaTime;
-
         m_knightPosition.y += m_jumpVelocity * deltaTime;
-
-        // Check for landing
-        if (m_knightPosition.y >= m_groundY) {
-            m_knightPosition.y = m_groundY;
+        setBounds(game);
+        if (collision(1, game))
+        {
+            m_knightPosition.y -= m_jumpVelocity * deltaTime;
             m_isJumping = false;
-            m_jumpVelocity = 0.0f;
-
-            // Resume animations after landing
+            m_jumpVelocity = 0;
             if (m_isMoving && m_knightWalk) {
                 m_knightWalk->Animate();
             }
             else if (m_knightIdle) {
                 m_knightIdle->Animate();
             }
+        }
+    }
+    else if (m_jumpVelocity < 0)
+    {
+
+        m_jumpVelocity += m_gravity * deltaTime;
+        m_knightPosition.y += m_jumpVelocity * deltaTime;
+        setBounds(game);
+        if (collision(2, game))
+        {
+            m_knightPosition.y -= m_jumpVelocity * deltaTime;
+
+        }
+    }
+    else
+    {
+        //idle
+        m_knightPosition.y += m_gravity / 3 * deltaTime;
+        setBounds(game);
+        if (collision(1, game))
+        {
+            m_knightPosition.y -= m_gravity / 3 * deltaTime;
         }
     }
 
@@ -341,8 +363,8 @@ void KnightClass::Process(float deltaTime, SceneGame& game) {
                 m_knightWalk->SetX(m_knightPosition.x);
                 m_knightWalk->SetY(m_knightPosition.y);
 
-                float direction = m_knightLeft ? -7.5f : 7.5f;
-                m_knightWalk->SetScale(direction, -7.5f);
+                float direction = m_knightLeft ? -character_size : character_size;
+                m_knightWalk->SetScale(direction, -character_size);
             }
         }
         //Handle normal movement animations
@@ -358,8 +380,8 @@ void KnightClass::Process(float deltaTime, SceneGame& game) {
                 m_knightWalk->SetX(m_knightPosition.x);
                 m_knightWalk->SetY(m_knightPosition.y);
 
-                float direction = m_knightLeft ? -7.5 : 7.5;
-                m_knightWalk->SetScale(direction, -7.5);
+                float direction = m_knightLeft ? -character_size : character_size;
+                m_knightWalk->SetScale(direction, -character_size);
             }
         }
         else {
@@ -374,8 +396,8 @@ void KnightClass::Process(float deltaTime, SceneGame& game) {
                 m_knightIdle->SetX(m_knightPosition.x);
                 m_knightIdle->SetY(m_knightPosition.y);
 
-                float direction = m_knightLeft ? -7.5 : 7.5;
-                m_knightIdle->SetScale(direction, -7.5);
+                float direction = m_knightLeft ? -character_size : character_size;
+                m_knightIdle->SetScale(direction, -character_size);
             }
 
         }
@@ -459,6 +481,8 @@ void KnightClass::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
     //m_knightPosition.x = 150.0f;  
     Vector2 direction;
     direction.Set(0, 0);
+    Vector2 arenaXY;
+    arenaXY.Set(0, 0);
 
     // Get controller if connected
     XboxController* controller = inputSystem.GetController(0);
@@ -467,6 +491,7 @@ void KnightClass::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
 
     // Track the previous horizontal direction for background scrolling
     float previousDirectionX = m_lastMovementDirection.x;
+    direction.x = m_lastMovementDirection.x;
 
     // Only allow jumping when on the ground and not attacking
     if ((inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_HELD || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_A) == BS_PRESSED)) && !m_isJumping) {
@@ -484,14 +509,54 @@ void KnightClass::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
     }
 
     if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_LEFT) == BS_HELD || (controller && (stick.x < -threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_LEFT) == BS_HELD))) {
-        direction.x = -1.0f;
+        if (m_knightPosition.x < 200)
+        {
+            direction.x = -1.0f;
+            arenaXY.x = -3.f * m_knightSpeed;
+            if (collision(5, game))
+            {
+                arenaXY.x = 3.f * m_knightSpeed;
+
+            }
+        }
+        else {
+            m_knightPosition.x -= 3.f * m_knightSpeed;
+            if (collision(5, game))
+            {
+                m_knightPosition.x += 3.f * m_knightSpeed;
+            }
+        }
+        //   direction.x = -1.0f; 
         m_knightLeft = true; // Left 
         isWalking = true;
     }
     else if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_RIGHT) == BS_HELD || (controller && (stick.x > threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_RIGHT) == BS_HELD))) {
-        direction.x = 1.0f;
+        if (m_knightPosition.x > 1000)
+        {
+            direction.x = 1.0f;
+            arenaXY.x = 3.f * m_knightSpeed;
+            if (collision(4, game))
+            {
+                arenaXY.x = -3.f * m_knightSpeed;
+            }
+        }
+        else {
+            //   exit(0);
+            m_knightPosition.x += 3.f * m_knightSpeed;
+            if (collision(4, game))
+            {
+                m_knightPosition.x -= 3.f * m_knightSpeed;
+            }
+        }
         m_knightLeft = false; // Right 
         isWalking = true;
+    }
+    else
+    {
+        //m_wizardLeft = 0;
+        //  direction.x = 0;
+        arenaXY.x = 0;
+        isWalking = 0;
     }
 
     // Process attacking inputs
@@ -511,11 +576,12 @@ void KnightClass::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
     }
 
     // Store the movement direction for background scrolling
+    setAreanapos = -arenaXY.x;
     m_lastMovementDirection = direction;
     // Update player horizontal position
     if (isWalking) {
-        Vector2 movement = direction * m_knightSpeed * 0.016f;
-        m_knightPosition.x += movement.x;
+        // Vector2 movement = direction * m_knightSpeed * 0.016f; 
+       ///  m_knightPosition.x += movement.x; 
 
         ClampPositionToBoundaries();
         m_isMoving = true;
@@ -602,21 +668,22 @@ bool KnightClass::isProjectilesActive() const {
 void KnightClass::SetBoundaries(float left, float right, float top, float bottom)
 {
     // Calculate effective sprite size for boundary padding
-    float effectiveWidth = 100.0f * 2.0f * 0.5f;
-    float effectiveHeight = 100.0f * 2.0f * 0.5f;
+  //  float effectiveWidth = 100.0f * 2.0f * 0.5f;
+   // float effectiveHeight = 100.0f * 2.0f * 0.5f;
 
     // Set left boundary to knight's initial X position 
     m_leftBoundary = 100.0f;
 
     // Set other boundaries with appropriate padding
-    m_rightBoundary = right - effectiveWidth;
-    m_topBoundary = top + effectiveHeight;
-    m_bottomBoundary = bottom - effectiveHeight;
+    m_rightBoundary = right;
+    m_topBoundary = top ;
+    m_bottomBoundary = bottom ;
 
 }
 
 void KnightClass::ClampPositionToBoundaries()
 {
+    /**
     // Clamp X position
     if (m_knightPosition.x < m_leftBoundary)
     {
@@ -636,6 +703,7 @@ void KnightClass::ClampPositionToBoundaries()
     {
         m_knightPosition.y = m_bottomBoundary;
     }
+    **/
 }
 
 const Vector2& KnightClass::GetLastMovementDirection() const
@@ -654,16 +722,14 @@ const Vector2& KnightClass::GetPosition() const
 
 Hitbox KnightClass::GetHitbox() const {
 
-    float halfWidth = (100.0f * 7.5f) / 2.0f;
-    float halfHeight = (100.0f * 7.5f) / 2.0f;
+    float halfWidth = (10.0f * character_size) / 2.0f;
+    float halfHeight = (16.5f * character_size) / 2.0f;
 
-    if (m_isJumping) {
-        halfHeight *= 0.75f; // 25% smaller in air
-    }
+   
 
     return {
         m_knightPosition.x - halfWidth,
-        m_knightPosition.y - 100.0f * 7.5f,
+        m_knightPosition.y - halfHeight,
         halfWidth * 2.0f,
         halfHeight * 2.0f
     };
@@ -672,11 +738,11 @@ Hitbox KnightClass::GetHitbox() const {
 }
 
 Hitbox KnightClass::GetAttackHitbox(const Enemy& enemy) const {
-    float attackWidth = 80.0f;  // Width of the attack zone
-    float attackHeight = 100.0f * 7.5f;
-    float direction = (m_knightWalk && m_knightWalk->GetScaleX() < 0) ? -7.5f : 7.5f;
+    float attackWidth = 12 * character_size;  // Width of the attack zone
+    float attackHeight = 1.0f * character_size;
+    float direction = (m_knightWalk && m_knightWalk->GetScaleX() < 0) ? -character_size : character_size;
 
-    float offsetX = (direction < 0) ? 50.0f : -attackWidth - 50.0f;
+    float offsetX = (direction < 0) ? -attackWidth : attackWidth ;
 
     return {
         m_knightPosition.x + offsetX,

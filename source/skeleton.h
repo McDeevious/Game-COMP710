@@ -3,6 +3,7 @@
 #define SKELETON_H
 
 #include "enemy.h"   
+class SceneGame;
 
 class Skeleton : public Enemy{
 public:
@@ -10,7 +11,7 @@ public:
     virtual ~Skeleton();
 
     bool Initialise(Renderer& renderer) override;
-    void Process(float deltaTime) override;
+    void Process(float deltaTime, SceneGame& game) override;
     void Draw(Renderer& renderer, float scrollX) override;
 
     virtual void SetPosition(float x, float y);

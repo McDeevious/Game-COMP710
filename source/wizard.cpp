@@ -57,8 +57,9 @@ Wizard::Wizard()
     , m_jumpSound(nullptr)
     , m_sfxVolume(0.4f)
     , m_iActiveFire(0)
+    , m_jumpBoost(0)
 {
-    character_size = 3;
+    character_size = 5;
     m_wizardPosition.Set(100, 618);
     m_lastMovementDirection.Set(0.0f, 0.0f);
 }
@@ -147,7 +148,7 @@ bool Wizard::Initialise(Renderer& renderer)
         m_wizardWalk->SetY(m_wizardPosition.y);
         m_wizardWalk->SetScale(character_size, -character_size);
         m_wizardWalk->Animate();
-        SetBoundaries(0, renderer.GetWidth(), 0, renderer.GetHeight());
+        SetBoundaries(-200* character_size, renderer.GetWidth()+200*character_size, -200* character_size, renderer.GetHeight()+200*character_size);
     }
 
     //Load knight's hurt sprite
@@ -308,6 +309,7 @@ void Wizard::Process(float deltaTime, SceneGame& game) {
                         if (!arrow->m_bActive)
                         {
                             arrow->m_bActive = true;
+                            arrow->setDirection(m_wizardLeft);
                             arrow->SetPosition(m_wizardPosition + Vector2(60.0f, 0.0f));
                             m_iActiveFire++;
                             break;
@@ -330,9 +332,7 @@ void Wizard::Process(float deltaTime, SceneGame& game) {
     // Process jump physics
 
    // Process jump physics
-    //m_wizardPosition.y = 200;
-    wasTouchingGround = 0;
-    wasTouchingRoof = 0;
+ 
     if (m_jumpVelocity > 0)
     {
         //is going down
@@ -372,12 +372,12 @@ void Wizard::Process(float deltaTime, SceneGame& game) {
     else
     {
         //idle
-        m_wizardPosition.y += m_gravity * deltaTime;
+        m_wizardPosition.y += m_gravity/3 * deltaTime;
         setBounds(game);
         if (collision(1, game))
             // if (wasTouchingGround)
         {
-            m_wizardPosition.y -= m_gravity * deltaTime;
+            m_wizardPosition.y -= m_gravity/3 * deltaTime;
         }
     }
      
@@ -526,13 +526,12 @@ void Wizard::Draw(Renderer& renderer) {
 }
 
 void Wizard::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
-    wasTouchingGround = 0;
-    wasTouchingRoof = 0;
-    bool isWalking = false;
+     bool isWalking = false;
     // m_wizardPosition.x = 150.0f;
     Vector2 direction;
     Vector2 direction2;
     direction.Set(0, 0);
+    Vector2 arenaXY;
     arenaXY.Set(0, 0);
 
     // Get controller if connected
@@ -542,7 +541,7 @@ void Wizard::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
 
     // Track the previous horizontal direction for background scrolling
     float previousDirectionX = m_lastMovementDirection.x;
-
+    direction.x = previousDirectionX;
     // Only allow jumping when on the ground and not attacking
     if ((inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_HELD || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_A) == BS_PRESSED)) && !m_isJumping) {
 
@@ -555,7 +554,7 @@ void Wizard::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
             }
         }
         m_isJumping = true;
-        m_jumpVelocity = m_jumpStrength;
+        m_jumpVelocity = m_jumpStrength - m_jumpBoost;
     }
 
     if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_LEFT) == BS_HELD || (controller && (stick.x < -threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_LEFT) == BS_HELD))) {
@@ -564,7 +563,7 @@ void Wizard::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
         {
             direction.x = -1.0f;
             arenaXY.x = -3.f * m_wizardSpeed;
-            if (collision(3, game))
+            if (collision(5, game))
             {
                 arenaXY.x = 3.f * m_wizardSpeed;
 
@@ -572,7 +571,7 @@ void Wizard::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
         }
         else {
             m_wizardPosition.x -= 3.f * m_wizardSpeed;
-            if (collision(3, game))
+            if (collision(5, game))
             {
                m_wizardPosition.x += 3.f * m_wizardSpeed;
             }
@@ -587,7 +586,7 @@ void Wizard::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
         {
             direction.x = 1.0f;
             arenaXY.x = 3.f * m_wizardSpeed;
-            if (collision(5, game))
+            if (collision(4, game))
             {
                 arenaXY.x = -3.f * m_wizardSpeed;
             }
@@ -605,7 +604,7 @@ void Wizard::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
     }
     else
     {
-        m_wizardLeft = 0;
+        //m_wizardLeft = 0;
         //  direction.x = 0;
         arenaXY.x = 0;
         isWalking = 0;
@@ -646,7 +645,7 @@ void Wizard::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
     else {
         m_isMoving = false;
     }
-    collision(3, game);
+ //   collision(3, game);
 
 }
 
@@ -736,22 +735,23 @@ bool Wizard::isProjectilesActive() const {
 void Wizard::SetBoundaries(float left, float right, float top, float bottom)
 {
     // Calculate effective sprite size for boundary padding
-    float effectiveWidth = 100.0f * 2.0f * 0.5f;
-    float effectiveHeight = 100.0f * 2.0f * 0.5f;
+  //  float effectiveWidth = 100.0f * 2.0f * 0.5f;
+   // float effectiveHeight = 100.0f * 2.0f * 0.5f;
 
     // Set left boundary to knight's initial X position 
-    m_leftBoundary = 100.0f;
+    m_leftBoundary = 0;
 
     // Set other boundaries with appropriate padding
-    m_rightBoundary = right - effectiveWidth;
-    m_topBoundary = top + effectiveHeight;
-    m_bottomBoundary = bottom - effectiveHeight;
+    m_rightBoundary = right;// - effectiveWidth;
+        m_topBoundary = top; //+ effectiveHeight;
+        m_bottomBoundary = bottom; //- effectiveHeight;
 
 }
 
 void Wizard::ClampPositionToBoundaries()
 {
     // Clamp X position
+    /**
     if (m_wizardPosition.x < m_leftBoundary)
     {
         m_wizardPosition.x = m_leftBoundary;
@@ -770,6 +770,7 @@ void Wizard::ClampPositionToBoundaries()
     {
         m_wizardPosition.y = m_bottomBoundary;
     }
+ **/   
 }
 
 const Vector2& Wizard::GetLastMovementDirection() const
@@ -788,8 +789,8 @@ const Vector2& Wizard::GetPosition() const
 
 Hitbox Wizard::GetHitbox() const {
 
-    float halfWidth = (8.0f * character_size) / 2.0f;
-    float halfHeight = (16.0f * character_size) / 2.0f;
+    float halfWidth = (10.0f * character_size) / 2.0f;
+    float halfHeight = (16.5f * character_size) / 2.0f;
 
     //if (m_isJumping) {
       //  halfHeight *= 0.75f; // 25% smaller in air
@@ -845,7 +846,7 @@ void Wizard::TakeDamage(int amount) {
         return;
     }
 
-    m_wizardhealth -= amount;
+    m_wizardhealth -= amount+m_damageReduction;
 
     // Cancel any current attack
     m_isAttacking = false;
@@ -915,7 +916,7 @@ void Wizard::buffCharacter(BuffType buff)
     }
     else if (buff == BUFF_HEALTH)
     {
-        m_wizardhealth += 100;
+        m_wizardhealth += 50;
         if (m_wizardhealth > m_maxHealth)
         {
             m_wizardhealth = m_maxHealth;
@@ -923,15 +924,16 @@ void Wizard::buffCharacter(BuffType buff)
     }
     else if (buff == BUFF_REGEN)
     {
-        m_regen = 10;
+        m_regen = 5;
         m_isRegenApplied = true;
     }
     else if (buff == BUFF_DMGUP)
     {
-        m_attackModifier += 5;
+        m_attackModifier += 20;
     }
     else if (buff == BUFF_JUMP)
     {
+        m_jumpBoost += 50;
         // Do nothing for now as jump mechanics are changing
     }
 }

@@ -248,6 +248,10 @@
     <ClInclude Include="wizard.h" />
     <ClInclude Include="xboxcontroller.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\game\assets\Sprites\Items\DEFUP.png.png" />
+    <Image Include="..\game\assets\Sprites\Items\DMGUP.png.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

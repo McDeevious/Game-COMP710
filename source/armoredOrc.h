@@ -2,7 +2,8 @@
 #define ARMOREDORC_H
 
 #include "Orc.h"
-
+class SceneGame;
+class Render;
 class ArmoredOrc : public Orc
 {
 public:
@@ -10,7 +11,7 @@ public:
     virtual ~ArmoredOrc();
 
     bool Initialise(Renderer& renderer) override; 
-    void Process(float deltaTime) override;
+    void Process(float deltaTime, SceneGame& game) override;
 
 };
 

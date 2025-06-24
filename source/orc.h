@@ -3,6 +3,7 @@
 #define ORC_H
 
 #include "enemy.h"  // Inherit from shared base class
+class SceneGame;
 
 class Orc : public Enemy {
 public:
@@ -10,7 +11,7 @@ public:
     virtual ~Orc();
 
     bool Initialise(Renderer& renderer) override;
-    void Process(float deltaTime) override;
+    void Process(float deltaTime, SceneGame& game) override;
     void Draw(Renderer& renderer, float scrollX) override;
 
     virtual void SetPosition(float x, float y);

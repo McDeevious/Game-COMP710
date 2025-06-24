@@ -2,7 +2,7 @@
 #define ELITEORC_H
 
 #include "Orc.h"
-
+class SceneGame;
 class EliteOrc : public Orc
 {
 public:
@@ -10,7 +10,7 @@ public:
     virtual ~EliteOrc(); 
 
     bool Initialise(Renderer& renderer) override;
-    void Process(float deltaTime) override;
+    void Process(float deltaTime, SceneGame& game) override;
 
 };
 

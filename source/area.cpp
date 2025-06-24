@@ -177,9 +177,7 @@ void area::setLevel(Renderer& renderer, int level)
 	int offset = 0;
 	bool cstage = 0;
 	bool cpart = 0;
-	std::cout << "test" << std::endl;
 	std::ifstream fileread("../game/assets/Sprites/Level-selection.txt");
-	std::cout << "passed" << std::endl;
 
 	for (int s = 0; s  < 3; s++)
 	{

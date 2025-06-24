@@ -9,6 +9,7 @@
 
 class AnimatedSprite;
 class Renderer;
+class SceneGame;
 struct Hitbox;
 
 class Enemy {
@@ -17,7 +18,7 @@ public:
     virtual ~Enemy();
 
     virtual bool Initialise(Renderer& renderer) = 0;
-    virtual void Process(float deltaTime) = 0;
+    virtual void Process(float deltaTime, SceneGame& game) = 0;
     virtual void Draw(Renderer& renderer, float scrollX) = 0;
 
     virtual void SetPosition(float x, float y);
@@ -25,7 +26,7 @@ public:
 
     virtual void SetBehavior(EnemyBehavior behavior);
     virtual void SetPatrolRange(float left, float right);
-    void UpdateAI(const Vector2& playerPosition, float deltaTime);
+    void UpdateAI(const Vector2& playerPosition, float deltaTime, SceneGame& game);
 
     virtual void TakeDamage(int amount);
     virtual bool IsAlive() const;
@@ -38,7 +39,11 @@ public:
     virtual int GetScore() const;
     virtual bool WasScored() const;
     virtual void MarkScored();
-
+    void setoffset(float x);
+    void getAreaArray(SceneGame& game);
+    void passHitbox(Hitbox temp);
+    Hitbox enemyhb;
+    float xoffset;
     EnemyType m_type;
 
 protected:
@@ -47,7 +52,7 @@ protected:
     int m_direction;
     bool m_isMoving;
     bool m_isHurt;
-
+    Vector2 temPos;
     float m_enemySize;
 
     bool m_isAlive;
@@ -75,6 +80,16 @@ protected:
     std::vector<AnimatedSprite*> m_flipSprites;
 
     void UpdateSpriteScales();
+
+    //virtual Hitbox GetHitbox() const = 0;
+
+    //float getArenaPos();
+    int areaArray[120][40];//wide, height
+    int* tilearray(int row);
+    bool collision(int type, SceneGame& game);
+    void setBounds(SceneGame& game);
+    Vector2 upperBounds;
+    Vector2 lowerBounds;
 };
 
 #endif // ENEMY_H

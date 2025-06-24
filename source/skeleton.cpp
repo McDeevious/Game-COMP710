@@ -145,7 +145,7 @@ bool Skeleton::Initialise(Renderer& renderer) {
     return true;
 }
 
-void Skeleton::Process(float deltaTime) {
+void Skeleton::Process(float deltaTime, SceneGame& game) {
     // Process death animation
     if (!m_isAlive) {
         if (m_skeletonDeath) {
@@ -423,8 +423,8 @@ bool Skeleton::IsAttacking() const {
 }
 
 Hitbox Skeleton::GetHitbox() const {
-    float halfWidth = (100.0f * 5.0f) / 2.0f;
-    float halfHeight = (100.0f * 5.0f) / 2.0f;
+    float halfWidth = (8.0f * m_enemySize) / 2.0f;
+    float halfHeight = (16.0f * m_enemySize) / 2.0f;
 
     return {
         m_position.x - halfWidth,
@@ -441,21 +441,20 @@ Hitbox Skeleton::GetAttackHitbox() const {
         return { 0, 0, 0, 0 };
     }
 
-    float attackWidth = 70.0f;
-    float attackHeight = 100.0f * 5.0f;
+    float attackWidth = 8.0f * m_enemySize;
+    float attackHeight = 12.0f *m_enemySize;
 
     // Make Attack2 hitbox slightly larger for more impact
     if (m_attackState == ATTACK_2) {
-        attackWidth = 85.0f; // Wider attack hitbox for Attack2
+        attackWidth = 10.0f; // Wider attack hitbox for Attack2
     }
 
-    float offsetX = (m_direction == 1) ? 40.0f : -attackWidth - 40.0f;
-
+    float offsetX = (m_direction == 1) ? -attackWidth : attackWidth ;
     return {
-        m_position.x + offsetX,
-        m_position.y - (attackHeight / 2.0f),
-        attackWidth,
-        attackHeight
+      m_position.x - offsetX / 2, //+ offsetX,
+      m_position.y - attackHeight / 2, //- (attackHeight / 2.0f),
+      attackWidth,
+      attackHeight
     };
 }
 

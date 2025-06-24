@@ -3,14 +3,14 @@
 #include "animatedsprite.h"
 #include "logmanager.h"
 #include "game.h"
-
+#include "SceneGame.h"
 RiderOrc::RiderOrc()
 {
-    m_health = 100;
-    m_attackCooldown = 4.5f;
+    m_health = 200;
+    m_attackCooldown = 4.0f;
     m_detectionRange = 450.0f;
-    m_attackRange = 150.0f;
-    m_speed = 0.25f;
+    m_attackRange = 250.0f;
+    m_speed = 2;
     m_type = ORC_RIDER;
 } 
 
@@ -95,7 +95,7 @@ bool RiderOrc::Initialise(Renderer& renderer) {
     return true;
 }
 
-void RiderOrc::Process(float deltaTime) {
+void RiderOrc::Process(float deltaTime, SceneGame& game) {
     //Process death animation
     if (!m_isAlive) {
         if (m_orcDeath) {

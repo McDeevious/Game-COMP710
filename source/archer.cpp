@@ -20,13 +20,13 @@ Archer::Archer()
     , m_archerWalk(nullptr)
     , m_archerHurt(nullptr)
     , m_archerDeath(nullptr)
-    , m_archerSpeed(0.5f)
+    , m_archerSpeed(1.0f)
     , m_archerLeft(false)
     , m_isMoving(false)
     , m_isHurt(false)
     , m_damageReduction(0)
     , m_isDead(false)
-    , m_archerhealth(1250)
+    , m_archerhealth(125)
     , m_maxHealth(m_archerhealth)
     , m_regen(0)
     , m_regenTimeAcculmated(0.0f)
@@ -36,7 +36,7 @@ Archer::Archer()
     , m_leftBoundary(0.0f)
     , m_rightBoundary(1024.0f)
     , m_topBoundary(0.0f)
-    , m_bottomBoundary(768.0f)
+    , m_bottomBoundary(1000.0f)
     //jumping 
     , m_isJumping(false)
     , m_jumpVelocity(0.0f)
@@ -56,6 +56,7 @@ Archer::Archer()
     , m_sfxVolume(0.4f)
     , m_iActiveArrows(0)
 {
+    character_size = 5;
     m_archerPosition.Set(100, 618);
     m_lastMovementDirection.Set(0.0f, 0.0f);
 }
@@ -131,7 +132,7 @@ bool Archer::Initialise(Renderer& renderer)
         m_archerIdle->SetLooping(true);
         m_archerIdle->SetX(m_archerPosition.x);
         m_archerIdle->SetY(m_archerPosition.y);
-        m_archerIdle->SetScale(7.5f, -7.5f);
+        m_archerIdle->SetScale(character_size, -character_size);
         m_archerIdle->Animate();
     }
 
@@ -144,7 +145,7 @@ bool Archer::Initialise(Renderer& renderer)
         m_archerWalk->SetLooping(true);
         m_archerWalk->SetX(m_archerPosition.x);
         m_archerWalk->SetY(m_archerPosition.y);
-        m_archerWalk->SetScale(7.5f, -7.5f);
+        m_archerWalk->SetScale(character_size, -character_size);
         m_archerWalk->Animate();
         SetBoundaries(0, renderer.GetWidth(), 0, renderer.GetHeight());
     }
@@ -158,7 +159,7 @@ bool Archer::Initialise(Renderer& renderer)
         m_archerHurt->SetLooping(false);
         m_archerHurt->SetX(m_archerPosition.x);
         m_archerHurt->SetY(m_archerPosition.y);
-        m_archerHurt->SetScale(7.5f, -7.5f);
+        m_archerHurt->SetScale(character_size, -character_size);
     }
 
     //Load knight's death sprite
@@ -170,7 +171,7 @@ bool Archer::Initialise(Renderer& renderer)
         m_archerDeath->SetLooping(false);
         m_archerDeath->SetX(m_archerPosition.x);
         m_archerDeath->SetY(m_archerPosition.y);
-        m_archerDeath->SetScale(7.5f, -7.5f);
+        m_archerDeath->SetScale(character_size, -character_size);
     }
 
     //Load Attack 1
@@ -182,7 +183,7 @@ bool Archer::Initialise(Renderer& renderer)
         m_archerAttack1->SetLooping(false);
         m_archerAttack1->SetX(m_archerPosition.x);
         m_archerAttack1->SetY(m_archerPosition.y);
-        m_archerAttack1->SetScale(7.5f, -7.5f);
+        m_archerAttack1->SetScale(character_size, -character_size);
     }
 
     //Load Special Attack
@@ -194,7 +195,7 @@ bool Archer::Initialise(Renderer& renderer)
         m_archerSpecial->SetLooping(false);
         m_archerSpecial->SetX(m_archerPosition.x);
         m_archerSpecial->SetY(m_archerPosition.y);
-        m_archerSpecial->SetScale(7.5f, -7.5f);
+        m_archerSpecial->SetScale(character_size, -character_size);
     }
 
     for (int i = 0; i < 5; i++)
@@ -293,9 +294,9 @@ void Archer::Process(float deltaTime, SceneGame& game) {
             activeAttack->SetX(m_archerPosition.x);
             activeAttack->SetY(m_archerPosition.y);
 
-            float scaleX = (m_archerWalk) ? m_archerWalk->GetScaleX() : 7.5f;
-            float direction = (scaleX < 0) ? -7.5f : 7.5f;
-            activeAttack->SetScale(direction, -7.5f);
+            float scaleX = (m_archerWalk) ? m_archerWalk->GetScaleX() : character_size;
+            float direction = (scaleX < 0) ? -character_size : character_size;
+            activeAttack->SetScale(direction, -character_size);
 
             if ((!activeAttack->IsAnimating() && m_attackState != BLOCK) || m_attackDuration > timeoutDuration)
             {
@@ -305,6 +306,7 @@ void Archer::Process(float deltaTime, SceneGame& game) {
                     {
                         if (!arrow->m_bActive)
                         {
+                            arrow->setDirection(m_archerLeft);
                             arrow->m_bActive = true;
                             arrow->SetPosition(m_archerPosition + Vector2(60.0f, 0.0f));
                             m_iActiveArrows++;
@@ -326,24 +328,51 @@ void Archer::Process(float deltaTime, SceneGame& game) {
     }
 
     // Process jump physics
-    if (m_isJumping) {
+    if (m_jumpVelocity > 0)
+    {
+        //is going down
         m_jumpVelocity += m_gravity * deltaTime;
-
         m_archerPosition.y += m_jumpVelocity * deltaTime;
-
-        // Check for landing
-        if (m_archerPosition.y >= m_groundY) {
-            m_archerPosition.y = m_groundY;
+        setBounds(game);
+        if (collision(1, game))
+            //  if (wasTouchingGround)
+        {
+            //   m_jumpVelocity += m_gravity * deltaTime;
+            m_archerPosition.y -= m_jumpVelocity * deltaTime;
             m_isJumping = false;
-            m_jumpVelocity = 0.0f;
-
-            // Resume animations after landing
+            m_jumpVelocity = 0;
             if (m_isMoving && m_archerWalk) {
                 m_archerWalk->Animate();
             }
             else if (m_archerIdle) {
                 m_archerIdle->Animate();
             }
+        }
+    }
+    else if (m_jumpVelocity < 0)
+    {
+
+        m_jumpVelocity += m_gravity * deltaTime;
+        m_archerPosition.y += m_jumpVelocity * deltaTime;
+        setBounds(game);
+        if (collision(2, game))
+            // if (wasTouchingRoof)
+        {
+            //  m_jumpVelocity += m_gravity * deltaTime;
+            m_archerPosition.y -= m_jumpVelocity * deltaTime;
+
+        }
+        //going up
+    }
+    else
+    {
+        //idle
+        m_archerPosition.y += m_gravity / 3 * deltaTime;
+        setBounds(game);
+        if (collision(1, game))
+            // if (wasTouchingGround)
+        {
+            m_archerPosition.y -= m_gravity / 3 * deltaTime;
         }
     }
 
@@ -370,8 +399,8 @@ void Archer::Process(float deltaTime, SceneGame& game) {
                 m_archerWalk->SetX(m_archerPosition.x);
                 m_archerWalk->SetY(m_archerPosition.y);
 
-                float direction = m_archerLeft ? -7.5f : 7.5f;
-                m_archerWalk->SetScale(direction, -7.5f);
+                float direction = m_archerLeft ? -character_size : character_size;
+                m_archerWalk->SetScale(direction, -character_size);
             }
         }
         //Handle normal movement animations
@@ -387,8 +416,8 @@ void Archer::Process(float deltaTime, SceneGame& game) {
                 m_archerWalk->SetX(m_archerPosition.x);
                 m_archerWalk->SetY(m_archerPosition.y);
 
-                float direction = m_archerLeft ? -7.5 : 7.5;
-                m_archerWalk->SetScale(direction, -7.5);
+                float direction = m_archerLeft ? -character_size : character_size;
+                m_archerWalk->SetScale(direction, -character_size);
             }
         }
         else {
@@ -403,8 +432,8 @@ void Archer::Process(float deltaTime, SceneGame& game) {
                 m_archerIdle->SetX(m_archerPosition.x);
                 m_archerIdle->SetY(m_archerPosition.y);
 
-                float direction = m_archerLeft ? -7.5 : 7.5;
-                m_archerIdle->SetScale(direction, -7.5);
+                float direction = m_archerLeft ? -character_size : character_size;
+                m_archerIdle->SetScale(direction, -character_size);
             }
 
         }
@@ -489,9 +518,11 @@ void Archer::Draw(Renderer& renderer) {
 
 void Archer::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
     bool isWalking = false;
-    m_archerPosition.x = 150.0f;
+    //m_archerPosition.x = 150.0f;
     Vector2 direction;
     direction.Set(0, 0);
+    Vector2 arenaXY;
+    arenaXY.Set(0, 0);
 
     // Get controller if connected
     XboxController* controller = inputSystem.GetController(0);
@@ -500,7 +531,7 @@ void Archer::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
 
     // Track the previous horizontal direction for background scrolling
     float previousDirectionX = m_lastMovementDirection.x;
-
+    direction.x = m_lastMovementDirection.x;
     // Only allow jumping when on the ground and not attacking
     if ((inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_HELD || (controller && controller->GetButtonState(SDL_CONTROLLER_BUTTON_A) == BS_PRESSED)) && !m_isJumping) {
 
@@ -517,16 +548,55 @@ void Archer::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
     }
 
     if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_LEFT) == BS_HELD || (controller && (stick.x < -threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_LEFT) == BS_HELD))) {
-        direction.x = -1.0f;
+        if (m_archerPosition.x < 200)
+        {
+            direction.x = -1.0f;
+            arenaXY.x = -3.f * m_archerSpeed;
+            if (collision(5, game))
+            {
+                arenaXY.x = 3.f * m_archerSpeed;
+
+            }
+        }
+        else {
+            m_archerPosition.x -= 3.f * m_archerSpeed;
+            if (collision(5, game))
+            {
+                m_archerPosition.x += 3.f * m_archerSpeed;
+            }
+        }
+        //   direction.x = -1.0f; 
         m_archerLeft = true; // Left 
         isWalking = true;
     }
     else if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_RIGHT) == BS_HELD || (controller && (stick.x > threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_RIGHT) == BS_HELD))) {
-        direction.x = 1.0f;
+        if (m_archerPosition.x > 1000)
+        {
+            direction.x = 1.0f;
+            arenaXY.x = 3.f * m_archerSpeed;
+            if (collision(4, game))
+            {
+                arenaXY.x = -3.f * m_archerSpeed;
+            }
+        }
+        else {
+            //   exit(0);
+            m_archerPosition.x += 3.f * m_archerSpeed;
+            if (collision(4, game))
+            {
+                m_archerPosition.x -= 3.f * m_archerSpeed;
+            }
+        }
         m_archerLeft = false; // Right 
         isWalking = true;
     }
-
+    else
+    {
+        //m_wizardLeft = 0;
+        //  direction.x = 0;
+        arenaXY.x = 0;
+        isWalking = 0;
+    }
     // Process attacking inputs
     if (!m_isAttacking && !m_isHurt && !m_isDead) {
         // LCTRL for basic attack
@@ -547,18 +617,20 @@ void Archer::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
     }
 
     // Store the movement direction for background scrolling
+    setAreanapos = -arenaXY.x;
     m_lastMovementDirection = direction;
     // Update player horizontal position
     if (isWalking) {
-        Vector2 movement = direction * m_archerSpeed * 0.016f;
-        m_archerPosition.x += movement.x;
+        // Vector2 movement = direction * m_knightSpeed * 0.016f; 
+       ///  m_knightPosition.x += movement.x; 
 
         ClampPositionToBoundaries();
         m_isMoving = true;
     }
     else {
         m_isMoving = false;
-    }
+    } m_isMoving = false;
+    
 }
 
 void Archer::StartAttack(AttackType attackType) {
@@ -651,17 +723,17 @@ void Archer::SetBoundaries(float left, float right, float top, float bottom)
     float effectiveHeight = 100.0f * 2.0f * 0.5f;
 
     // Set left boundary to knight's initial X position 
-    m_leftBoundary = 100.0f;
+    m_leftBoundary = left -500;
 
     // Set other boundaries with appropriate padding
-    m_rightBoundary = right - effectiveWidth;
-    m_topBoundary = top + effectiveHeight;
-    m_bottomBoundary = bottom - effectiveHeight;
+    m_rightBoundary = right+500;
+    m_topBoundary = top+ 500;
+    m_bottomBoundary = bottom-500 ;
 
 }
 
 void Archer::ClampPositionToBoundaries()
-{
+{/**
     // Clamp X position
     if (m_archerPosition.x < m_leftBoundary)
     {
@@ -681,6 +753,7 @@ void Archer::ClampPositionToBoundaries()
     {
         m_archerPosition.y = m_bottomBoundary;
     }
+    **/
 }
 
 const Vector2& Archer::GetLastMovementDirection() const
@@ -699,16 +772,12 @@ const Vector2& Archer::GetPosition() const
 
 Hitbox Archer::GetHitbox() const {
 
-    float halfWidth = (100.0f * 7.5f) / 2.0f;
-    float halfHeight = (100.0f * 7.5f) / 2.0f;
+    float halfWidth = (10.0f * character_size) / 2.0f;
+    float halfHeight = (16.5f * character_size) / 2.0f;
 
-    if (m_isJumping) {
-        halfHeight *= 0.75f; // 25% smaller in air
-    }
-
-    return {
-        m_archerPosition.x - halfWidth,
-        m_archerPosition.y - 100.0f * 7.5f,
+   return {
+       m_archerPosition.x - halfWidth,
+       m_archerPosition.y - halfHeight,
         halfWidth * 2.0f,
         halfHeight * 2.0f
     };

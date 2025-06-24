@@ -95,7 +95,7 @@ bool ArmoredOrc::Initialise(Renderer& renderer) {
     return true;
 }
 
-void ArmoredOrc::Process(float deltaTime) { 
+void ArmoredOrc::Process(float deltaTime, SceneGame& game) {
     // Process death animation
     if (!m_isAlive) {
         if (m_orcDeath) {

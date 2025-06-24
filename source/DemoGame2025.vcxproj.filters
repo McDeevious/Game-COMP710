@@ -354,4 +354,12 @@
       <Filter>Header Files\Buffs</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\game\assets\Sprites\Items\DEFUP.png.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\game\assets\Sprites\Items\DMGUP.png.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

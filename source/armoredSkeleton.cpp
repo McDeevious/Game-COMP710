@@ -95,7 +95,7 @@ bool ArmoredSkeleton::Initialise(Renderer& renderer) {
     return true;
 }
 
-void ArmoredSkeleton::Process(float deltaTime) {
+void ArmoredSkeleton::Process(float deltaTime, SceneGame& game) {
     // Process death animation
     if (!m_isAlive) {
         if (m_skeletonDeath) {

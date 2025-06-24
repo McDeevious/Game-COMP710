@@ -3,14 +3,14 @@
 #include "animatedsprite.h"
 #include "logmanager.h"
 #include "game.h"
-
+#include "SceneGame.h"
 EliteOrc::EliteOrc()
 {
     m_health = 100;
     m_attackCooldown = 4.5f;
     m_detectionRange = 450.0f;
     m_attackRange = 150.0f;
-    m_speed = 0.25f;
+    m_speed = 0.5f;
     m_type = ORC_ELITE;
 }
 
@@ -94,7 +94,7 @@ bool EliteOrc::Initialise(Renderer& renderer) {
     return true;
 }
 
-void EliteOrc::Process(float deltaTime) {
+void EliteOrc::Process(float deltaTime, SceneGame& game) {
     //Process death animation
     if (!m_isAlive) {
         if (m_orcDeath) {

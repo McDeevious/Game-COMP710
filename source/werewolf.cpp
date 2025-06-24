@@ -146,7 +146,7 @@ bool Werewolf::Initialise(Renderer& renderer) {
     return true;
 }
 
-void Werewolf::Process(float deltaTime) {
+void Werewolf::Process(float deltaTime, SceneGame& game) {
     // Process death animation
     if (!m_isAlive) {
         if (m_werewolfDeath) {
@@ -424,8 +424,8 @@ bool Werewolf::IsAttacking() const {
 }
 
 Hitbox Werewolf::GetHitbox() const {
-    float halfWidth = (100.0f * 5.0f) / 2.0f;
-    float halfHeight = (100.0f * 5.0f) / 2.0f;
+    float halfWidth = (12.0f * m_enemySize) /2.0f;
+    float halfHeight = (16.0f * m_enemySize) / 2.0f;
 
     return {
         m_position.x - halfWidth,
@@ -442,19 +442,19 @@ Hitbox Werewolf::GetAttackHitbox() const {
         return { 0, 0, 0, 0 };
     }
 
-    float attackWidth = 70.0f;
-    float attackHeight = 100.0f * 5.0f;
+    float attackWidth = 12 * m_enemySize;
+    float attackHeight = 16 * m_enemySize;
 
     // Make Attack2 hitbox slightly larger for more impact
     if (m_attackState == ATTACK_2) {
-        attackWidth = 85.0f; // Wider attack hitbox for Attack2
+        attackWidth = 14*m_enemySize/2; // Wider attack hitbox for Attack2
     }
 
-    float offsetX = (m_direction == 1) ? 40.0f : -attackWidth - 40.0f;
 
+    float offsetX = (m_direction == 1) ? -attackWidth : attackWidth;
     return {
-        m_position.x + offsetX,
-        m_position.y - (attackHeight / 2.0f),
+        m_position.x - offsetX/2, //+ offsetX,
+        m_position.y - attackHeight/2, //- (attackHeight / 2.0f),
         attackWidth,
         attackHeight
     };

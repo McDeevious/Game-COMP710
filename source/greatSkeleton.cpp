@@ -3,7 +3,7 @@
 #include "animatedsprite.h"
 #include "logmanager.h"
 #include "game.h"
-
+#include "SceneGame.h"
 GreatSkeleton::GreatSkeleton()
 {
     m_health = 100;
@@ -95,7 +95,7 @@ bool GreatSkeleton::Initialise(Renderer& renderer) {
     return true;
 }
 
-void GreatSkeleton::Process(float deltaTime) {
+void GreatSkeleton::Process(float deltaTime, SceneGame& game) {
     // Process death animation
     if (!m_isAlive) {
         if (m_skeletonDeath) {

@@ -2,6 +2,7 @@
 #define WEREBEAR_H
 
 #include "werewolf.h" 
+class SceneGame;
 
 class Werebear : public Werewolf 
 {
@@ -10,7 +11,7 @@ public:
     virtual ~Werebear();
 
     bool Initialise(Renderer& renderer) override;
-    void Process(float deltaTime) override;
+    void Process(float deltaTime, SceneGame& game) override;
 
 };
 
