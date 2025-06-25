@@ -56,6 +56,7 @@ Archer::Archer()
     , m_sfxVolume(0.4f)
     , m_iActiveArrows(0)
 {
+    m_jumpBoost = 0;
     character_size = 5;
     m_archerPosition.Set(100, 618);
     m_lastMovementDirection.Set(0.0f, 0.0f);
@@ -553,7 +554,7 @@ void Archer::ProcessInput(InputSystem& inputSystem, SceneGame& game) {
             }
         }
         m_isJumping = true;
-        m_jumpVelocity = m_jumpStrength;
+        m_jumpVelocity = m_jumpStrength+ m_jumpBoost;
     }
 
     if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD || inputSystem.GetKeyState(SDL_SCANCODE_LEFT) == BS_HELD || (controller && (stick.x < -threshold || controller->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_LEFT) == BS_HELD))) {
@@ -922,6 +923,7 @@ void Archer::buffCharacter(BuffType buff)
     }
     else if (buff == BUFF_JUMP)
     {
+        m_jumpBoost = 120;
         // Do nothing for now as jump mechanics are changing
     }
 }

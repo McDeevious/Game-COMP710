@@ -59,6 +59,8 @@ public:
 
     // Starting spawn position
     Vector2 startPos;
+    float m_jumpBoost;
+
 };
 
 #endif // CHARACTER_H

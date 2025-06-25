@@ -117,7 +117,6 @@ private:
 	float m_gravity;
 	float m_jumpStrength;
 	float m_groundY;
-	float m_jumpBoost;
 
 	FMOD::Sound* m_attackSound;
 	FMOD::Sound* m_hurtSound;

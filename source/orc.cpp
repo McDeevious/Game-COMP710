@@ -439,21 +439,30 @@ Hitbox Orc::GetAttackHitbox() const {
         // Return an empty/invalid hitbox when not attacking
         return { 0, 0, 0, 0 };
     }
-
-    float attackWidth = 12 * m_enemySize;
-    float attackHeight = 16 * m_enemySize;
+   
+    float attackWidth = 15.0f * m_enemySize;
+    float attackHeight = 16.0f * m_enemySize;
 
     // Make Attack2 hitbox slightly larger for more impact
     if (m_attackState == ATTACK_2) {
-        attackWidth = 14*m_enemySize; // Wider attack hitbox for Attack2
+        attackWidth = 16.0f * m_enemySize; // Wider attack hitbox for Attack2
     }
+    if (m_direction != 1)
+    {
+        return {
+  m_position.x - attackWidth, //+ offsetX,
+  m_position.y - attackHeight / 2, //- (attackHeight / 2.0f),
+  attackWidth,
+  attackHeight
+        };
+    }
+    // float offsetX = (m_direction) ? attackWidth : -attackWidth;
 
-    float offsetXs = (m_direction == 1) ? -attackWidth : attackWidth; //- 40.0f;
     return {
-        m_position.x - offsetXs / 2, //+ offsetX,
-        m_position.y - attackHeight / 2, //- (attackHeight / 2.0f),
-        attackWidth,
-        attackHeight
+      m_position.x + attackWidth, //+ offsetX,
+      m_position.y - attackHeight / 2, //- (attackHeight / 2.0f),
+      attackWidth,
+      attackHeight
     };
 }
 

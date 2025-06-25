@@ -337,9 +337,13 @@ void SceneGame::Process(float deltaTime)
         }
 
         for (Skeleton* skeleton : m_skeletons) {
-            if (skeleton && skeleton->IsAlive() && skeleton->m_bVisible) {
+            if (skeleton)
+            {
                 skeleton->setoffset(tempOffset);
-                skeleton->UpdateAI(worldKnightPos, deltaTime, *this);
+                if (skeleton->IsAlive() && skeleton->m_bVisible) {
+                    skeleton->setoffset(tempOffset);
+                    skeleton->UpdateAI(worldKnightPos, deltaTime, *this);
+                }
             }
             if (skeleton && skeleton->m_bVisible) {
                 skeleton->Process(deltaTime, *this);
@@ -347,22 +351,28 @@ void SceneGame::Process(float deltaTime)
         }
 
         for (Werewolf* wolf : m_werewolf) {
-            if (wolf && wolf->IsAlive() && wolf->m_bVisible) {
+            if (wolf){
                 wolf->setoffset(tempOffset);
+                if (wolf->IsAlive() && wolf->m_bVisible) {
 
-                wolf->UpdateAI(worldKnightPos, deltaTime, *this);
+                    wolf->UpdateAI(worldKnightPos, deltaTime, *this);
+                }
             }
+
             if (wolf && wolf->m_bVisible) {
                 wolf->Process(deltaTime, *this);
             }
         }
 
         for (Werebear* bear : m_werebear) {
-            if (bear && bear->IsAlive() && bear->m_bVisible) {
+            if (bear)
+            {
                 bear->setoffset(tempOffset);
+                if (bear->IsAlive() && bear->m_bVisible) {
 
-                bear->UpdateAI(worldKnightPos, deltaTime, *this);
-            }
+                    bear->UpdateAI(worldKnightPos, deltaTime, *this);
+                }
+             }
             if (bear && bear->m_bVisible) {
                 bear->Process(deltaTime, *this);
             }
@@ -782,7 +792,7 @@ void SceneGame::SpawnEnemies(Renderer& renderer)
         //float groundY = renderer.GetHeight() * 0.8f;
         float patrolRangeGround = sizeTemp * (29) + sizeTemp / 2;
         const EnemyPlacement wave1[] = {
-            { sizeTemp * (17) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, SKELETON },
+            { sizeTemp * (17) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, ORC },
             { sizeTemp * (30) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, ORC_ARMORED },
             { sizeTemp * (40) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, ORC_ELITE },
             { sizeTemp * (8), sizeTemp * 18 - sizeTemp / 2, PATROL,sizeTemp * 9 , ORC},//maybe be orc rider
@@ -794,8 +804,8 @@ void SceneGame::SpawnEnemies(Renderer& renderer)
             { sizeTemp * (90), sizeTemp * 4 + sizeTemp / 2, PATROL,sizeTemp * 1 , ORC_ARMORED },
             { sizeTemp * (10), sizeTemp * 14 - sizeTemp / 2, PATROL,sizeTemp * 9 , ORC },
             { sizeTemp * (85) + sizeTemp / 2,sizeTemp * (40 - 5) + sizeTemp / 2, PATROL, sizeTemp * 15.0f + sizeTemp / 2, ORC_RIDER },
-            { sizeTemp * (17) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, ORC },
-            { sizeTemp * (30) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, ORC },
+            { sizeTemp * (17) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, SKELETON },
+            { sizeTemp * (30) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, SKELETON },
             { sizeTemp * (40) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, SKELETON_ARMORED },
             { sizeTemp * (8), sizeTemp * 18 - sizeTemp / 2, PATROL,sizeTemp * 9 , SKELETON_ARMORED},//maybe be orc rider
             { sizeTemp * (10), sizeTemp * 18 - sizeTemp / 2, PATROL,sizeTemp * 9 , SKELETON_ARMORED },

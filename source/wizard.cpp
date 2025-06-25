@@ -58,8 +58,8 @@ Wizard::Wizard()
     , m_jumpSound(nullptr)
     , m_sfxVolume(0.4f)
     , m_iActiveFire(0)
-    , m_jumpBoost(0)
 {
+    m_jumpBoost = 0;
     character_size = 5;
     m_wizardPosition.Set(100, 618);
     m_lastMovementDirection.Set(0.0f, 0.0f);

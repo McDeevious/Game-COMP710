@@ -440,18 +440,27 @@ Hitbox Skeleton::GetAttackHitbox() const {
         // Return an empty/invalid hitbox when not attacking
         return { 0, 0, 0, 0 };
     }
-
-    float attackWidth = 8.0f * m_enemySize;
-    float attackHeight = 12.0f *m_enemySize;
+  
+    float attackWidth = 15.0f * m_enemySize;
+    float attackHeight = 16.0f *m_enemySize;
 
     // Make Attack2 hitbox slightly larger for more impact
     if (m_attackState == ATTACK_2) {
-        attackWidth = 10.0f; // Wider attack hitbox for Attack2
+        attackWidth = 17.0f * m_enemySize; // Wider attack hitbox for Attack2
     }
-
-    float offsetX = (m_direction == 1) ? -attackWidth : attackWidth ;
+    if (m_direction !=1)
+    {
+        return {
+  m_position.x - attackWidth, //+ offsetX,
+  m_position.y - attackHeight / 2, //- (attackHeight / 2.0f),
+  attackWidth,
+  attackHeight
+        };
+    }
+   // float offsetX = (m_direction) ? attackWidth : -attackWidth;
+  
     return {
-      m_position.x - offsetX / 2, //+ offsetX,
+      m_position.x+ attackWidth, //+ offsetX,
       m_position.y - attackHeight / 2, //- (attackHeight / 2.0f),
       attackWidth,
       attackHeight
