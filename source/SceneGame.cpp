@@ -329,9 +329,9 @@ void SceneGame::Process(float deltaTime)
         for (Orc* orc : m_orcs) {
             if (orc && orc->m_bVisible) {
                 if (orc->IsAlive()) {
-                    orc->setoffset(tempOffset);
                     orc->UpdateAI(worldKnightPos, deltaTime, *this);
                 }
+                orc->setoffset(tempOffset);
                 orc->Process(deltaTime, *this);
             }
         }
@@ -1060,7 +1060,6 @@ void SceneGame::RestartGame(Renderer& renderer)
         delete werebear; 
     }
     m_werebear.clear(); 
-  //  m_waveCount = 0;
 //    m_pBackgroundManager->changePos(m_pBackgroundManager->getOffsetX(),0);
     // Reset game state variables
     m_pBackgroundManager->setStage(m_pBackgroundManager->getStage());
@@ -1068,7 +1067,9 @@ void SceneGame::RestartGame(Renderer& renderer)
     m_nextWaveOffset = 0.0f;
     m_score = 0; // Reset score
 
-    m_waveCount = m_pBackgroundManager->getStage()-1;
+    //m_waveCount = m_pBackgroundManager->getStage()-1;
+    m_pBackgroundManager->ChangeBackgrounds(FOREST);
+    m_waveCount = 0;
     m_loadNextWave = true;
     SpawnEnemies(*m_pRenderer);
 
