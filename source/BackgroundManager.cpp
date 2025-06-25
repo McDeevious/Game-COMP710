@@ -201,6 +201,14 @@ void BackgroundManager::changePos(float x, float y)
     m_position.x += x;
     m_position.y += y;
 }
+int BackgroundManager::getStage()
+{
+    return gameLevel->getStage(); 
+}
+void BackgroundManager::setStage(int s)
+{
+    gameLevel->setStage(s);
+}
 
 float BackgroundManager::getOffsetX()
 {

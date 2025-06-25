@@ -35,6 +35,8 @@ public:
 	float getWide();
 	float getHeight();
 	float getWH();
+	int getStage();
+	void setStage(int s);
 	//int getLevelStage();
 	//void setStage();
 	int* tilearray(int row);

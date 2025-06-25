@@ -260,6 +260,16 @@ void area::setLevel(Renderer& renderer, int level)
 
 
 
+int area::getStage()
+{
+	return stage;
+}
+void area::setStage(int s)
+{
+	stage = s;
+	m_position.x = 0;
+
+}
 
 
 

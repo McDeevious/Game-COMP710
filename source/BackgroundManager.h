@@ -41,6 +41,8 @@ public:
     void changePos(float x, float y);
     float getOffsetX();
     void getAreaArray();
+    int getStage();
+    void setStage(int s);
    // float getOffsetX();
 
     // Method to change background to mushroom

@@ -707,10 +707,10 @@ void Wizard::StartAttack(AttackType attackType) {
 int Wizard::AttackDamage() const {
     switch (m_attackState) {
     case CLASS_ATTACK_1:
-        return (10 + m_attackModifier);
+        return (10+100 + m_attackModifier);
         break;
     case CLASS_SP_ATTACK:
-        return (25 + m_attackModifier);
+        return (25 + 100 + m_attackModifier);
         break;
     case BLOCK:
         return 0;

@@ -59,7 +59,7 @@ public:
     int getData(int type) override;
     void setData(int type, float data) override;
 
-    void ProcessInput(InputSystem& inputSystem);
+    void ProcessInput(InputSystem& inputSystem, Renderer& renderer);
 
     // Spawn orcs 
     void SpawnEnemies(Renderer& renderer);
@@ -73,7 +73,8 @@ public:
     void CheckKnightState();
 
     // Restart the game and reset all game elements
-    void RestartGame();
+    
+    void RestartGame(Renderer& renderer);
     void getAreaArray();
     int areaArray[120][40];//wide, height
     int* tilearray(int row);
@@ -129,6 +130,7 @@ protected:
 
     bool m_isLevelComplete;
     bool m_loadNextWave;
+    int character_num;
 };
 
 #endif // __SCENEGAME_H_
