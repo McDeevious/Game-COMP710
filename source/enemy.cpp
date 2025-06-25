@@ -31,6 +31,7 @@ Enemy::Enemy()
     , m_deathSound(nullptr)
     , m_sfxVolume(0.4f)
     , xoffset(0)
+    , m_bVisible(false)
 {
 }
 
@@ -53,6 +54,10 @@ void Enemy::setoffset(float x)
 
 }
 
+void Enemy::FlipVisibility()
+{
+    m_bVisible = !m_bVisible;
+}
 
 void Enemy::SetPosition(float x, float y) {
     m_position.Set(x, y);

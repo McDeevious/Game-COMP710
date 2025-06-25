@@ -46,6 +46,9 @@ public:
     float xoffset;
     EnemyType m_type;
 
+    void FlipVisibility();
+    bool m_bVisible;
+
 protected:
     Vector2 m_position;
     float m_speed;

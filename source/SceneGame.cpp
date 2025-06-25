@@ -327,7 +327,7 @@ void SceneGame::Process(float deltaTime)
         //SpawnEnemies(*m_pRenderer);
 
         for (Orc* orc : m_orcs) {
-            if (orc) {
+            if (orc && orc->m_bVisible) {
                 if (orc->IsAlive()) {
                     orc->setoffset(tempOffset);
                     orc->UpdateAI(worldKnightPos, deltaTime, *this);
@@ -337,39 +337,39 @@ void SceneGame::Process(float deltaTime)
         }
 
         for (Skeleton* skeleton : m_skeletons) {
-            if (skeleton && skeleton->IsAlive()) {
+            if (skeleton && skeleton->IsAlive() && skeleton->m_bVisible) {
                 skeleton->setoffset(tempOffset);
                 skeleton->UpdateAI(worldKnightPos, deltaTime, *this);
             }
-            if (skeleton) {
+            if (skeleton && skeleton->m_bVisible) {
                 skeleton->Process(deltaTime, *this);
             }
         }
 
         for (Werewolf* wolf : m_werewolf) {
-            if (wolf && wolf->IsAlive()) {
+            if (wolf && wolf->IsAlive() && wolf->m_bVisible) {
                 wolf->setoffset(tempOffset);
 
                 wolf->UpdateAI(worldKnightPos, deltaTime, *this);
             }
-            if (wolf) {
+            if (wolf && wolf->m_bVisible) {
                 wolf->Process(deltaTime, *this);
             }
         }
 
         for (Werebear* bear : m_werebear) {
-            if (bear && bear->IsAlive()) {
+            if (bear && bear->IsAlive() && bear->m_bVisible) {
                 bear->setoffset(tempOffset);
 
                 bear->UpdateAI(worldKnightPos, deltaTime, *this);
             }
-            if (bear) {
+            if (bear && bear->m_bVisible) {
                 bear->Process(deltaTime, *this);
             }
         }
 
         for (Orc* orc : m_orcs) {
-            if (!orc || orc->IsAlive() || orc->WasScored())
+            if (!orc || orc->IsAlive() || orc->WasScored() || !orc->m_bVisible)
                 continue;
             m_score += orc->GetScore();
             orc->MarkScored();
@@ -380,7 +380,7 @@ void SceneGame::Process(float deltaTime)
         }
 
         for (Skeleton* skeleton : m_skeletons) {
-            if (!skeleton || skeleton->IsAlive() || skeleton->WasScored())
+            if (!skeleton || skeleton->IsAlive() || skeleton->WasScored() || !skeleton->m_bVisible)
                 continue;
 
             m_score += skeleton->GetScore();
@@ -392,7 +392,7 @@ void SceneGame::Process(float deltaTime)
         }
 
         for (Werewolf* wolf : m_werewolf) {
-            if (!wolf || wolf->IsAlive() || wolf->WasScored())
+            if (!wolf || wolf->IsAlive() || wolf->WasScored() || !wolf->m_bVisible)
                 continue;
             m_score += wolf->GetScore();
             wolf->MarkScored();
@@ -403,7 +403,7 @@ void SceneGame::Process(float deltaTime)
         }
 
         for (Werebear* bear : m_werebear) {
-            if (!bear || bear->IsAlive() || bear->WasScored())
+            if (!bear || bear->IsAlive() || bear->WasScored() || !bear->m_bVisible)
                 continue;
 
             m_score += bear->GetScore();
@@ -421,7 +421,7 @@ void SceneGame::Process(float deltaTime)
 
             for (Orc* orc : m_orcs) 
             {
-                if (!orc || !orc->IsAlive()) continue;
+                if (!orc || !orc->IsAlive() || !orc->m_bVisible) continue;
 
                 attackHitbox = m_pKnightClass->GetAttackHitbox(*orc);
         //        attackHitbox.x += m_scrollDistance;
@@ -433,7 +433,7 @@ void SceneGame::Process(float deltaTime)
 
             for (Skeleton* skeleton : m_skeletons)
             {
-                if (!skeleton || !skeleton->IsAlive()) continue;
+                if (!skeleton || !skeleton->IsAlive() || !skeleton->m_bVisible) continue;
 
                 attackHitbox = m_pKnightClass->GetAttackHitbox(*skeleton);
            //     attackHitbox.x += m_scrollDistance;
@@ -445,7 +445,7 @@ void SceneGame::Process(float deltaTime)
 
             for (Werewolf* wolf : m_werewolf)
             {
-                if (!wolf || !wolf->IsAlive()) continue;
+                if (!wolf || !wolf->IsAlive() || !wolf->m_bVisible) continue;
 
                 attackHitbox = m_pKnightClass->GetAttackHitbox(*wolf);
               //  attackHitbox.x += m_scrollDistance;
@@ -457,7 +457,7 @@ void SceneGame::Process(float deltaTime)
 
             for (Werebear* bear : m_werebear)
             {
-                if (!bear || !bear->IsAlive()) continue;
+                if (!bear || !bear->IsAlive() || !bear->m_bVisible) continue;
 
                 attackHitbox = m_pKnightClass->GetAttackHitbox(*bear);
                // attackHitbox.x += m_scrollDistance;
@@ -483,7 +483,7 @@ void SceneGame::Process(float deltaTime)
         }
 
         for (Skeleton* skeleton : m_skeletons) {
-            if (skeleton && skeleton->IsAlive() && skeleton->IsAttacking()) {
+            if (skeleton && skeleton->IsAlive() && skeleton->IsAttacking() && skeleton->m_bVisible) {
                 Hitbox attackBox = skeleton->GetAttackHitbox();
               //  attackBox.x -= m_scrollDistance;
 
@@ -494,7 +494,7 @@ void SceneGame::Process(float deltaTime)
         }
 
         for (Werewolf* wolf : m_werewolf) {
-            if (wolf && wolf->IsAlive() && wolf->IsAttacking()) {
+            if (wolf && wolf->IsAlive() && wolf->IsAttacking() && wolf->m_bVisible) {
                 Hitbox attackBox = wolf->GetAttackHitbox();
               //  attackBox.x -= m_scrollDistance;
 
@@ -505,7 +505,7 @@ void SceneGame::Process(float deltaTime)
         }
 
         for (Werebear* bear : m_werebear) {
-            if (bear && bear->IsAlive() && bear->IsAttacking()) {
+            if (bear && bear->IsAlive() && bear->IsAttacking() && bear->m_bVisible) {
                 Hitbox attackBox = bear->GetAttackHitbox();
                 //attackBox.x -= m_scrollDistance;
 
@@ -517,7 +517,7 @@ void SceneGame::Process(float deltaTime)
         // Update score and trigger BuffMenu if Werebear is the final enemy
 
         for (Orc* orc : m_orcs) {
-            if (!orc || orc->IsAlive() || orc->WasScored())
+            if (!orc || orc->IsAlive() || orc->WasScored() || !orc->m_bVisible)
                 continue;
 
             m_score += orc->GetScore();
@@ -544,7 +544,7 @@ void SceneGame::Process(float deltaTime)
         }
 
         for (Skeleton* skeleton : m_skeletons) {
-            if (!skeleton || skeleton->IsAlive() || skeleton->WasScored())
+            if (!skeleton || skeleton->IsAlive() || skeleton->WasScored() || !skeleton->m_bVisible)
                 continue;
 
             m_score += skeleton->GetScore();
@@ -564,7 +564,7 @@ void SceneGame::Process(float deltaTime)
         }
 
         for (Werewolf* wolf : m_werewolf) {
-            if (!wolf || wolf->IsAlive() || wolf->WasScored())
+            if (!wolf || wolf->IsAlive() || wolf->WasScored() || !wolf->m_bVisible)
                 continue;
 
             m_score += wolf->GetScore();
@@ -576,7 +576,7 @@ void SceneGame::Process(float deltaTime)
         }
 
         for (Werebear* bear : m_werebear) {
-            if (!bear || bear->IsAlive() || bear->WasScored())
+            if (!bear || bear->IsAlive() || bear->WasScored() || !bear->m_bVisible)
                 continue;
 
             m_score += bear->GetScore();
@@ -584,14 +584,6 @@ void SceneGame::Process(float deltaTime)
 
             if (m_pKnightHUD) {
                 m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
-            }
-
-            if (m_triggerBuffMenuNext && !m_showBuffMenu) {
-                SDL_ShowCursor(SDL_ENABLE);
-                m_showBuffMenu = true;
-                m_triggerBuffMenuNext = false;
-                m_pBuffMenu->Reset();
-                return; // pause game logic until buff is selected
             }
         }
 
@@ -608,25 +600,25 @@ void SceneGame::Draw(Renderer& renderer)
 
     for (Orc* orc : m_orcs)
     {
-        if (orc) { // Draw all orcs, even dead ones
+        if (orc && orc->m_bVisible) { // Draw all orcs, even dead ones
             orc->Draw(renderer, m_scrollDistance);
         }
     }
 
     for (Skeleton* skeleton : m_skeletons) {
-        if (skeleton) {
+        if (skeleton && skeleton->m_bVisible) {
             skeleton->Draw(renderer, m_scrollDistance);
         }
     }
 
     for (Werewolf* wolf : m_werewolf) {
-        if (wolf) {
+        if (wolf && wolf->m_bVisible) {
             wolf->Draw(renderer, m_scrollDistance);
         }
     }
 
     for (Werebear* bear : m_werebear) {
-        if (bear) {
+        if (bear && bear->m_bVisible) {
             bear->Draw(renderer, m_scrollDistance);
         }
     }
@@ -740,25 +732,29 @@ void SceneGame::ProcessInput(InputSystem& inputSystem, Renderer& renderer)
 void SceneGame::LoadNextLevel()
 {
     for (Orc* orc : m_orcs) {
-        delete orc;
+        //delete orc;
+        orc->FlipVisibility();
     }
-    m_orcs.clear();
-    m_orcs.begin();
+    //m_orcs.clear();
+    //m_orcs.begin();
     for (Skeleton* skeleton : m_skeletons) {
-        delete skeleton;
+        //delete skeleton;
+        skeleton->FlipVisibility();
     }
-    m_skeletons.clear();
-    m_skeletons.begin();
+    //m_skeletons.clear();
+    //m_skeletons.begin();
     for (Werewolf* werewolf : m_werewolf) {
-        delete werewolf;
+        //delete werewolf;
+        werewolf->FlipVisibility();
     }
-    m_werewolf.clear();
-    m_werewolf.begin();
+    //m_werewolf.clear();
+    //m_werewolf.begin();
     for (Werebear* werebear : m_werebear) {
-        delete werebear;
+        //delete werebear;
+        werebear->FlipVisibility();
     }
-    m_werebear.clear();
-    m_werebear.clear();
+    //m_werebear.clear();
+    //m_werebear.clear();
     // Update player position to start position
     m_pKnightClass->SetPosition(m_pKnightClass->startPos);
     // Update the scroll position to go back to normal (not sure how to implement this)
@@ -772,7 +768,7 @@ void SceneGame::LoadNextLevel()
     }
     m_waveCount = stage;
     m_loadNextWave = true;
-    SpawnEnemies(*m_pRenderer);
+    //SpawnEnemies(*m_pRenderer);
 
 
 }
@@ -798,28 +794,6 @@ void SceneGame::SpawnEnemies(Renderer& renderer)
             { sizeTemp * (90), sizeTemp * 4 + sizeTemp / 2, PATROL,sizeTemp * 1 , ORC_ARMORED },
             { sizeTemp * (10), sizeTemp * 14 - sizeTemp / 2, PATROL,sizeTemp * 9 , ORC },
             { sizeTemp * (85) + sizeTemp / 2,sizeTemp * (40 - 5) + sizeTemp / 2, PATROL, sizeTemp * 15.0f + sizeTemp / 2, ORC_RIDER },
-            { 2000.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
-            { 2300.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT },
-            { 2600.0f, groundY, PATROL, 300.0f, WEREWOLF },
-            { 2900.0f, groundY, AGGRESSIVE, 0.0f, WEREBEAR }
-        };
-
-        const int waveCount = sizeof(wave1) / sizeof(wave1[0]);
-
-        SpawnEnemyWave(wave1, waveCount, 0.0f, renderer);  // offset = 0
-        m_waveCount = 1;
-        m_loadNextWave = false;
-        m_triggerBuffMenuNext = true;
-
-        LogManager::GetInstance().Log("One-time wave spawned. Buff menu will appear after defeat.");
-    }
-    else if ((m_waveCount == 1) && (m_loadNextWave == true))
-    {
-        float sizeTemp = m_pBackgroundManager->getSize();
-        float groundY = (40 - 5) * sizeTemp + sizeTemp / 2;//- m_pBackgroundManager->getHeight() / m_pBackgroundManager->getSize();
-        //float groundY = renderer.GetHeight() * 0.8f;
-        float patrolRangeGround = sizeTemp * (29) + sizeTemp / 2;
-        const EnemyPlacement wave1[] = {
             { sizeTemp * (17) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, ORC },
             { sizeTemp * (30) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, ORC },
             { sizeTemp * (40) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, SKELETON_ARMORED },
@@ -831,26 +805,56 @@ void SceneGame::SpawnEnemies(Renderer& renderer)
             { sizeTemp * (58), sizeTemp * 12 + sizeTemp / 2, PATROL,sizeTemp * 8 , WEREBEAR },
             { sizeTemp * (90), sizeTemp * 4 + sizeTemp / 2, PATROL,sizeTemp * 1 , SKELETON_ARMORED },
             { sizeTemp * (10), sizeTemp * 14 - sizeTemp / 2, PATROL,sizeTemp * 9 , SKELETON },
-            { sizeTemp * (85) + sizeTemp / 2,sizeTemp * (40 - 5) + sizeTemp / 2, PATROL, sizeTemp * 15.0f + sizeTemp / 2, SKELETON_GREAT },
-            { 2000.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
-            { 2300.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT },
-            { 2600.0f, groundY, PATROL, 300.0f, WEREWOLF },
-            { 2900.0f, groundY, AGGRESSIVE, 0.0f, WEREBEAR }
+            { sizeTemp * (85) + sizeTemp / 2,sizeTemp * (40 - 5) + sizeTemp / 2, PATROL, sizeTemp * 15.0f + sizeTemp / 2, SKELETON_GREAT }
         };
-        
-        
+
         const int waveCount = sizeof(wave1) / sizeof(wave1[0]);
 
         SpawnEnemyWave(wave1, waveCount, 0.0f, renderer);  // offset = 0
-
+        m_waveCount = 1;
         m_loadNextWave = false;
-        m_waveCount = 2;
         m_triggerBuffMenuNext = true;
 
         LogManager::GetInstance().Log("One-time wave spawned. Buff menu will appear after defeat.");
-
-        // Spawn next set of enemies based on the code above
     }
+    //else if ((m_waveCount == 1) && (m_loadNextWave == true))
+    //{
+    //    float sizeTemp = m_pBackgroundManager->getSize();
+    //    float groundY = (40 - 5) * sizeTemp + sizeTemp / 2;//- m_pBackgroundManager->getHeight() / m_pBackgroundManager->getSize();
+    //    //float groundY = renderer.GetHeight() * 0.8f;
+    //    float patrolRangeGround = sizeTemp * (29) + sizeTemp / 2;
+    //    const EnemyPlacement wave1[] = {
+    //        { sizeTemp * (17) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, ORC },
+    //        { sizeTemp * (30) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, ORC },
+    //        { sizeTemp * (40) + sizeTemp / 2, groundY, PATROL, 10 * sizeTemp + sizeTemp / 2, SKELETON_ARMORED },
+    //        { sizeTemp * (8), sizeTemp * 18 - sizeTemp / 2, PATROL,sizeTemp * 9 , SKELETON_ARMORED},//maybe be orc rider
+    //        { sizeTemp * (10), sizeTemp * 18 - sizeTemp / 2, PATROL,sizeTemp * 9 , SKELETON_ARMORED },
+    //        { sizeTemp * (12), sizeTemp * 18 - sizeTemp / 2, PATROL,sizeTemp * 9 , WEREBEAR },
+    //        { sizeTemp * (50), sizeTemp * 12 + sizeTemp / 2, PATROL,sizeTemp * 8 , WEREBEAR },
+    //        { sizeTemp * (54), sizeTemp * 12 + sizeTemp / 2, PATROL,sizeTemp * 8 , WEREBEAR },
+    //        { sizeTemp * (58), sizeTemp * 12 + sizeTemp / 2, PATROL,sizeTemp * 8 , WEREBEAR },
+    //        { sizeTemp * (90), sizeTemp * 4 + sizeTemp / 2, PATROL,sizeTemp * 1 , SKELETON_ARMORED },
+    //        { sizeTemp * (10), sizeTemp * 14 - sizeTemp / 2, PATROL,sizeTemp * 9 , SKELETON },
+    //        { sizeTemp * (85) + sizeTemp / 2,sizeTemp * (40 - 5) + sizeTemp / 2, PATROL, sizeTemp * 15.0f + sizeTemp / 2, SKELETON_GREAT },
+    //        { 2000.0f, groundY, PATROL, 300.0f, SKELETON_ARMORED },
+    //        { 2300.0f, groundY, AGGRESSIVE, 0.0f, SKELETON_GREAT },
+    //        { 2600.0f, groundY, PATROL, 300.0f, WEREWOLF },
+    //        { 2900.0f, groundY, AGGRESSIVE, 0.0f, WEREBEAR }
+    //    };
+    //    
+    //    
+    //    const int waveCount = sizeof(wave1) / sizeof(wave1[0]);
+
+    //    SpawnEnemyWave(wave1, waveCount, 0.0f, renderer);  // offset = 0
+
+    //    m_loadNextWave = false;
+    //    m_waveCount = 2;
+    //    m_triggerBuffMenuNext = true;
+
+    //    LogManager::GetInstance().Log("One-time wave spawned. Buff menu will appear after defeat.");
+
+    //    // Spawn next set of enemies based on the code above
+    //}
 }
 
 void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offset, Renderer& renderer)
@@ -859,7 +863,7 @@ void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offs
     sprintf_s(buffer, "Spawning Enemy Wave with offset: %.2f", offset);
     LogManager::GetInstance().Log(buffer);
   
-   for (int i = 0; i < 12; i++)
+   for (int i = 0; i < 24; i++)
    {
         Orc* orc = nullptr;
         Skeleton* skeleton = nullptr;
@@ -915,6 +919,12 @@ void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offs
                 orc->SetPatrolRange(spawnX - patrolRange, spawnX + patrolRange);
             }
             orc->setoffset(m_pBackgroundManager->getOffsetX());
+            
+            if (i <= 12)
+            {
+                orc->m_bVisible = true;
+            }
+
             m_orcs.push_back(orc);
         }
         else {
@@ -931,6 +941,12 @@ void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offs
                 skeleton->SetPatrolRange(spawnX - patrolRange, spawnX + patrolRange);
             }
             skeleton->setoffset(m_pBackgroundManager->getOffsetX());
+
+            if (i <= 12)
+            {
+                skeleton->m_bVisible = true;
+            }
+
             m_skeletons.push_back(skeleton);
         }
         else {
@@ -948,6 +964,11 @@ void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offs
             }
             werewolf->setoffset(m_pBackgroundManager->getOffsetX());
 
+            if (i <= 12)
+            {
+                werewolf->m_bVisible = true;
+            }
+
             m_werewolf.push_back(werewolf);
         }
         else {
@@ -963,6 +984,11 @@ void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offs
                 werebear->SetPatrolRange(spawnX - patrolRange, spawnX + patrolRange);
             }
             werebear->setoffset(m_pBackgroundManager->getOffsetX());
+
+            if (i <= 12)
+            {
+                werebear->m_bVisible = true;
+            }
 
             m_werebear.push_back(werebear);
         }
