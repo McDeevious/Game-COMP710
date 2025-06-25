@@ -207,6 +207,7 @@ void SceneGame::getAreaArray()
         delete[] temp;
     }
 }
+
 int* SceneGame::tilearray(int row)
 {
     int* array = new int[120];
@@ -223,28 +224,30 @@ int* SceneGame::tilearray(int row)
     }
     return array;
 }
+
 float SceneGame::getSize()
 {
     return m_pBackgroundManager->getSize();
 }
+
 float SceneGame::getWide()
 {
     return m_pBackgroundManager->getWide();
 }
+
 float SceneGame::getHeight()
 {
     return m_pBackgroundManager->getHeight();
 }
+
 float SceneGame::getWH()
 {
     return m_pBackgroundManager->getWH();
 }
+
 float SceneGame::getOffsetX() {
     return m_pBackgroundManager->getOffsetX();
 }
-
-
-
 
 void SceneGame::Process(float deltaTime)
 {
@@ -311,7 +314,7 @@ void SceneGame::Process(float deltaTime)
 
         if (!m_gameStartPlayed) {
             FMOD::System* fmod = Game::GetInstance().GetFMODSystem();
-            fmod->createSound("../game/assets/Audio/Menu-Audio/8BitGameplay.mp3", FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_LOOP_NORMAL, 0, &m_gameMusic); 
+            fmod->createSound("../game/assets/Audio/Menu-Audio/Dark Descent (Extended Cut).mp3", FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_LOOP_NORMAL, 0, &m_gameMusic); 
             fmod->playSound(m_gameMusic, 0, false, &m_gameChannel);
             if (m_gameChannel) {
                 m_gameChannel->setVolume(m_gameVolume);
@@ -537,7 +540,7 @@ void SceneGame::Process(float deltaTime)
                 m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
             }
 
-            if (orc->m_type == ORC_ARMORED)
+            if (orc->m_type == ORC_RIDER) 
             {
                 if (m_triggerBuffMenuNext && !m_showBuffMenu) {
                     SDL_ShowCursor(SDL_ENABLE);

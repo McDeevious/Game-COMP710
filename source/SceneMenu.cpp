@@ -132,7 +132,7 @@ bool SceneMenu::Initialise(Renderer& renderer) {
 	SDL_ShowCursor(SDL_ENABLE);
 
 	FMOD::System* fmod = Game::GetInstance().GetFMODSystem();
-	fmod->createSound("../game/assets/Audio/Menu-Audio/GrassyWorld.mp3", FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_LOOP_NORMAL, 0, &m_menuMusic);
+	fmod->createSound("../game/assets/Audio/Menu-Audio/Beyond The Clouds (Dungeon Plunder).mp3", FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_LOOP_NORMAL, 0, &m_menuMusic);
 	fmod->createSound("../game/assets/Audio/Menu-Audio/button.wav", FMOD_DEFAULT, 0, &m_hoverSound);
 	fmod->playSound(m_menuMusic, 0, false, &m_menuChannel);
 
