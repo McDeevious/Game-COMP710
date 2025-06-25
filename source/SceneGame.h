@@ -29,13 +29,15 @@ class EliteOrc;
 class RiderOrc;
 class KnightHUD; 
 class SceneGuide; 
+class VictoryMenu;
 
 // Define game states
 enum GameState {
     GAME_STATE_PLAYING,
     GAME_STATE_PAUSED, 
     GAME_STATE_GAME_OVER,
-    GAME_STATE_RESTART
+    GAME_STATE_RESTART,
+    GAME_STATE_VICTORY
 };
 
 // Define orc positions and behaviors for a more interesting level layout
@@ -100,6 +102,8 @@ protected:
     Renderer* m_pRenderer;
     KnightHUD* m_pKnightHUD;
     SceneGuide* m_pSceneGuide; 
+
+    VictoryMenu* m_pVictoryMenu;
 
     // Enemy list
     std::vector<Orc*> m_orcs;

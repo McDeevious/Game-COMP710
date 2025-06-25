@@ -96,6 +96,13 @@ bool VictoryMenu::Initialise(Renderer& renderer) {
 	return m_victoryBack && m_victoryRetry && m_victoryExit;
 }
 
+void VictoryMenu::Process(float deltaTime)
+{
+	m_victoryBack->Process(deltaTime);
+	m_victoryExit->Process(deltaTime);
+	m_victoryRetry->Process(deltaTime);
+}
+
 void VictoryMenu::ProcessInput(InputSystem& inputSystem) {
 	const Vector2& mousePos = inputSystem.GetMousePosition();
 

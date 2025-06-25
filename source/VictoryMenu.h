@@ -28,6 +28,7 @@ public:
 	~VictoryMenu();
 
 	bool Initialise(Renderer& renderer);
+	void Process(float deltaTime);
 	void ProcessInput(InputSystem& inputSystem);
 	void Draw(Renderer& renderer);
 	void Reset();

@@ -15,6 +15,7 @@
 #include "game.h"
 #include "xboxcontroller.h"
 #include "sharedenums.h"
+#include "VictoryMenu.h"
 //enemies
 #include "enemy.h" 
 #include "orc.h"
@@ -29,6 +30,7 @@
 
 SceneGame::SceneGame()
     : m_pBackgroundManager(nullptr)
+    , m_pVictoryMenu(nullptr)
     , m_pKnightClass(nullptr)
     , m_pArcher(nullptr)
     , m_pWizard(nullptr)
@@ -63,6 +65,9 @@ SceneGame::~SceneGame()
 
     delete m_pPauseMenu;
     m_pPauseMenu = nullptr;
+
+    delete m_pVictoryMenu;
+    m_pVictoryMenu = nullptr;
 
     delete m_pGameOverMenu; 
     m_pGameOverMenu = nullptr;
@@ -142,6 +147,10 @@ bool SceneGame::Initialise(Renderer& renderer)
 
     m_pPauseMenu = new PauseMenu();
     if (!m_pPauseMenu->Initialise(renderer))
+        return false;
+
+    m_pVictoryMenu = new VictoryMenu();
+    if (!m_pVictoryMenu->Initialise(renderer))
         return false;
 
     m_pBuffMenu = new BuffMenu(); 
@@ -273,6 +282,11 @@ void SceneGame::Process(float deltaTime)
         m_pSceneGuide->Process(deltaTime);
     }
 
+    if (m_gameState == GAME_STATE_VICTORY)
+    {
+        m_pVictoryMenu->Process(deltaTime);
+    }
+
     if (m_gameState == GAME_STATE_PLAYING)
     {
         m_pBackgroundManager->changePos(m_pKnightClass->getArenaPos(), 0);
@@ -310,7 +324,7 @@ void SceneGame::Process(float deltaTime)
         float worldX =/** m_scrollDistance**/+ m_pKnightClass->GetPosition().x; 
         Vector2 worldKnightPos(worldX, m_pKnightClass->GetPosition().y); 
 
-        SpawnEnemies(*m_pRenderer);
+        //SpawnEnemies(*m_pRenderer);
 
         for (Orc* orc : m_orcs) {
             if (orc) {
@@ -513,7 +527,7 @@ void SceneGame::Process(float deltaTime)
                 m_pKnightHUD->ScoreUpdate(m_score, *m_pRenderer);
             }
 
-            if (orc->m_type == ORC_RIDER)
+            if (orc->m_type == ORC_ARMORED)
             {
                 if (m_triggerBuffMenuNext && !m_showBuffMenu) {
                     SDL_ShowCursor(SDL_ENABLE);
@@ -542,13 +556,10 @@ void SceneGame::Process(float deltaTime)
 
             if (skeleton->m_type == SKELETON_GREAT)
             {
-                if (m_triggerBuffMenuNext && !m_showBuffMenu) {
-                    SDL_ShowCursor(SDL_ENABLE);
-                    m_showBuffMenu = true;
-                    m_triggerBuffMenuNext = false;
-                    m_pBuffMenu->Reset();
-                    return; // pause game logic until buff is selected
-                }
+                SDL_ShowCursor(SDL_ENABLE);
+                m_gameState = GAME_STATE_VICTORY;
+                m_pVictoryMenu->Reset();
+                return;
             }
         }
 
@@ -641,6 +652,10 @@ void SceneGame::Draw(Renderer& renderer)
         m_pPauseMenu->Draw(renderer);  
     }
 
+    if (m_gameState == GAME_STATE_VICTORY) {
+        m_pVictoryMenu->Draw(renderer);
+    }
+
     // Display game over message
     if (m_gameState == GAME_STATE_GAME_OVER) {
         m_pGameOverMenu->Draw(renderer); 
@@ -701,6 +716,24 @@ void SceneGame::ProcessInput(InputSystem& inputSystem, Renderer& renderer)
             SDL_Quit(); 
             exit(0); 
         }
+    }
+
+    if (m_gameState == GAME_STATE_VICTORY) {
+        m_pVictoryMenu->ProcessInput(inputSystem);
+
+        VictoryState state = m_pVictoryMenu->GetState();
+
+        if (state == VICTORY_RETRY) {
+            RestartGame(renderer);
+            m_gameState = GAME_STATE_RESTART;
+            m_pVictoryMenu->Reset();
+        }
+        else if (state == VICTORY_EXIT) {
+            SDL_Quit();
+            exit(0);
+        }
+
+        return;
     }
 }
 
@@ -913,7 +946,7 @@ void SceneGame::SpawnEnemyWave(const EnemyPlacement* wave, int count, float offs
             if (behavior != IDLE) {
                 werewolf->SetPatrolRange(spawnX - patrolRange, spawnX + patrolRange);
             }
-            werebear->setoffset(m_pBackgroundManager->getOffsetX());
+            werewolf->setoffset(m_pBackgroundManager->getOffsetX());
 
             m_werewolf.push_back(werewolf);
         }
