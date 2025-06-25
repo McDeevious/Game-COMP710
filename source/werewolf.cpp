@@ -255,7 +255,7 @@ void Werewolf::Process(float deltaTime, SceneGame& game) {
 
 void Werewolf::Draw(Renderer& renderer, float scrollX) {
     // Calculate screen position
-    float drawX = m_position.x - scrollX;
+    float drawX = m_position.x; // -scrollX;
     float drawY = m_position.y;
 
     // Draw the death animation
