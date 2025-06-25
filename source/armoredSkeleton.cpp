@@ -34,7 +34,7 @@ bool ArmoredSkeleton::Initialise(Renderer& renderer) {
         m_skeletonIdle->SetFrameDuration(0.2f);
         m_skeletonIdle->SetLooping(true);
         m_skeletonIdle->Animate();
-        m_skeletonIdle->SetScale(7.5f, -7.5f);
+        m_skeletonIdle->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load walking sprite
@@ -44,7 +44,7 @@ bool ArmoredSkeleton::Initialise(Renderer& renderer) {
         m_skeletonWalk->SetFrameDuration(0.1f);
         m_skeletonWalk->SetLooping(true);
         m_skeletonWalk->Animate();
-        m_skeletonWalk->SetScale(7.5f, -7.5f);
+        m_skeletonWalk->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load hurt sprite
@@ -54,7 +54,7 @@ bool ArmoredSkeleton::Initialise(Renderer& renderer) {
         m_skeletonHurt->SetFrameDuration(0.2f);
         m_skeletonHurt->SetLooping(false);
         m_skeletonHurt->Animate();
-        m_skeletonHurt->SetScale(7.5f, -7.5f);
+        m_skeletonHurt->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load death sprite
@@ -64,7 +64,7 @@ bool ArmoredSkeleton::Initialise(Renderer& renderer) {
         m_skeletonDeath->SetFrameDuration(0.1f);
         m_skeletonDeath->SetLooping(false);
         m_skeletonDeath->Animate();
-        m_skeletonDeath->SetScale(7.5f, -7.5f);
+        m_skeletonDeath->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load attack1 sprite
@@ -73,7 +73,7 @@ bool ArmoredSkeleton::Initialise(Renderer& renderer) {
         m_skeletonAttack1->SetupFrames(100, 100);
         m_skeletonAttack1->SetFrameDuration(0.1f);
         m_skeletonAttack1->SetLooping(false);
-        m_skeletonAttack1->SetScale(7.5f, -7.5f);
+        m_skeletonAttack1->SetScale(m_enemySize, -m_enemySize);
     }
 
     //Load attack2 sprite
@@ -82,7 +82,7 @@ bool ArmoredSkeleton::Initialise(Renderer& renderer) {
         m_skeletonAttack2->SetupFrames(100, 100);
         m_skeletonAttack2->SetFrameDuration(0.1f);
         m_skeletonAttack2->SetLooping(false);
-        m_skeletonAttack2->SetScale(7.5f, -7.5f);
+        m_skeletonAttack2->SetScale(m_enemySize, -m_enemySize);
     }
 
     if (!m_skeletonIdle || !m_skeletonWalk)

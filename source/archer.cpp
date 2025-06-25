@@ -376,12 +376,12 @@ void Archer::Process(float deltaTime, SceneGame& game) {
     else
     {
         //idle
-        m_archerPosition.y += m_gravity / 3 * deltaTime;
+        m_archerPosition.y += m_gravity/3 * deltaTime;
         setBounds(game);
         if (collision(1, game))
             // if (wasTouchingGround)
         {
-            m_archerPosition.y -= m_gravity / 3 * deltaTime;
+            m_archerPosition.y -= m_gravity/3 * deltaTime;
         }
     }
 
